@@ -194,4 +194,26 @@ public class CallBackController {
 //            }
 //        }
 //    }
+
+
+    //模块回调地址
+    @RequestMapping("moduleCallback")
+    public ResultVO moduleCallbackInfo(String deviceId,String event,String message){
+        //获取aesKey
+        DeviceWebSocket webSocket = pool.get(deviceId + "");
+        if(webSocket==null){
+            log.info("【模块回调】异常：请检查当前设备{{}}的通道",deviceId);
+            return ResultVO.FAIL();
+        }
+        log.info("模块回调deviceId：{}，时间类型：event：{} ， 消息：message：{}",deviceId,event,message);
+        //获取aesKey
+        String aesKey = webSocket.getSymmetricKey();
+        try {
+            String decrypt = AesUtil.decrypt(message, aesKey);
+            log.info("【模块回调】设备：{}，事件类型：{},解密消息：{}",deviceId,event,decrypt);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResultVO.OK();
+    }
 }
