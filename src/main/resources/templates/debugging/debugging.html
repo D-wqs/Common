@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>调试界面</title>
+    <!-- Bootstrap core CSS -->
+    <link href="asserts/css/bootstrap.min.css" th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+    <style type="text/css">
+        /* Chart.js */
+
+        @-webkit-keyframes chartjs-render-animation {
+            from {
+                opacity: 0.99
+            }
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes chartjs-render-animation {
+            from {
+                opacity: 0.99
+            }
+            to {
+                opacity: 1
+            }
+        }
+
+        .chartjs-render-monitor {
+            -webkit-animation: chartjs-render-animation 0.001s;
+            animation: chartjs-render-animation 0.001s;
+        }
+    </style>
+</head>
+
+<body>
+<!--引入抽取的topbar-->
+<!--模板名：会使用thymeleaf的前后缀配置规则进行解析-->
+<div th:replace="common/bar/bar::topbar"></div>
+
+<div class="container-fluid">
+    <div class="row">
+        <!--引入侧边栏-->
+        <div th:replace="common/bar/bar::#sidebar(activeUri='/yunxi/debugging')"></div>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <!--调试接口-->
+            <h3>调试接口[POST]</h3>
+            <div class="center-block" style="width:500px;background-color:#ccc;">
+                通过企业票据获取接口凭证【ticket可自定义】
+                <blockquote>
+                    <small>
+                        <cite title="Source Title"><b>ip:port:</b></cite>
+                        /device/getTicket
+                        <br>【请求参数：name,password;返回值:String】
+                    </small>
+                </blockquote>
+            </div>
+            <input type="text" id="AuthToken" style="display: none"></input>
+            <hr>
+            <!--布局：各调试模块-->
+            <div class="container-fluid">
+                <div class="row">
+                    <!--获取接口凭证-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">获取接口凭证
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/getAccessToken
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <blockquote>
+                                    <small><cite title="Source Title"><b>accessToken:</b></cite>调用方法前必填</small>
+                                </blockquote>
+                                <input th:type="text" placeholder="String: ticket" name="ticket" id="ticket"
+                                       th:value="${session.accessToken}">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="getAccessToken">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="getAccessToken_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--获取对称密钥-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">获取对称密钥
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/getAesKey
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <!--<blockquote>-->
+                                <!--<small><cite title="Source Title"><b>accessToken:</b></cite>调用方法前必填</small>-->
+                                <!--</blockquote>-->
+                                <input type="text" placeholder="int: deviceId" name="deviceId" id="getAesKey_deviceId">
+                                <input type="text" id="aesKey" style="display: none">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="getAesKey">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="getAesKey_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--设备是否在线isOnline-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">设备是否在线
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/isOnline
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="isOnline_deviceId">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="isOnline">Go</button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="isOnline_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--指纹录入-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">指纹录入
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/finger/add
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="fingerAdd_deviceId">
+                                <input th:type="text" placeholder="int: userId" name="userId" id="fingerAdd_userId">
+                                <input th:type="text" placeholder="int: fingerAddr" name="fingerAddr"
+                                       id="fingerAdd_fingerAddr">
+                                <input th:type="text" placeholder="String: userName" name="userName"
+                                       id="fingerAdd_userName">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="fingerAdd">Go</button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="fingerAdd_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--指纹删除-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">指纹删除
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/finger/del
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="fingerDel_deviceId">
+                                <input th:type="text" placeholder="int: userId" name="userId" id="fingerDel_userId">
+                                <input th:type="text" placeholder="int: fingerAddr" name="fingerAddr"
+                                       id="fingerDel_fingerAddr">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="fingerDel">Go</button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="fingerDel_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--指纹清空-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">指纹清空
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/finger/clean
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="fingerClean_deviceId">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="fingerClean">Go</button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="fingerClean_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--模式设置 changePattern-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">模式设置
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/changePattern
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <blockquote>
+                                    <small><cite title="Source Title"><b>status:</b></cite>{1:指纹模式}|{0:申请单模式（默认）}
+                                    </small>
+                                </blockquote>
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="changePattern_deviceId">
+                                <input th:type="text" placeholder="int: status" name="status" id="changePattern_status">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="changePattern">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="changePattern_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--休眠时间 setSleepTimes-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">休眠时间
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/setSleepTimes
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <blockquote>
+                                    <small><cite title="Source Title"><b>value:</b></cite>可选范围（2--10）min</small>
+                                </blockquote>
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="setSleepTimes_deviceId">
+                                <input th:type="text" placeholder="int: value" name="value" id="setSleepTimes_value">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="setSleepTimes">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="setSleepTimes_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--锁定设置setRemoteLock-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">锁定设置
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/setRemoteLock
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <blockquote>
+                                    <small><cite title="Source Title"><b>status:</b></cite>{0:解锁}|{1:锁定}</small>
+                                </blockquote>
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="setRemoteLock_deviceId">
+                                <input th:type="text" placeholder="int: status" name="status" id="setRemoteLock_status">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="setRemoteLock">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="setRemoteLock_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--获取wifi列表getWifiList-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">获取wifi列表
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/getWifiList
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <!--<blockquote>-->
+                                <!--<small><cite title="Source Title"><b>status:</b></cite>{0:解锁}|{1:锁定}</small>-->
+                                <!--</blockquote>-->
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="getWifiList_deviceId">
+                                <input th:type="text" placeholder="int: userId" name="userId" id="getWifiList_userId">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="getWifiList">Go</button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="getWifiList_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--连接wifi setWifiLink-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">连接wifi
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/setWifiLink
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <!--<blockquote>-->
+                                <!--<small><cite title="Source Title"><b>status:</b></cite>{0:解锁}|{1:锁定}</small>-->
+                                <!--</blockquote>-->
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="setWifiLink_deviceId">
+                                <input th:type="text" placeholder="int: userId" name="userId" id="setWifiLink_userId">
+                                <input th:type="text" placeholder="String: ssid" name="ssid" id="setWifiLink_ssid">
+                                <input th:type="text" placeholder="String: wifiPwd" name="wifiPwd"
+                                       id="setWifiLink_wifiPwd">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="setWifiLink">Go</button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="setWifiLink_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--断开wifi closeWifiLink-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">断开wifi
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/closeWifiLink
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <!--<blockquote>-->
+                                <!--<small><cite title="Source Title"><b>status:</b></cite>{0:解锁}|{1:锁定}</small>-->
+                                <!--</blockquote>-->
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="closeWifiLink_deviceId">
+                                <input th:type="text" placeholder="int: userId" name="userId" id="closeWifiLink_userId">
+                                <input th:type="text" placeholder="String: ssid" name="ssid" id="closeWifiLink_ssid">
+                                <input th:type="text" placeholder="String: wifiPwd" name="wifiPwd"
+                                       id="closeWifiLink_wifiPwd">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="closeWifiLink">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="closeWifiLink_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--ID解锁 unlockById-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">ID解锁
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/unlockById
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <!--<blockquote>-->
+                                <!--<small><cite title="Source Title"><b>status:</b></cite>{0:解锁}|{1:锁定}</small>-->
+                                <!--</blockquote>-->
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="unlockById_deviceId">
+                                <input th:type="text" placeholder="int: userId" name="userId" id="unlockById_userId">
+                                <input th:type="text" placeholder="String: userName" name="userName"
+                                       id="unlockById_userName">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="unlockById">Go</button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="unlockById_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--推送申请单 pushApplication-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">推送申请单
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/pushApplication
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <!--<blockquote>-->
+                                <!--<small><cite title="Source Title"><b>status:</b></cite>{0:解锁}|{1:锁定}</small>-->
+                                <!--</blockquote>-->
+                                <input th:type="text" placeholder="int: applicationId" name="applicationId"
+                                       id="pushApplication_applicationId">
+                                <input th:type="text" placeholder="String: title" name="title"
+                                       id="pushApplication_title">
+                                <input th:type="text" placeholder="int: totalCount" name="totalCount"
+                                       id="pushApplication_totalCount">
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="pushApplication_deviceId">
+                                <input th:type="text" placeholder="String: userName" name="userName"
+                                       id="pushApplication_userName">
+                                <input th:type="text" placeholder="int: userId" name="userId"
+                                       id="pushApplication_userId">
+                                <input th:type="text" placeholder="int: needCount" name="needCount"
+                                       id="pushApplication_needCount">
+
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="pushApplication">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="pushApplication_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--结束申请单 endApplication-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">结束申请单
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/endApplication
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <!--<blockquote>-->
+                                <!--<small><cite title="Source Title"><b>status:</b></cite>{0:解锁}|{1:锁定}</small>-->
+                                <!--</blockquote>-->
+                                <input th:type="text" placeholder="int: applicationId" name="applicationId"
+                                       id="endApplication_applicationId">
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="endApplication_deviceId">
+                                <input th:type="text" placeholder="int: userId" name="userId"
+                                       id="endApplication_userId">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="endApplication">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="endApplication_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <!--设备清次（恢复出厂）-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">设备清次
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /device/reset
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <!--<blockquote>-->
+                                <!--<small><cite title="Source Title"><b>status:</b></cite>{0:解锁}|{1:锁定}</small>-->
+                                <!--</blockquote>-->
+                                <input th:type="text" placeholder="int: total" name="total"
+                                       id="reset_total">
+                                <input th:type="text" placeholder="int: deviceId" name="deviceId"
+                                       id="reset_deviceId">
+                                <input th:type="text" placeholder="String: orgName" name="orgName"
+                                       id="reset_orgName">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="reset">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="reset_res"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" src="asserts/js/jquery.min.js"
+        th:src="@{/asserts/js/jquery.min.js}"></script>
+<script type="text/javascript" src="asserts/js/popper.min.js" th:src="@{/asserts/js/popper.min.js}"></script>
+<script type="text/javascript" src="asserts/js/bootstrap.min.js" th:src="@{/asserts/js/bootstrap.min.js}"></script>
+
+<!-- Icons -->
+<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
+<script>
+    feather.replace()
+</script>
+<script>
+    //    $.ajaxSetup( {
+    ////        url: "/index.html" , // 默认URL
+    ////        aysnc: false , // 默认同步加载
+    //        type: "POST" , // 默认使用POST方式
+    //        headers: { // 默认添加请求头
+    //            "Authorization": $("#AuthToken").val()
+    //        } ,
+    //        error: function(jqXHR, textStatus, errorMsg){ // 出错时默认的处理函数
+    //            // 提示形如：发送AJAX请求到"/index.html"时出错[404]：Not Found
+    //            alert( '发送请求时发生异常' );
+    //        }
+    //    } );
+    // 指定预处理参数选项的函数
+    $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+        // options对象 包括accepts、crossDomain、contentType、url、async、type、headers、error、dataType等许多参数选项
+        // originalOptions对象 就是你为$.ajax()方法传递的参数对象，也就是 { url: "/index.php" }
+        // jqXHR对象 就是经过jQuery封装的XMLHttpRequest对象(保留了其本身的属性和方法)
+
+        options.type = "POST"; // 将请求方式改为GET
+        options.headers = {
+            "Authorization": $("#AuthToken").val()
+        }; // 自定义的请求头
+    });
+    //获取 getAccessToken
+    $("#getAccessToken").click(function () {
+        var v1 = $("#ticket").val();
+        if (v1 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/getAccessToken", {
+                ticket: v1,
+            },
+            function (data, status) {
+                if (status == "success") {
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#getAccessToken_res").html('<span style="color:green">' + data.msg + '</span>');
+                        $("#AuthToken").val(data.data);
+                        //参数不为空时显示
+                        $("#AuthToken").show();
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#getAccessToken_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //获取对称密钥 getAesKey
+    $("#getAesKey").click(function () {
+        var v1 = $("#getAesKey_deviceId").val();
+        if (v1 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/getAesKey", {
+                deviceId: v1
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#getAesKey_res").html('<span style="color:green">' + data.msg + '</span>');
+                        //显示aeskey
+                        $("#aesKey").val("aesKey:"+data.data);
+                        //参数不为空时显示
+                        $("#aesKey").show();
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#getAesKey_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //设备是否在线 isOnline
+    $("#isOnline").click(function () {
+        var v1 = $("#isOnline_deviceId").val();
+        if (v1 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/isOnline", {
+                deviceId: v1
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#isOnline_res").html('<span style="color:green">' + data.msg +":"+data.data+ '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#isOnline_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //    指纹录入
+    $("#fingerAdd").click(function () {
+        var v1 = $("#fingerAdd_deviceId").val();
+        var v2 = $("#fingerAdd_userId").val();
+        var v3 = $("#fingerAdd_fingerAddr").val();
+        var v4 = $("#fingerAdd_userName").val();
+        if (v1 == "" || v2 == "" || v3 == "" || v4 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/finger/add", {
+                deviceId: v1,
+                userId: v2,
+                fingerAddr: v3,
+                userName: v4
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#fingerAdd_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#fingerAdd_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //    指纹删除
+    $("#fingerDel").click(function () {
+        var v1 = $("#fingerDel_deviceId").val();
+        var v2 = $("#fingerDel_userId").val();
+        var v3 = $("#fingerDel_fingerAddr").val();
+        if (v1 == "" || v2 == "" || v3 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/finger/del", {
+                deviceId: v1,
+                userId: v2,
+                fingerAddr: v3
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#fingerDel_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#fingerDel_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //    指纹清空
+    $("#fingerClean").click(function () {
+        var v1 = $("#fingerClean_deviceId").val();
+        if (v1 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/finger/clean", {
+                deviceId: v1
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+
+                        $("#fingerClean_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+                        $("#fingerClean_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+//                console.log("返回的code",data,"转json对象",JSON.parse(data));
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //    模式设置
+    $("#changePattern").click(function () {
+        var v1 = $("#changePattern_deviceId").val();
+        var v2 = $("#changePattern_status").val();
+        if (v1 == "" || v2 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/changePattern", {
+                deviceId: v1,
+                status: v2
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#changePattern_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#changePattern_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //休眠时间setSleepTimes
+    $("#setSleepTimes").click(function () {
+        var v1 = $("#setSleepTimes_deviceId").val();
+        var v2 = $("#setSleepTimes_value").val();
+        if (v1 == "" || v2 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/setSleepTimes", {
+                deviceId: v1,
+                value: v2
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#setSleepTimes_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#setSleepTimes_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //锁定设置setRemoteLock
+    $("#setRemoteLock").click(function () {
+        var v1 = $("#setRemoteLock_deviceId").val();
+        var v2 = $("#setRemoteLock_status").val();
+        if (v1 == "" || v2 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/setRemoteLock", {
+                deviceId: v1,
+                status: v2
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#setRemoteLock_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#setRemoteLock_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //获取wifi列表getWifiList
+    $("#getWifiList").click(function () {
+        var v1 = $("#getWifiList_deviceId").val();
+        var v2 = $("#getWifiList_userId").val();
+        if (v1 == "" || v2 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/getWifiList", {
+                deviceId: v1,
+                userId: v2
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#getWifiList_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#getWifiList_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //连接wifi setWifiLink
+    $("#setWifiLink").click(function () {
+        var v1 = $("#setWifiLink_deviceId").val();
+        var v2 = $("#setWifiLink_userId").val();
+        var v3 = $("#setWifiLink_ssid").val();
+        var v4 = $("#setWifiLink_wifiPwd").val();
+        if (v1 == "" || v2 == "" || v3 == "" || v4 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/setWifiLink", {
+                deviceId: v1,
+                userId: v2,
+                ssid: v3,
+                wifiPwd: v4
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#setWifiLink_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#setWifiLink_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //断开wifi closeWifiLink
+    $("#closeWifiLink").click(function () {
+        var v1 = $("#closeWifiLink_deviceId").val();
+        var v2 = $("#closeWifiLink_userId").val();
+        var v3 = $("#closeWifiLink_ssid").val();
+        var v4 = $("#closeWifiLink_wifiPwd").val();
+        if (v1 == "" || v2 == "" || v3 == "" || v4 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/closeWifiLink", {
+                deviceId: v1,
+                userId: v2,
+                ssid: v3,
+                wifiPwd: v4
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#closeWifiLink_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#closeWifiLink_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //ID解锁 unlockById
+    $("#unlockById").click(function () {
+        var v1 = $("#unlockById_deviceId").val();
+        var v2 = $("#unlockById_userId").val();
+        var v3 = $("#unlockById_userName").val();
+        if (v1 == "" || v2 == "" || v3 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/unlockById", {
+                deviceId: v1,
+                userId: v2,
+                userName: v3
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#unlockById_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#unlockById_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //推送申请单 pushApplication
+    $("#pushApplication").click(function () {
+        var v1 = $("#pushApplication_applicationId").val();
+        var v2 = $("#pushApplication_title").val();
+        var v3 = $("#pushApplication_totalCount").val();
+        var v4 = $("#pushApplication_deviceId").val();
+        var v5 = $("#pushApplication_userName").val();
+        var v6 = $("#pushApplication_userId").val();
+        var v7 = $("#pushApplication_needCount").val();
+
+        if (v1 == "" || v2 == "" || v3 == "" || v4 == "" || v5 == "" || v6 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/pushApplication", {
+                applicationId: v1,
+                title: v2,
+                totalCount: v3,
+                deviceId: v4,
+                userName: v5,
+                userId: v6,
+                needCount: v7
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#pushApplication_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#pushApplication_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //结束申请单 endApplication
+    $("#endApplication").click(function () {
+        var v1 = $("#endApplication_applicationId").val();
+        var v2 = $("#endApplication_userId").val();
+        var v3 = $("#endApplication_deviceId").val();
+        if (v1 == "" || v2 == "" || v3 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/endApplication", {
+                applicationId: v1,
+                userId: v2,
+                deviceId: v3
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#endApplication_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#endApplication_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //恢复出厂 reset
+    $("#reset").click(function () {
+        var v1 = $("#reset_deviceId").val();
+        var v2 = $("#reset_total").val();
+        var v3 = $("#reset_orgName").val();
+        if (v1 == "" || v2 == "" || v3 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/device/reset", {
+                deviceId: v1,
+                total: v2,
+                orgName: v3
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#reset_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#reset_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+</script>
+</body>
+</html>

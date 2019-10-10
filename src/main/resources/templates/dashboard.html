@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>首页</title>
+		<!-- Bootstrap core CSS -->
+		<link href="asserts/css/bootstrap.min.css" th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
+
+		<!-- Custom styles for this template -->
+		<link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+		<style type="text/css">
+			/* Chart.js */
+			
+			@-webkit-keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			@keyframes chartjs-render-animation {
+				from {
+					opacity: 0.99
+				}
+				to {
+					opacity: 1
+				}
+			}
+			
+			.chartjs-render-monitor {
+				-webkit-animation: chartjs-render-animation 0.001s;
+				animation: chartjs-render-animation 0.001s;
+			}
+		</style>
+	</head>
+
+	<body>
+		<!--引入topbar-->
+		<div th:replace="common/bar/bar::topbar"></div>
+		<div class="container-fluid">
+			<div class="row">
+				<!--引入sidebar-->
+				<div th:replace="common/bar/bar::#sidebar(activeUri='main.html')"></div>
+				<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+					<img th:src="@{/asserts/img/main2.png}">
+					<h5>第一：初始化配置</h5>
+					<p>项目启动后加载全局默认配置，在host.properties配置文件设置。设备首次连接时，从云玺服务器获取此模块的网络地址，并与模块建立websocket连接。此处通讯数据已加密，第三方系统获取aesKey对接收到的设备回调的数据做解密并进行业务处理</p>
+					<h5>第二：指令下发</h5>
+					<p>首先：第三方系统需要获取所有的设备信息，建议存入数据库，关联系统组织人员等信息
+						<br><span style="color: dimgrey;font-size: 10px">1.设备登陆信息会通过模块回调接口返回给第三方系统，第三方系统判断该设备是否存入系统做设备列表的保存</span>
+						<br><span style="color: dimgrey;font-size: 10px">2.一个设备内的指纹信息有用户名，用户id，指纹地址等数据管理，指纹地址冲突，意味着指纹信息将会被覆盖</span>
+						<br>
+						其次，调用指令接口，需要对请求头做校验，获取token接口步骤：
+					</p>
+					<ol>
+						<li>获取ticket<span style="color: red">(每次重启模块会更新ticket,自定义ticket时，不需要请求此接口)</span></li>
+						<li>获取接口凭证token</li>
+						<li>调用指令接口，校验指令下发结果（成功/失败）</li>
+					</ol>
+					<h5>第三：指令下发回调[ip:port/device/deviceCallBack/res]</h5>
+					<p>
+						<br>请求参数：
+						<br><b>uuid</b>:<span>类型String</span>
+						<br><b>message</b>:<span>类型JSON密文，需要aesKey解密</span>
+						<br>message结构示例(MHPKG)：{"<B>Body</B>":{"***":0,"***":***},"<b>Head</b>":{"Magic":42949207,"<span style="color: red"><b>Cmd</b></span>":69,"SerialNum":2080,"Version":1}}
+						<br>Cmd事件类型列表：见附录一
+					</p>
+						<ul>
+							<li>6-指纹录入的返回</li>
+							<li>8-指纹清空的返回</li>
+							<li>22-推送申请单的返回</li>
+							<li>38-网络状态的返回</li>
+							<li>69-设备使用中的返回（设备开关锁的返回）</li>
+							<li>48-ID解锁的返回</li>
+						</ul>
+					<p>设备收到指令后，通过配置的回调接口返回结果，例如：<span style="color: green">调用获取wifi列表的接口，回调接口会收到wifi列表信息，选择需要连接的wifi进行wifi设置</span>
+						<br>
+						<span style="color: red">注意：</span>回调参数都是密文，需要获取AesKey密钥进行解密：
+					</p>
+					<ol>
+						<li>获取接口凭证token</li>
+						<li>获取AesKey</li>
+						<li>解密回调参数</li>
+						<li>判断回调类型cmd,进行对应的业务处理</li>
+					</ol>
+					<h5>第四：记录上传</h5>
+					<p><B>记录上传分为三种：</B>
+					</p>
+					<ul>
+						<li>指纹模式下记录上传<span style="color: green;">(无申请单，指纹解锁即可使用)</span></li>
+						<li>申请单模式记录上传<span style="color: green">(创建申请单，调用推送指令，并指纹解锁使用)</span></li>
+						<li>审计记录上传<span style="color: green">(是对指纹模式和申请单模式的补充)</span></li>
+					</ul>
+					<B>参数说明</B>
+					<br>请求参数：SealRecordInfo
+					<br>记录上传时，设备会将图片文件流做加密处理，第三方需要获取aesKey密钥对文件内容解密。案例见附录二：
+					<br>
+					<h5>第五：模块回调接口</h5>
+					<p>
+						模块回调事件类型：通过host.properties配置MODULECALLBACK地址
+						<br>请求参数：
+						<br><b>deviceId</b>:<span>类型String</span>
+						<br><b>event</b>:<span>类型String[详情见下面的列表：设备登陆、网络状态同步、盖章通知返回、设备历史申请单信息]</span>
+						<br><b>message</b>:<span>类型JSON</span>
+					</p>
+					<ul>
+						<li>设备登录[DEVICE_LOGIN]</li>
+						<li>网络状态同步[NET_STATUS]</li>
+						<li>盖章通知返回[USE_COUNT]</li>
+						<li>设备历史申请单信息[DEVICE_HISTORY_APPLICATION]</li>
+					</ul>
+					<h4>附录图片：</h4>
+					<h6>
+						附录一：设备指令回调示例
+					</h6>
+					<img th:src="@{/asserts/img/callbackCmd.png}" with="600px" height="900px">
+					<hr>
+					<h6>
+						附录二：记录上传回调示例
+					</h6>
+					<img th:src="@{/asserts/img/sealRecordInfo.png}" with="600px" height="900px">
+					<hr>
+					<h6>
+						附录三：指纹地址计算
+					</h6>
+					<img th:src="@{/asserts/img/fingerAddr.png}" with="600px" height="900px">
+				</main>
+
+			</div>
+		</div>
+
+		<!-- Bootstrap core JavaScript
+    ================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<script type="text/javascript" src="asserts/js/jquery.min.js"
+				th:src="@{/asserts/js/jquery.min.js}"></script>
+		<script type="text/javascript" src="asserts/js/popper.min.js" th:src="@{/asserts/js/popper.min.js}"></script>
+		<script type="text/javascript" src="asserts/js/bootstrap.min.js" th:src="@{/asserts/js/bootstrap.min.js}"></script>
+
+		<!-- Icons -->
+		<script type="text/javascript" src="asserts/js/feather.min.js" th:src="@{/asserts/js/feather.min.js}"></script>
+		<script>
+			feather.replace()
+		</script>
+
+		<!-- Graphs -->
+		<script type="text/javascript" src="asserts/js/Chart.min.js" th:src="@{/asserts/js/Chart.min.js}"></script>
+		<script>
+
+		</script>
+
+	</body>
+
+</html>

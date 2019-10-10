@@ -1,0 +1,52 @@
+spring:
+  datasource:
+    url: jdbc:sqlite:src\main\resources\static\yx_data.db
+    driver-class-name: org.sqlite.JDBC
+    username:
+    password:
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    mode: HTML
+
+server:
+  port: 8888
+#  servlet:
+#    context-path: /yunxi
+mybatis:
+  type-aliases-package: com.stamper.yx.common.entity
+  mapper-locations: classpath:mapping/*.xml
+
+config-attributes:
+  uuid: 6d34ec9ac4f4338d8a1102acbe237172_7
+  ignorePathList:
+    - /user/login
+    - /user/hello
+
+#ok.http.connect-timeout=5
+#ok.http.read-timeout=30
+#ok.http.write-timeout=30
+## 连接池中整体的空闲连接的最大数量
+#ok.http.max-idle-connections=200
+## 连接空闲时间最多为 300 秒
+#ok.http.keep-alive-duration=300
+#因为websocket通道的垃圾池在10s秒内关闭，超时时间不能超过10s,否则通道被关闭，系统会异常
+ok:
+  http:
+    connect-timeout: 5
+    read-timeout: 30
+    write-timeout: 30
+    max-idle-connections: 200
+    keep-alive-duration: 300
+#仅使用logging.file则输出到当前文件夹下的指定文件中
+logging:
+  file: common.log
+# 打印SQL日志logging.level.(mapper路径)=debug
+#logging:
+#  level:
+#    com:
+#      stamper:
+#        yx:
+#          common:
+#            mapper: debug
+

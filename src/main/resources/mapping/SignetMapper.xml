@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stamper.yx.common.mapper.SignetMapper" >
+  <resultMap id="BaseResultMap" type="com.stamper.yx.common.entity.Signet" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="VARCHAR" />
+    <result column="delete_date" property="deleteDate" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="net_type" property="netType" jdbcType="VARCHAR" />
+    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="sim_num" property="simNum" jdbcType="VARCHAR" />
+    <result column="iccid" property="iccid" jdbcType="VARCHAR" />
+    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
+    <result column="imei" property="imei" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="sleep_time" property="sleepTime" jdbcType="INTEGER" />
+    <result column="finger_pattern" property="fingerPattern" jdbcType="BIT" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,create_date,update_date,delete_date,name,net_type,addr,count,uuid,sim_num,iccid,imsi,status,sleep_time,finger_pattern
+  </sql>
+
+  <insert id="insert" parameterType="com.stamper.yx.common.entity.Signet" useGeneratedKeys="true"
+          keyProperty="id">
+        insert into signet (create_date, update_date,
+        name,net_type,addr,count,uuid,sim_num,iccid,imsi,imei,type,status,sleep_time,finger_pattern)
+        values (datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'), #{name},#{netType},#{addr},#{count},#{uuid},#{simNum},#{iccid}
+        ,#{imsi},#{imei},#{type},#{status},#{sleepTime},#{fingerPattern})
+    </insert>
+  <update id="update">
+  update signet
+        set
+        update_date = datetime(CURRENT_TIMESTAMP,'localtime'),
+        name=#{name},
+        net_type=#{netType},
+        addr=#{addr},
+        count=#{count},
+        uuid=#{uuid},
+        sim_num=#{simNum},
+        iccid=#{iccid},
+        imsi=#{imsi},
+        status=#{status},
+        sleep_time=#{sleepTime},
+        finger_pattern=#{fingerPattern}
+        where delete_date is null and id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getByUUID" resultMap="BaseResultMap">
+    SELECT
+        <include refid="Base_Column_List"/>
+    FROM
+        signet
+    WHERE
+        delete_date IS NULL
+        AND uuid = #{uuid}
+  </select>
+    <select id="get" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            signet
+        WHERE
+            delete_date IS NULL
+            AND id =#{id}
+        LIMIT 1
+    </select>
+    <select id="getAll" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            signet
+        WHERE
+            delete_date IS NULL
+    </select>
+    <select id="getByName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        signet
+        WHERE
+        delete_date IS NULL
+        AND name =#{_parameter}
+        LIMIT 1
+    </select>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stamper.yx.common.mapper.DeviceMessageMapper" >
+  <resultMap id="BaseResultMap" type="com.stamper.yx.common.entity.DeviceMessage" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="body" property="body" jdbcType="VARCHAR" />
+    <result column="push_status" property="pushStatus" jdbcType="INTEGER" />
+    <result column="recipient_id" property="recipientId" jdbcType="INTEGER" />
+    <result column="send_id" property="sendId" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="VARCHAR" />
+    <result column="delete_date" property="deleteDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id,title,body,push_status,recipient_id,send_id,create_date,update_date,delete_date
+  </sql>
+  <insert id="add" parameterType="com.stamper.yx.common.entity.DeviceMessage" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO signet ( create_date, update_date, title, body, push_status, recipient_id, send_id )
+    VALUES
+        (
+        datetime(CURRENT_TIMESTAMP,'localtime'),
+        datetime(CURRENT_TIMESTAMP,'localtime'), #{ title },#{ body },#{ push_status },#{ recipient_id },#{ send_id })
+  </insert>
+    <update id="update">
+        UPDATE device_message
+        SET update_date = datetime(CURRENT_TIMESTAMP,'localtime')
+        WHERE
+        delete_date is null and
+        id =#{id}
+    </update>
+    <select id="getBySignet" resultType="com.stamper.yx.common.entity.DeviceMessage">
+    SELECT
+        <include refid="Base_Column_List"/>
+    FROM
+        device_message
+    WHERE
+        delete_date IS NULL
+  </select>
+    <select id="get" parameterType="integer" resultType="com.stamper.yx.common.entity.DeviceMessage">
+        SELECT
+            *
+        FROM
+            device_message
+        WHERE
+            delete_date IS NULL
+            AND id = #{_parameter}
+        LIMIT 1
+    </select>
+    <select id="selectLastOneByTitleAndSignetAndStatus"
+            resultType="com.stamper.yx.common.entity.DeviceMessage">
+      SELECT
+      	*
+      FROM
+      	device_message
+      WHERE
+      	delete_date IS NULL
+      AND title = #{param1}
+      AND recipient_id = #{param2}
+      AND push_status = #{param3}
+      ORDER BY
+      	create_date DESC
+      LIMIT 1
+    </select>
+
+
+</mapper>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stamper.yx.common.mapper.OrderLogMapper" >
+    <resultMap id="BaseResultMap" type="com.stamper.yx.common.entity.OrderLog" >
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER" />
+        <result column="create_date" property="createDate" jdbcType="VARCHAR" />
+        <result column="update_date" property="updateDate" jdbcType="VARCHAR" />
+        <result column="delete_date" property="deleteDate" jdbcType="VARCHAR" />
+        <result column="cmd" property="cmd" jdbcType="INTEGER" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="json_data" property="jsonData" jdbcType="VARCHAR" />
+        <result column="status" property="status" jdbcType="INTEGER" />
+        <result column="error_msg" property="errorMsg" jdbcType="VARCHAR" />
+    </resultMap>
+    <sql id="Base_Column_List">
+
+        id,create_date,update_date,delete_date,cmd,name,json_data,status,error_msg
+    </sql>
+
+    <insert id="insert" parameterType="com.stamper.yx.common.entity.OrderLog" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into order_log (create_date, update_date,
+        cmd,name,json_data,status,error_msg)
+        values (datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'), #{cmd},#{name},#{json_data},#{status},#{error_msg})
+    </insert>
+    <update id="update">
+        update order_log
+        set
+        update_date = datetime(CURRENT_TIMESTAMP,'localtime'),
+        cmd=#{cmd},
+        name=#{name},
+        json_data=#{jsonData},
+        error_msg=#{errorMsg},
+        status=#{status}
+        where delete_date is null and id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="getByName" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        order_log
+        WHERE
+        delete_date IS NULL
+        AND name = #{name}
+    </select>
+    <select id="getByCmd" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        order_log
+        WHERE
+        delete_date IS NULL
+        AND cmd = #{cmd}
+    </select>
+    <select id="get" resultMap="BaseResultMap" parameterType="integer">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        order_log
+        WHERE
+        delete_date IS NULL
+        AND id =#{id}
+        LIMIT 1
+    </select>
+    <select id="getAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        order_log
+        WHERE
+        delete_date IS NULL
+    </select>
+</mapper>

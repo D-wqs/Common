@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.orgs//DTD Mapper 3.0//EN" "http://mybatis.orgs/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stamper.yx.common.mapper.UserMapper">
+    <resultMap id="userMap" type="com.stamper.yx.common.entity.User">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="password" property="password" jdbcType="VARCHAR"/>
+        <result column="callback_url" property="callbackUrl" jdbcType="VARCHAR"/>
+        <result column="accesstoken" property="accesstoken" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="VARCHAR"/>
+        <result column="delete_date" property="deleteDate" jdbcType="VARCHAR"/>
+    </resultMap>
+    <insert id="add" useGeneratedKeys="true" keyProperty="id">
+        INSERT into user (name,password,callback_url,accesstoken,create_date,update_date) VALUES (#{name},#{password},#{callbackUrl},#{accesstoken},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'))
+    </insert>
+    <update id="del">
+        UPDATE user
+        SET delete_date = datetime(CURRENT_TIMESTAMP,'localtime')
+        WHERE
+        id =#{_parameter}
+    </update>
+    <update id="update" parameterType="com.stamper.yx.common.entity.User">
+        UPDATE user
+        SET accesstoken = #{accesstoken}
+        ,update_date = datetime(CURRENT_TIMESTAMP,'localtime')
+        ,callback_url=#{callbackUrl}
+        WHERE
+        delete_date is null and
+        id =#{id}
+    </update>
+
+    <select id="getUserByName" parameterType="string" resultMap="userMap">
+        SELECT
+        *
+        FROM
+        user
+        WHERE
+        delete_date IS NULL
+        AND name = #{_parameter}
+        LIMIT 1
+    </select>
+    <select id="getUserById" parameterType="integer" resultMap="userMap">
+        SELECT
+        *
+        FROM
+        user
+        WHERE
+        delete_date IS NULL
+        AND id = #{_parameter}
+    </select>
+
+</mapper>
