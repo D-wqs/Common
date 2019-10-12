@@ -109,27 +109,27 @@ public abstract class DefaultWebSocket implements BaseWebSocket {
     @OnClose
     public void onClose() {
         String key = this.key.toString();
-        String aesKey = this.symmetricKey;
-        log.info("-=-=-=-=-=>设备通道关闭{{}}", key);
-        this.deleteDate = new Date();
-        try {
-            this.session.close();
-            log.info("Websocket: 关闭->{{}}", this.key);
-        } catch (IOException e) {
-            log.info("Websocket:关闭出错 key->{{}} exception->{{}}", this.key, e.getMessage());
-        }
-
-        //从容器中删除该设备通道
-        pool.del(this.key + "");
-
-        if (onCloseFilter != null) {
-            try {
-                //触发关闭过滤器
-                onCloseFilter.afterClose(this);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        String aesKey = this.symmetricKey;//这个值是绑定在通道中的，新通道里没有，所以我需要在异常之后，通知对方该值已变更
+        log.info("-=-=-=-=-=>设备通道触发onClose :{{}}", key);
+//        this.deleteDate = new Date();
+//        try {
+//            this.session.close();
+//            log.info("Websocket: 关闭->{{}}", this.key);
+//        } catch (IOException e) {
+//            log.info("Websocket:关闭出错 key->{{}} exception->{{}}", this.key, e.getMessage());
+//        }
+//
+//        //从容器中删除该设备通道
+//        pool.del(this.key + "");
+//
+//        if (onCloseFilter != null) {
+//            try {
+//                //触发关闭过滤器
+//                onCloseFilter.afterClose(this);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
         //todo 通知回调，设备通道已关闭,由于之前pool.del删除了这个key，所以进入方法前，获取这个key值保存
         Map<String,Object> map=new HashMap<>();
         map.put("deviceId",key);

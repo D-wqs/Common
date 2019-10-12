@@ -1,6 +1,7 @@
 spring:
   datasource:
     url: jdbc:sqlite:src\main\resources\static\yx_data.db
+#    url: jdbc:sqlite:D:\BpmJava\bpmjava\sms_components\yx_data.db
     driver-class-name: org.sqlite.JDBC
     username:
     password:
@@ -33,7 +34,7 @@ config-attributes:
 #因为websocket通道的垃圾池在10s秒内关闭，超时时间不能超过10s,否则通道被关闭，系统会异常
 ok:
   http:
-    connect-timeout: 5
+    connect-timeout: 8
     read-timeout: 30
     write-timeout: 30
     max-idle-connections: 200
