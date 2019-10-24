@@ -54,7 +54,6 @@ public class DeviceWebSocket extends DefaultWebSocket {
      */
     private boolean heartbeat(String message) {
         if (message.startsWith("ping")) {
-            log.info("ping received!");
             if (isCaller()) {
                 log.info("ping:您当前处于访客状态,请先注册/登录");
                 return true;

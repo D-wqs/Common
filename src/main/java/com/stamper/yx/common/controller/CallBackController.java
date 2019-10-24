@@ -57,7 +57,7 @@ public class CallBackController {
                 try {
                     String key = EHCacheGlobal.SIGNET_AESKEY + signet.getId();
                     Object o = EHCacheUtil.get(key);
-                    if (o != null || StringUtils.isNotBlank(o.toString())) {
+                    if (o != null && StringUtils.isNotBlank(o.toString())) {
                         aesKey = o.toString();
                     }
                 } catch (Exception e) {
@@ -205,7 +205,7 @@ public class CallBackController {
             log.info("【模块回调】异常：请检查当前设备{{}}的通道",deviceId);
             return ResultVO.FAIL();
         }
-        log.info("模块回调deviceId：{}，时间类型：event：{} ， 消息：message：{}",deviceId,event,message);
+        log.info("模块回调deviceId：{}，事件类型：event：{} ， 消息：message：{}",deviceId,event,message);
         //获取aesKey
         String aesKey = webSocket.getSymmetricKey();
         try {

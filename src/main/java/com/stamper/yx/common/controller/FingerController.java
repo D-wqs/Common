@@ -197,7 +197,7 @@ public class FingerController {
         if (open == false) {
             return 2;
         }
-        if (signet.getStatus() != null && signet.getStatus() == 4) {
+        if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
             log.info("设备当前为锁定状态，需解除锁定");
             return 3;
         }

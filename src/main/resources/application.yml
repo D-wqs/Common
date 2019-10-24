@@ -2,6 +2,7 @@ spring:
   datasource:
     url: jdbc:sqlite:src\main\resources\static\yx_data.db
 #    url: jdbc:sqlite:D:\BpmJava\bpmjava\sms_components\yx_data.db
+#    url: jdbc:sqlite:/home/wqs/javaCommon/yx_data.db
     driver-class-name: org.sqlite.JDBC
     username:
     password:
@@ -9,6 +10,14 @@ spring:
     cache: false
     encoding: UTF-8
     mode: HTML
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: yunxi123$%^
+## 消息队列名称
+queue:
+  signet: queue.signet.${random.value}
 
 server:
   port: 8888
@@ -50,4 +59,5 @@ logging:
 #        yx:
 #          common:
 #            mapper: debug
+
 

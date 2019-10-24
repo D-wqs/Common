@@ -32,31 +32,31 @@ public class WebsocketMonitorScheduledTasks {
 	//每10秒钟,处理一下垃圾池里面的链接信息,存数据库
 	@Scheduled(fixedRate = 1000 * 10)
 	public void reportCurrentTime() {
-		List<DefaultWebSocket> destroy = pool.getDestroy();
-//		log.info("垃圾池统计：" + destroy.size());
-		if (!destroy.isEmpty()) {
-			for (int i = 0; i < destroy.size(); i++) {
-				DefaultWebSocket webSocket = destroy.get(i);
-				if (webSocket != null) {
-					Object key = webSocket.getKey();
-					try {
-						receive(webSocket);
-					} finally {
-						log.info("*****移除垃圾桶中的废弃通道{{}}*****", key);
-						i--;
-					}
-				}
-				try {
-					if (webSocket != null) {
-						webSocket.close();
-						webSocket.setSession(null);
-					}
-				} catch (IOException e) {
-				}
-				destroy.remove(webSocket);
-			}
-			destroy.clear();
-		}
+//		List<DefaultWebSocket> destroy = pool.getDestroy();
+////		log.info("垃圾池统计：" + destroy.size());
+//		if (!destroy.isEmpty()) {
+//			for (int i = 0; i < destroy.size(); i++) {
+//				DefaultWebSocket webSocket = destroy.get(i);
+//				if (webSocket != null) {
+//					Object key = webSocket.getKey();
+//					try {
+//						receive(webSocket);
+//					} finally {
+//						log.info("*****移除垃圾桶中的废弃通道{{}}*****", key);
+//						i--;
+//					}
+//				}
+//				try {
+//					if (webSocket != null) {
+//						webSocket.close();
+//						webSocket.setSession(null);
+//					}
+//				} catch (IOException e) {
+//				}
+//				destroy.remove(webSocket);
+//			}
+//			destroy.clear();
+//		}
 
 		ConcurrentHashMap<String, DefaultWebSocket> actice = pool.getActive();
 //		log.info("socket连接池统计:" + actice.size());
