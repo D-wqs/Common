@@ -6,6 +6,8 @@ public class AppConstant {
 	 * 服务器信息
 	 */
 	public static final String HOST = prop.getStr("HOST");//当前服务器地址
+	public static final String FILE_PATH = prop.getStr("FILE_PATH");//当前服务器地址
+	public static final String OPEN_MYSQL=prop.getStr("OPEN_MYSQL");//是否开启MYSQL数据源
 	public static final String CONFIGIP = prop.getStr("CONFIGIP");//当前配置服务器
 	public static final String SVRHOST = prop.getStr("SVRHOST");//当前回调地址
 	public static final String SVRIP = prop.getStr("SVRIP");//当前websocket通道地址
@@ -15,7 +17,7 @@ public class AppConstant {
 	public static final String TICKET = prop.getStr("TICKET");//企业凭据
 	public static final String USE_COUNT="USE_COUNT";//使用次数同步，盖章通知返回
 	public static final String DEVICE_HISTORY_APPLICATION="DEVICE_HISTORY_APPLICATION";//同步历史申请单信息
-//	public static final String DEVICE_REGIST="DEVICE_REGIST";//设备注册
+	//	public static final String DEVICE_REGIST="DEVICE_REGIST";//设备注册
 	public static final String DEVICE_LOGIN="DEVICE_LOGIN";//设备登陆
 	public static final String NET_STATUS="NET_STATUS";//网络状态
 	public static final String LOCATION_INFO="LOCATION_INFO";//同步地址信息

@@ -1,4 +1,4 @@
-package com.stamper.yx.common.mapper;
+package com.stamper.yx.common.mapper.sqlite;
 
 import com.stamper.yx.common.entity.User;
 import org.apache.ibatis.annotations.Mapper;

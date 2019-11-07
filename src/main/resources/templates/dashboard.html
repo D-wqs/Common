@@ -56,6 +56,7 @@
 						设备首次连接时，从云玺服务器获取此设备的配置信息，并与模块建立websocket连接。此处通讯数据已加密，第三方系统获取aesKey对接收到的设备回调的数据做解密并进行业务处理
 						<br><b>内网环境:</b>
 						设备首次连接时，使用wifi，或者vpn,会从config.qstamper.com:8888指定的地址获取配置信息。需第三方处理该域名指向的ip地址（本模块运行的ip）。从该ip绑定的服务器获取此设备的配置信息，并与模块建立websocket连接。此处通讯数据已加密，第三方系统获取aesKey对接收到的设备回调的数据做解密并进行业务处理
+						<br><span style="color: dimgrey;font-size: 10px">模块支持rabbitMQ消息队列，【启用监听：http://ip:port//rabbitmq/listener/start】【停用监听：http://ip:port//rabbitmq/listener/stop】</span>
 					</p>
 					<h5>第二：指令下发</h5>
 					<p>首先：第三方系统需要获取所有的设备信息，建议存入数据库，关联系统组织人员等信息

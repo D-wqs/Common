@@ -28,9 +28,9 @@ public class YXFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        log.info("进入视图过滤器");
+//        log.info("进入视图过滤器");
         String requestURI = httpServletRequest.getRequestURI();
-        System.out.println("请求路径：" + requestURI);
+//        System.out.println("请求路径：" + requestURI);
         ignorePath = new ArrayList<>();
         ignorePath.add("/index.html");
         ignorePath.add("/user/getTicket");

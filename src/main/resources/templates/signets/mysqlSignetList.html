@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>设备列表</title>
+    <title>关联组织</title>
     <!-- Bootstrap core CSS -->
     <link href="asserts/css/bootstrap.min.css" th:href="@{/asserts/css/bootstrap.min.css}" rel="stylesheet">
 
@@ -50,12 +50,13 @@
 <div class="container-fluid">
     <div class="row">
         <!--引入侧边栏-->
-        <div th:replace="common/bar/bar::#sidebar(activeUri='/yunxi/signetList')"></div>
+        <div th:replace="common/bar/bar::#sidebar(activeUri='/yunxi/MysqlsignetList')"></div>
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
             <!--<h2><a class="btn btn-sm btn-success" href="#" th:href="@{/signetList}">员工添加</a></h2>-->
             <h2>设备列表</h2>
             <br>
+            <span>dinge1653bbce9d6f0f135c2f4657eb6378f</span>
             <span>企业凭证：[[${session.accessToken}]]</span>
             <div class="table-responsive">
                 <table class="table table-striped table-sm">
@@ -68,25 +69,39 @@
                         <th>使用次数</th>
                         <th>休眠时间</th>
                         <th>物联网卡号</th>
+                        <th>指纹模式</th>
+                        <th>组织id</th>
                         <th>详情</th>
                     </tr>
                     </thead>
                     <tbody>
-                    <tr align="center" th:each="signet:${signets}">
+                    <tr align="center" th:each="signet:${mysqlSignets}">
                         <td th:text="${signet.getId()}">#</td>
                         <td>[[${signet.getName()}]]</td>
                         <td>[[${signet.netType}]]</td>
                         <td>[[${signet.uuid}]]</td>
                         <td th:text="${signet.count}">123</td>
                         <td>
-										<span th:if="${signet.sleepTime}==null">
-											2min(默认值)
-										</span>
+                            <span th:if="${signet.sleepTime}==null">
+                                2min(默认值)
+                            </span>
                             <span th:if="${signet.sleepTime!=null}">
-											[[${signet.sleepTime}]]min
-										</span>
+                                [[${signet.sleepTime}]]min
+                            </span>
                         </td>
                         <td th:text="${signet.iccid}">123</td>
+                        <td >
+                            <span th:if="${signet.fingerPattern }==null">
+                                禁用
+                            </span>
+                            <span th:if="${signet.fingerPattern == false}">
+                                禁用
+                            </span>
+                            <span th:if="${signet.fingerPattern == true}">
+                                启用
+                            </span>
+                        </td>
+                        <td th:text="${signet.corpId}">123</td>
                         <td>
                             <button type="button" class="btn btn-default btn-xs" th:onclick="'info('+${signet.id}+')'">
                                 详情
@@ -110,39 +125,39 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <!--配置服务器ip-->
+                <!--组织id-->
                 <div class="form-group">
-                    <label class="control-label">配置服务器ip</label>
+                    <label class="control-label">组织id</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="configIp" placeholder="配置地址">
+                        <input type="text" class="form-control" id="corpId" placeholder="corpId">
                     </div>
                 </div>
-                <!--业务服务器host-->
+                <!--设备名称-->
                 <div class="form-group">
-                    <label class="control-label">回调接口地址</label>
+                    <label class="control-label">设备名称</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="svrHost" placeholder="回调接口地址">
+                        <input type="text" class="form-control" id="name" placeholder="设备名称">
                     </div>
                 </div>
-                <!--回调接口地址-->
+                <!--设备状态-->
                 <div class="form-group">
-                    <label class="control-label">websocket服务地址</label>
+                    <label class="control-label">设备状态</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="svrIp" placeholder="websocket服务地址">
+                        <input type="text" class="form-control" id="status" placeholder="0:正常 1:异常 2:销毁 3:停用 4:锁定">
                     </div>
                 </div>
-                <!--wifi名-->
+                <!--休眠时间 禁止修改-->
                 <div class="form-group">
-                    <label class="control-label">wifi名称</label>
+                    <label class="control-label">休眠时间</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="ssid" placeholder="wifi名称">
+                        <input type="text" class="form-control" id="sleepTime" placeholder="休眠时间" disabled >
                     </div>
                 </div>
-                <!--wifi密码-->
+                <!--指纹模式 禁止修改-->
                 <div class="form-group">
-                    <label class="control-label">wifi密码</label>
+                    <label class="control-label">指纹模式</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" id="wifiPwd" placeholder="wifi密码">
+                        <input type="text" class="form-control" id="fingerPattern" placeholder="指纹模式" disabled >
                     </div>
                 </div>
             </div>
@@ -168,11 +183,11 @@
     feather.replace()
 </script>
 <script>
-    var req_uuid="";
+    var req_id="";
     function info(e) {
         console.log(JSON.stringify(e))
 
-        $.post("/yunxi/getSignetConfigById", {
+        $.post("/yunxi/getMysqlSignetById", {
                 id: e
             },
             function (data, status) {
@@ -183,33 +198,31 @@
 //                        alert("请求成功");
                     if (data.code == 200) {
                         //设置卡片底部的回调结果
-                        $("#myModalLabel").html(data.data.title);
-                        req_uuid=data.data.config.uuid;
-                        //配置服务器
-                        $("#configIp").attr("value", data.data.config.configIp)
-                        //回调host
-                        $("#svrHost").attr("value", data.data.config.svrHost)
-                        //webscoket
-                        $("#svrIp").attr("value", data.data.config.svrIp)
-                        //wifi名称
-                        $("#ssid").attr("value", data.data.config.wifiSsid)
-                        //wifi密码
-                        $("#wifiPwd").attr("value", data.data.config.wifiPwd)
-
+                        $("#myModalLabel").html(data.data.name);
+                        //组织id
+                        $("#corpId").attr("value", data.data.corpId)
+                        //设备名称
+                        $("#name").attr("value", data.data.name)
+                        //设备状态
+                        $("#status").attr("value", data.data.status)
+                        //休眠时间
+                        $("#sleepTime").attr("value", data.data.sleepTime)
+                        //指纹模式
+                        $("#fingerPattern").attr("value", data.data.fingerPattern)
+                        req_id=data.data.id
                     } else {
                         $("#myModalLabel").html('<span style="color:red">' + data.msg + '</span>');
-                        //配置服务器
-                        $("#configIp").attr("value", "")
-                        //回调host
-                        $("#svrHost").attr("value", "")
-                        //webscoket
-                        $("#svrIp").attr("value", "")
-                        //wifi名称
-                        $("#ssid").attr("value", "")
-                        //wifi密码
-                        $("#wifiPwd").attr("value", "")
+                        //组织id
+                        $("#corpId").attr("value", "")
+                        //设备名称
+                        $("#name").attr("value", "")
+                        //设备状态
+                        $("#status").attr("value", "")
+                        //休眠时间
+                        $("#sleepTime").attr("value", "")
+                        //指纹模式
+                        $("#fingerPattern").attr("value", "")
                     }
-                    console.log("返回的code", data.code);
                 } else {
                     alert("请求失败");
                 }
@@ -217,31 +230,26 @@
 
         $("#myModal").modal("show")
     };
+
+
     $("#updateConfig").click(function () {
-        console.log(req_uuid)
-        var configIp=$("#configIp").val();
-        //回调host
-        var svrHost=$("#svrHost").val();
-        //webscoket
-        var svrIp=$("#svrIp").val();
-        //wifi名称
-        var ssid=$("#ssid").val();
-        //wifi密码
-        var wifiPwd=$("#wifiPwd").val();
-        $.post("/device/config/updateConfigByUUID", {
-                configIp:configIp,
-                svrHost:svrHost,
-                svrIp:svrIp,
-                wifiSsid:ssid,
-                wifiPwd:wifiPwd,
-                uuid:req_uuid
+        //所属组织
+        var corpId=$("#corpId").val();
+        //设备名称
+        var name=$("#name").val();
+        //设备状态
+        var status=$("#status").val();
+        $.post("/signets/update", {
+                id:req_id,
+                corpId:corpId,
+                name:name,
+                status:status
             },
             function (data, status) {
                 if (status == "success") {
                     if (data.msg == "undefined" || data.msg == undefined) {
                         data = JSON.parse(data);
                     }
-//                        alert("请求成功");
                     if (data.code == 200) {
                         alert("修改成功");
                         $("#myModal").modal("hide");

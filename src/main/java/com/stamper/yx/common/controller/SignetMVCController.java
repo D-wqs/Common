@@ -4,6 +4,8 @@ import com.stamper.yx.common.entity.Config;
 import com.stamper.yx.common.entity.Signet;
 import com.stamper.yx.common.service.ConfigService;
 import com.stamper.yx.common.service.SignetService;
+import com.stamper.yx.common.service.mysql.MysqlSignetService;
+import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.response.Code;
 import com.stamper.yx.common.sys.response.ResultVO;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,8 @@ public class SignetMVCController {
     private SignetService signetService;
     @Autowired
     private ConfigService configService;
+    @Autowired
+    private MysqlSignetService mysqlSignetService;
 
     @GetMapping("/yunxi/signetList")
     public String list(Model model) {
@@ -60,25 +64,63 @@ public class SignetMVCController {
             return ResultVO.FAIL(Code.ERROR_PARAMETER);
         }
         Signet signet = signetService.get(id);
-        if(signet==null|| StringUtils.isBlank(signet.getUuid())){
+        if (signet == null || StringUtils.isBlank(signet.getUuid())) {
             return ResultVO.FAIL("当前设备不存在");
         }
         Config byUUID = configService.getByUUID(signet.getUuid());
         if (byUUID != null) {
-            Map<String,Object>map=new HashMap<>();
-            map.put("title",signet.getName());
-            map.put("config",byUUID);
+            Map<String, Object> map = new HashMap<>();
+            map.put("title", signet.getName());
+            map.put("config", byUUID);
             return ResultVO.OK(map);
-        }else{
+        } else {
             Config defaultConfig = configService.getDefaultConfig();
             defaultConfig.setUuid(signet.getUuid());
             configService.insert(defaultConfig);
-            Map<String,Object>map=new HashMap<>();
-            map.put("title",signet.getName());
-            map.put("config",defaultConfig);
+            Map<String, Object> map = new HashMap<>();
+            map.put("title", signet.getName());
+            map.put("config", defaultConfig);
             return ResultVO.OK(map);
 
         }
     }
+
+    /**
+     * mysql数据源获取所有印章
+     *
+     * @param model
+     * @return
+     */
+    @GetMapping("/yunxi/MysqlsignetList")
+    public String Mysqllist(Model model) {
+        String openMysql = AppConstant.OPEN_MYSQL;
+        if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+            return "redirect:/error.html";
+        }
+        List<Signet> all = mysqlSignetService.getAll();
+        if (all != null && all.size() > 0) {
+            model.addAttribute("mysqlSignets", all);
+            return "signets/mysqlSignetList";
+        }
+        //TODO 去往错误页面
+        return "redirect:/error.html";
+    }
+
+    @PostMapping("/yunxi/getMysqlSignetById")
+    @ResponseBody
+    public ResultVO getMysqlSignetById(Integer id) {
+        if (id == null) {
+            return ResultVO.FAIL(Code.ERROR_PARAMETER);
+        }
+        if (mysqlSignetService == null) {
+            return ResultVO.FAIL(Code.ERROR500);
+        }
+        Signet byId = mysqlSignetService.getById(id);
+        if (byId != null) {
+            return ResultVO.OK(byId);
+        }
+        return null;
+    }
+
 
 }

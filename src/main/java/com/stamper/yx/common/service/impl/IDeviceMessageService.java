@@ -1,7 +1,7 @@
 package com.stamper.yx.common.service.impl;
 
 import com.stamper.yx.common.entity.DeviceMessage;
-import com.stamper.yx.common.mapper.DeviceMessageMapper;
+import com.stamper.yx.common.mapper.sqlite.DeviceMessageMapper;
 import com.stamper.yx.common.service.DeviceMessageService;
 import com.stamper.yx.common.sys.error.PrintException;
 import org.apache.commons.lang3.StringUtils;

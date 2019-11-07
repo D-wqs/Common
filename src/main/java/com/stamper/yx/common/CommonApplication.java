@@ -8,8 +8,10 @@ import com.stamper.yx.common.service.ConfigService;
 import com.stamper.yx.common.service.DeviceWebSocketService;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.UserService;
+import com.stamper.yx.common.service.mysql.MysqlSignetService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheUtil;
+import com.stamper.yx.common.sys.error.PrintException;
 import com.stamper.yx.common.sys.md5.MD5;
 import com.stamper.yx.common.sys.okhttpUtil.OkHttpCli;
 import com.stamper.yx.common.websocket.core.DefaultWebSocket;
@@ -21,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheManagerUtils;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 import java.util.UUID;
 
@@ -46,6 +50,8 @@ public class CommonApplication implements CommandLineRunner {
     private SignetService signetService;
     @Autowired
     private OkHttpCli okHttpCli;
+    @Autowired
+    private MysqlSignetService mysqlSignetService;
 
     @Override
     public void run(String... args) throws Exception {
@@ -91,13 +97,26 @@ public class CommonApplication implements CommandLineRunner {
         signet.setId(1000);//初始化设备的id，从1000开始
         signet.setUuid(AppConstant.defaultUUID);
         signet.setNetType("4G");
-        signet.setSleepTime(2);
+        signet.setStatus(0);//印章状态: 0:正常 1:异常 2:销毁 3:停用 4:锁定
         signet.setName("测试章");
         Signet byUUID = signetService.getByUUID(AppConstant.defaultUUID);
         if (byUUID == null) {
+            //sqlite数据源
             signetService.add(signet);
         } else {
             signetService.update(byUUID);
+        }
+        //mysql 数据源同步数据
+        String openMysql = AppConstant.OPEN_MYSQL;
+        if(openMysql.equalsIgnoreCase("false")){
+            mysqlSignetService=null;
+            log.info("*****停止mysql数据源的使用*****");
+        }
+        if(mysqlSignetService!=null){
+            int add = mysqlSignetService.add(signet);
+            if(add!=1){
+                throw new PrintException("mysql数据源初始化设备模板信息失败");
+            }
         }
         log.info("----------初始化测试设备完成---------");
         //初始化全局配置信息

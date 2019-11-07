@@ -1,7 +1,7 @@
 package com.stamper.yx.common.service.impl;
 
 import com.stamper.yx.common.entity.OrderLog;
-import com.stamper.yx.common.mapper.OrderLogMapper;
+import com.stamper.yx.common.mapper.sqlite.OrderLogMapper;
 import com.stamper.yx.common.service.OrderLogService;
 import com.stamper.yx.common.sys.error.PrintException;
 import org.apache.commons.lang3.StringUtils;

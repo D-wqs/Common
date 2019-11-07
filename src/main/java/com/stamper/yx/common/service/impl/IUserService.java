@@ -1,7 +1,7 @@
 package com.stamper.yx.common.service.impl;
 
 import com.stamper.yx.common.entity.User;
-import com.stamper.yx.common.mapper.UserMapper;
+import com.stamper.yx.common.mapper.sqlite.UserMapper;
 import com.stamper.yx.common.service.UserService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.error.PrintException;

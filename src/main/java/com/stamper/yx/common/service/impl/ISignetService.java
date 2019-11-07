@@ -1,7 +1,7 @@
 package com.stamper.yx.common.service.impl;
 
 import com.stamper.yx.common.entity.Signet;
-import com.stamper.yx.common.mapper.SignetMapper;
+import com.stamper.yx.common.mapper.sqlite.SignetMapper;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.sys.error.PrintException;
 import lombok.extern.slf4j.Slf4j;

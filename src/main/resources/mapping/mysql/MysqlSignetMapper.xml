@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stamper.yx.common.mapper.mysql.MySignetMapper" >
+  <resultMap id="BaseResultMap" type="com.stamper.yx.common.entity.Signet" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="delete_date" property="deleteDate" jdbcType="TIMESTAMP" />
+      <result column="corp_id" property="corpId" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="net_type" property="netType" jdbcType="VARCHAR" />
+    <result column="addr" property="addr" jdbcType="VARCHAR" />
+    <result column="count" property="count" jdbcType="INTEGER" />
+    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
+    <result column="sim_num" property="simNum" jdbcType="VARCHAR" />
+    <result column="iccid" property="iccid" jdbcType="VARCHAR" />
+    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
+    <result column="imei" property="imei" jdbcType="VARCHAR" />
+    <result column="type" property="type" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="sleep_time" property="sleepTime" jdbcType="INTEGER" />
+    <result column="finger_pattern" property="fingerPattern" jdbcType="BIT" />
+  </resultMap>
+    <sql id="Base_Column_List">
+    id,create_date,update_date,delete_date,corp_id,name,net_type,addr,count,uuid,sim_num,iccid,imsi,imei,type,status,sleep_time,finger_pattern
+    </sql>
+
+  <insert id="insert" parameterType="com.stamper.yx.common.entity.Signet" useGeneratedKeys="true"
+          keyProperty="id">
+        insert into signet (<include refid="Base_Column_List"/>)
+        values (#{id},now(),now(),null,#{corpId},#{name},#{netType},#{addr},#{count},#{uuid},#{simNum},#{iccid}
+        ,#{imsi},#{imei},#{type},#{status},#{sleepTime},#{fingerPattern})
+    </insert>
+  <update id="update" parameterType="com.stamper.yx.common.entity.Signet">
+      update signet
+      <set>
+          <if test="updateDate == null">
+              update_date = NOW(),
+          </if>
+          <if test="deleteDate != null">
+              delete_date = #{deleteDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="createDate != null">
+              create_date = #{createDate,jdbcType=TIMESTAMP},
+          </if>
+          <if test="corpId != null">
+              corp_id = #{corpId,jdbcType=VARCHAR},
+          </if>
+          <if test="name != null">
+              name = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="netType != null">
+              net_type = #{netType,jdbcType=VARCHAR},
+          </if>
+          <if test="addr != null">
+              addr = #{addr,jdbcType=VARCHAR},
+          </if>
+          <if test="count != null">
+              count = #{count,jdbcType=INTEGER},
+          </if>
+          <if test="uuid != null">
+              uuid = #{uuid,jdbcType=VARCHAR},
+          </if>
+          <if test="simNum != null">
+              sim_num = #{simNum,jdbcType=VARCHAR},
+          </if>
+          <if test="iccid != null">
+              iccid = #{iccid,jdbcType=VARCHAR},
+          </if>
+          <if test="imsi != null">
+              imsi = #{imsi,jdbcType=VARCHAR},
+          </if>
+          <if test="status != null">
+              status = #{status,jdbcType=INTEGER},
+          </if>
+          <if test="sleepTime != null">
+              sleep_time = #{sleepTime,jdbcType=INTEGER},
+          </if>
+          <if test="fingerPattern != null">
+              finger_pattern = #{fingerPattern,jdbcType=INTEGER},
+          </if>
+      </set>
+      where delete_date IS NULL
+      AND id = #{id,jdbcType=INTEGER}
+  </update>
+    <delete id="delete">
+        UPDATE signet
+        SET delete_date = now( )
+        WHERE
+            id = #{deviceId}
+    </delete>
+    <select id="get" resultMap="BaseResultMap" >
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+            signet
+        WHERE
+            delete_date IS NULL
+            AND corp_id = #{corpId}
+            AND device_id = #{deviceId}
+        LIMIT 1;
+    </select>
+    <select id="getAllByCorpId" parameterType="string" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            signet
+        WHERE
+            delete_date IS NULL
+        AND corp_id=#{corpId}
+    </select>
+    <select id="getByUUID" parameterType="string" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            signet
+        WHERE
+            delete_date IS NULL
+            and uuid=#{uuid}
+            LIMIT 1
+    </select>
+    <select id="getByLike" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM
+          signet
+        WHERE
+          delete_date is null
+        <if test="id!=0 and id !=null">
+          AND  id=#{id}
+        </if>
+        <if test="name!='' and name !=null">
+          AND name=#{name}
+        </if>
+        <if test="uuid!='' and uuid !=null">
+          AND  uuid=#{uuid}
+        </if>
+        <if test="corpId!='' and corpId !=null">
+          AND  corp_id=#{corpId}
+        </if>
+        LIMIT 1
+    </select>
+    <select id="getAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        signet
+        WHERE
+        delete_date IS NULL
+    </select>
+    <select id="getById" parameterType="integer" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        signet
+        WHERE
+        delete_date IS NULL
+        AND id=#{deviceId}
+        LIMIT 1
+    </select>
+
+
+</mapper>

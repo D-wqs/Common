@@ -1,6 +1,12 @@
 package com.stamper.yx.common.entity;
 
+import java.util.Date;
+
 public class SealRecordInfo {
+    private Integer id;
+    private Date createDate;
+    private Date updateDate;
+    private Date deleteDate;
     private Integer deviceID;//当前设备id
     private String uuid;//当前设备uuid
     private String identity;//用印人名称
@@ -17,6 +23,39 @@ public class SealRecordInfo {
     private Integer sealId;//高拍仪关联的-印章ID
     private Integer alarm;//0:正常 1:长按警报 2:防拆卸报警
     private String fileupload;//文件密文数据
+    private Integer fileId;//关联上传的文件信息
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
+    }
+
+    public void setUpdateDate(Date updateDate) {
+        this.updateDate = updateDate;
+    }
+
+    public Date getDeleteDate() {
+        return deleteDate;
+    }
+
+    public void setDeleteDate(Date deleteDate) {
+        this.deleteDate = deleteDate;
+    }
 
     public String getFileupload() {
         return fileupload;
@@ -149,10 +188,22 @@ public class SealRecordInfo {
         this.alarm = alarm;
     }
 
+    public Integer getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(Integer fileId) {
+        this.fileId = fileId;
+    }
+
     @Override
     public String toString() {
         return "SealRecordInfo{" +
-                "deviceID=" + deviceID +
+                "id=" + id +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                ", deleteDate=" + deleteDate +
+                ", deviceID=" + deviceID +
                 ", uuid='" + uuid + '\'' +
                 ", identity='" + identity + '\'' +
                 ", picUseId=" + picUseId +
@@ -167,6 +218,8 @@ public class SealRecordInfo {
                 ", sealCount=" + sealCount +
                 ", sealId=" + sealId +
                 ", alarm=" + alarm +
+                ", fileupload='" + fileupload + '\'' +
+                ", fileId=" + fileId +
                 '}';
     }
 }

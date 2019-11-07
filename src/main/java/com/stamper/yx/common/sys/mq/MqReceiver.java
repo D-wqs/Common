@@ -13,12 +13,14 @@ import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.stereotype.Component;
 
 /**
  * 消息队列-消费者
  */
 @Component
+@ConditionalOnExpression("${openType.rabbit}")//关停监听
 public class MqReceiver {
 
     @Autowired

@@ -43,6 +43,7 @@ import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.data;
 @Slf4j
 @RestController
 @RequestMapping(value = "/device")
+@SuppressWarnings("all")
 public class SignetController {
     @Autowired
     private SignetService signetService;

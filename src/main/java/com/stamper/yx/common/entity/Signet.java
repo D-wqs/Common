@@ -7,6 +7,7 @@ public class Signet implements Serializable {
     private String createDate;
     private String updateDate;
     private String deleteDate;
+    private String corpId;//第三方组织id
 
     /**
      * 印章名称
@@ -138,6 +139,14 @@ public class Signet implements Serializable {
      */
     public void setDeleteDate(String deleteDate) {
         this.deleteDate = deleteDate;
+    }
+
+    public String getCorpId() {
+        return corpId;
+    }
+
+    public void setCorpId(String corpId) {
+        this.corpId = corpId;
     }
 
     /**
@@ -340,27 +349,25 @@ public class Signet implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getClass().getSimpleName());
-        sb.append(" [");
-        sb.append("Hash = ").append(hashCode());
-        sb.append(", id=").append(id);
-        sb.append(", createDate=").append(createDate);
-        sb.append(", updateDate=").append(updateDate);
-        sb.append(", deleteDate=").append(deleteDate);
-        sb.append(", name=").append(name);
-        sb.append(", netType=").append(netType);
-        sb.append(", addr=").append(addr);
-        sb.append(", count=").append(count);
-        sb.append(", uuid=").append(uuid);
-        sb.append(", simNum=").append(simNum);
-        sb.append(", iccid=").append(iccid);
-        sb.append(", imsi=").append(imsi);
-        sb.append(", status=").append(status);
-        sb.append(", sleepTime=").append(sleepTime);
-        sb.append(", fingerPattern=").append(fingerPattern);
-        sb.append(", serialVersionUID=").append(serialVersionUID);
-        sb.append("]");
-        return sb.toString();
+        return "Signet{" +
+                "id=" + id +
+                ", createDate='" + createDate + '\'' +
+                ", updateDate='" + updateDate + '\'' +
+                ", deleteDate='" + deleteDate + '\'' +
+                ", corpId='" + corpId + '\'' +
+                ", name='" + name + '\'' +
+                ", netType='" + netType + '\'' +
+                ", addr='" + addr + '\'' +
+                ", count=" + count +
+                ", uuid='" + uuid + '\'' +
+                ", simNum='" + simNum + '\'' +
+                ", iccid='" + iccid + '\'' +
+                ", imsi='" + imsi + '\'' +
+                ", imei='" + imei + '\'' +
+                ", type=" + type +
+                ", status=" + status +
+                ", sleepTime=" + sleepTime +
+                ", fingerPattern=" + fingerPattern +
+                '}';
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.stamper.yx.common.mapper.SignetMapper" >
+<mapper namespace="com.stamper.yx.common.mapper.sqlite.SignetMapper" >
   <resultMap id="BaseResultMap" type="com.stamper.yx.common.entity.Signet" >
     <!--
       WARNING - @mbg.generated
@@ -29,27 +29,59 @@
 
   <insert id="insert" parameterType="com.stamper.yx.common.entity.Signet" useGeneratedKeys="true"
           keyProperty="id">
-        insert into signet (create_date, update_date,
+        insert into signet (id,create_date, update_date,delete_date,
         name,net_type,addr,count,uuid,sim_num,iccid,imsi,imei,type,status,sleep_time,finger_pattern)
-        values (datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'), #{name},#{netType},#{addr},#{count},#{uuid},#{simNum},#{iccid}
+        values (#{id},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'), null,#{name},#{netType},#{addr},#{count},#{uuid},#{simNum},#{iccid}
         ,#{imsi},#{imei},#{type},#{status},#{sleepTime},#{fingerPattern})
     </insert>
   <update id="update">
   update signet
-        set
-        update_date = datetime(CURRENT_TIMESTAMP,'localtime'),
-        name=#{name},
-        net_type=#{netType},
-        addr=#{addr},
-        count=#{count},
-        uuid=#{uuid},
-        sim_num=#{simNum},
-        iccid=#{iccid},
-        imsi=#{imsi},
-        status=#{status},
-        sleep_time=#{sleepTime},
-        finger_pattern=#{fingerPattern}
-        where delete_date is null and id = #{id,jdbcType=INTEGER}
+      <set>
+          <if test="updateDate != null">
+              update_date = datetime(CURRENT_TIMESTAMP,'localtime'),
+          </if>
+          <if test="deleteDate != null">
+              delete_date = #{deleteDate,jdbcType=VARCHAR},
+          </if>
+          <if test="createDate != null">
+              create_date = #{createDate,jdbcType=VARCHAR},
+          </if>
+          <if test="name != null">
+              name = #{name,jdbcType=VARCHAR},
+          </if>
+          <if test="netType != null">
+              net_type = #{netType,jdbcType=VARCHAR},
+          </if>
+          <if test="addr != null">
+              addr = #{addr,jdbcType=VARCHAR},
+          </if>
+          <if test="count != null">
+              count = #{count,jdbcType=INTEGER},
+          </if>
+          <if test="uuid != null">
+              uuid = #{uuid,jdbcType=VARCHAR},
+          </if>
+          <if test="simNum != null">
+              sim_num = #{simNum,jdbcType=VARCHAR},
+          </if>
+          <if test="iccid != null">
+              iccid = #{iccid,jdbcType=VARCHAR},
+          </if>
+          <if test="imsi != null">
+              imsi = #{imsi,jdbcType=VARCHAR},
+          </if>
+          <if test="status != null">
+              status = #{status,jdbcType=INTEGER},
+          </if>
+          <if test="sleepTime != null">
+              sleep_time = #{sleepTime,jdbcType=INTEGER},
+          </if>
+          <if test="fingerPattern != null">
+              finger_pattern = #{fingerPattern,jdbcType=INTEGER},
+          </if>
+      </set>
+      where delete_date IS NULL
+      AND id = #{id,jdbcType=INTEGER}
   </update>
   <select id="getByUUID" resultMap="BaseResultMap">
     SELECT

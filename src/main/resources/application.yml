@@ -1,11 +1,12 @@
 spring:
-  datasource:
-    url: jdbc:sqlite:src\main\resources\static\yx_data.db
-#    url: jdbc:sqlite:D:\BpmJava\bpmjava\sms_components\yx_data.db
-#    url: jdbc:sqlite:/home/wqs/javaCommon/yx_data.db
-    driver-class-name: org.sqlite.JDBC
-    username:
-    password:
+#  datasource:
+#    sqlite:
+#      url: jdbc:sqlite:src\main\resources\static\yx_data.db
+#  #    url: jdbc:sqlite:D:\yx_common\yx_data.db
+#  #    url: jdbc:sqlite:/home/wqs/javaCommon/yx_data.db
+#      driver-class-name: org.sqlite.JDBC
+#      username:
+#      password:
   thymeleaf:
     cache: false
     encoding: UTF-8
@@ -59,5 +60,22 @@ logging:
 #        yx:
 #          common:
 #            mapper: debug
-
-
+#是否启用rabbitMQ
+#注意：配置数据源时：【driverClassName不能写成driver-class-name】【url 换成jdbc-url】
+datasource:
+    sqlite:
+      jdbc-url: jdbc:sqlite:src\main\resources\static\yx_data.db
+#      jdbc-url: jdbc:sqlite:F:/common/yx_data.db
+      driver-class-name: org.sqlite.JDBC
+      username:
+      password:
+    #多数据源：mysql
+    mysql:
+      jdbc-url: jdbc:mysql://localhost:3306/common?useUnicode=true&characterEncoding=utf-8
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: root
+#服务关停
+openType:
+  rabbit: true
+  mysql: true

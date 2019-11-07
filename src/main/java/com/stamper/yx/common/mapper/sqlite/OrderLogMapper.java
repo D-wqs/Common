@@ -1,4 +1,4 @@
-package com.stamper.yx.common.mapper;
+package com.stamper.yx.common.mapper.sqlite;
 
 import com.stamper.yx.common.entity.OrderLog;
 import org.springframework.stereotype.Repository;

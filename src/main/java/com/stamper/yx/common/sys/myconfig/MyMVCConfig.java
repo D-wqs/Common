@@ -11,6 +11,7 @@ public class MyMVCConfig implements WebMvcConfigurer {
         registry.addViewController("/index.html").setViewName("login");
         registry.addViewController("/yunxi/main.html").setViewName("dashboard");
         registry.addViewController("/yunxi/debugging").setViewName("debugging/debugging");
+        registry.addViewController("/error.html").setViewName("error/5xx.html");
     }
 
 //    @Override
