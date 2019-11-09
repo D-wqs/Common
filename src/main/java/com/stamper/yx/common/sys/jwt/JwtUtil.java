@@ -12,6 +12,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.InvalidKeyException;
 
 import java.io.UnsupportedEncodingException;
+import java.security.PrivateKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +83,8 @@ public class JwtUtil {
             claims.put("is_qss", applicationToken.getIs_qss());
 
             try {
-                return Jwts.builder().setClaims(claims).signWith(KeyFactory.getPrivateKey()).compact();
+                PrivateKey privateKey = KeyFactory.getPrivateKey();
+                return Jwts.builder().setClaims(claims).signWith(privateKey).compact();
             } catch (InvalidKeyException e) {
                 e.printStackTrace();
             }

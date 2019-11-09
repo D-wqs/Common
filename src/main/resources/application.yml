@@ -64,8 +64,8 @@ logging:
 #注意：配置数据源时：【driverClassName不能写成driver-class-name】【url 换成jdbc-url】
 datasource:
     sqlite:
-      jdbc-url: jdbc:sqlite:src\main\resources\static\yx_data.db
-#      jdbc-url: jdbc:sqlite:F:/common/yx_data.db
+#      jdbc-url: jdbc:sqlite:src\main\resources\static\yx_data.db
+      jdbc-url: jdbc:sqlite:D:/common/yx_data.db
       driver-class-name: org.sqlite.JDBC
       username:
       password:
