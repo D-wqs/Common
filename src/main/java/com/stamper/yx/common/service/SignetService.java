@@ -21,4 +21,6 @@ public interface SignetService {
     Signet get(@Param("id") Integer id);
 
     List<Signet> getAll();
+
+    void save(Signet signet);
 }

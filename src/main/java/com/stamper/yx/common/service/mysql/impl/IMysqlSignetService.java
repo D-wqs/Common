@@ -149,4 +149,20 @@ public class IMysqlSignetService implements MysqlSignetService {
         }
         return null;
     }
+
+    @Override
+    public void save(Signet signet) {
+        if(signet!=null){
+            Signet byUUID = mapper.getByUUID(signet.getUuid());
+            if(byUUID==null){
+                mapper.insert(signet);
+            }else{
+                signet.setId(byUUID.getId());
+                String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+                SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+                signet.setUpdateDate(sdf.format(new Date()));
+                mapper.update(signet);
+            }
+        }
+    }
 }

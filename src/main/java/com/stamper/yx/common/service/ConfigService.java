@@ -8,4 +8,5 @@ public interface ConfigService {
     Config getByUUID(String uuid);
     Config getById(Integer id);
     Config getDefaultConfig();
+    void save(Config config);
 }

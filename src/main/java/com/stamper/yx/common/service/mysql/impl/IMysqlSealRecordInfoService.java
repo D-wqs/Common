@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,7 +46,14 @@ public class IMysqlSealRecordInfoService implements MysqlSealRecordInfoService {
                     count = mySealRecordInfoMapper.insert(sealRecordInfo);
                 }else{
                     //假如查出的是盖章记录，就更新，不是盖章记录，就插入
+                    sealRecordInfo.setId(byReal.getId());
+                    String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+                    SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+                    sealRecordInfo.setUpdateDate(new Date());
                     count = mySealRecordInfoMapper.update(sealRecordInfo);
+                    if(count==0){
+                        count=1;
+                    }
                 }
             }
         }

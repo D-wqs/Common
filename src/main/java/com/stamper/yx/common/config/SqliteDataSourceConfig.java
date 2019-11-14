@@ -12,8 +12,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.sqlite.SQLiteDataSource;
 
 import javax.sql.DataSource;
+import java.io.File;
 
 /**
  * Sqlite数据源配置
@@ -24,12 +26,18 @@ import javax.sql.DataSource;
 @MapperScan(basePackages = "com.stamper.yx.common.mapper.sqlite",sqlSessionTemplateRef = "sqliteSqlSessionTemplate")
 public class SqliteDataSourceConfig {
     /**
+     * 动态配置sqlite数据库文件
      * 数据源对象
      * @return
      */
     @Bean(name = "sqliteDataSource")
-    @ConfigurationProperties(prefix = "datasource.sqlite")
-    public DataSource sqliteDataSource(){return DataSourceBuilder.create().build();}
+    public DataSource sqliteDataSource(){
+        DataSourceBuilder d = DataSourceBuilder.create();
+        d.driverClassName("org.sqlite.JDBC");
+        d.url("jdbc:sqlite:"+System.getProperty("user.dir")+ File.separator+"yx_data.db");//参考格式jdbc:sqlite:src\main\resources\static\yx_data.db
+        d.type(SQLiteDataSource.class);
+        return d.build();
+    }
 
     /**
      * sqlSessionFactory

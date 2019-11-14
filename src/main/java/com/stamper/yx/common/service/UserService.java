@@ -9,4 +9,5 @@ public interface UserService {
     void del(Integer userId);
     User getUser(Integer userId);
     void update(User user);
+    void save(User user);
 }

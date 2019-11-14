@@ -11,17 +11,18 @@ spring:
     cache: false
     encoding: UTF-8
     mode: HTML
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: admin
-    password: yunxi123$%^
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: admin
+#    password: yunxi123$%^
 ## 消息队列名称
 queue:
   signet: queue.signet.${random.value}
 
 server:
   port: 8888
+  connection-timeout: 100000
 #  servlet:
 #    context-path: /yunxi
 mybatis:
@@ -44,28 +45,16 @@ config-attributes:
 #因为websocket通道的垃圾池在10s秒内关闭，超时时间不能超过10s,否则通道被关闭，系统会异常
 ok:
   http:
-    connect-timeout: 8
+    connect-timeout: 10
     read-timeout: 30
     write-timeout: 30
     max-idle-connections: 200
     keep-alive-duration: 300
-#仅使用logging.file则输出到当前文件夹下的指定文件中
-logging:
-  file: common.log
-# 打印SQL日志logging.level.(mapper路径)=debug
-#logging:
-#  level:
-#    com:
-#      stamper:
-#        yx:
-#          common:
-#            mapper: debug
 #是否启用rabbitMQ
 #注意：配置数据源时：【driverClassName不能写成driver-class-name】【url 换成jdbc-url】
 datasource:
     sqlite:
-#      jdbc-url: jdbc:sqlite:src\main\resources\static\yx_data.db
-      jdbc-url: jdbc:sqlite:D:/common/yx_data.db
+      jdbc-url: jdbc:sqlite:src\main\resources\static\yx_data.db
       driver-class-name: org.sqlite.JDBC
       username:
       password:
@@ -77,5 +66,5 @@ datasource:
       password: root
 #服务关停
 openType:
-  rabbit: true
-  mysql: true
+  rabbit: false
+  mysql: false

@@ -18,7 +18,7 @@ public interface MySealRecordInfoMapper {
     int delete(SealRecordInfo sealRecordInfo);
 
     //deviceId获取所有使用记录【并没有组织概念的区分】
-    List<SealRecordInfo> getBydeviceId(@Param("deviceId") Integer deviceId);
+    List<SealRecordInfo> getBydeviceId(@Param("deviceID") Integer deviceId);
 
     //更具记录id获取记录详情
     SealRecordInfo getById(Integer id);
@@ -30,6 +30,6 @@ public interface MySealRecordInfoMapper {
      *  2.指纹模式时无申请单id
      *
      */
-    SealRecordInfo getByReal(@Param("uuid") String uuid,@Param("applicationId") Integer applicationId,@Param("count") Integer count);
+    SealRecordInfo getByReal(@Param("uuid") String uuid,@Param("applicationID") Integer applicationId,@Param("count") Integer count);
 
 }

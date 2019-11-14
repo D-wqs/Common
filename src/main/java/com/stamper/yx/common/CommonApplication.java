@@ -24,10 +24,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheManagerUtils;
+import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.annotation.EnableAsync;
 
+import javax.servlet.MultipartConfigElement;
+import java.io.File;
 import java.util.UUID;
 
 @MapperScan("com.stamper.yx.common.mapper")
@@ -82,15 +87,8 @@ public class CommonApplication implements CommandLineRunner {
         }
         user.setAccesstoken(ticket);
 
-        User admin = userService.getUser(AdminName);
-        if (admin == null) {
-            userService.add(user);
-        } else {
-            admin.setCallbackUrl(user.getCallbackUrl());
-            admin.setPassword(user.getPassword());
-            admin.setAccesstoken(user.getAccesstoken());
-            userService.update(admin);
-        }
+        userService.save(user);
+
         log.info("初始化用户名{{}},模块回调地址{{}}", user.getName(), user.getCallbackUrl());
         //初始化测试设备
         Signet signet = new Signet();
@@ -99,13 +97,8 @@ public class CommonApplication implements CommandLineRunner {
         signet.setNetType("4G");
         signet.setStatus(0);//印章状态: 0:正常 1:异常 2:销毁 3:停用 4:锁定
         signet.setName("测试章");
-        Signet byUUID = signetService.getByUUID(AppConstant.defaultUUID);
-        if (byUUID == null) {
-            //sqlite数据源
-            signetService.add(signet);
-        } else {
-            signetService.update(byUUID);
-        }
+
+        signetService.save(signet);
         //mysql 数据源同步数据
         String openMysql = AppConstant.OPEN_MYSQL;
         if(openMysql.equalsIgnoreCase("false")){
@@ -113,10 +106,7 @@ public class CommonApplication implements CommandLineRunner {
             log.info("*****停止mysql数据源的使用*****");
         }
         if(mysqlSignetService!=null){
-            int add = mysqlSignetService.add(signet);
-            if(add!=1){
-                throw new PrintException("mysql数据源初始化设备模板信息失败");
-            }
+            mysqlSignetService.save(signet);
         }
         log.info("----------初始化测试设备完成---------");
         //初始化全局配置信息
@@ -125,15 +115,8 @@ public class CommonApplication implements CommandLineRunner {
         config.setConfigIp(configip);//配置IP[用于获取所有配置参数]
         config.setSvrHost(svrhost);//配置服务IP[回调]
         config.setSvrIp(svrip);//配置通道地址
-        Config defaultConfig = configService.getDefaultConfig();
-        if (defaultConfig == null) {
-            configService.insert(config);
-        } else {
-            defaultConfig.setConfigIp(configip);//配置IP[用于获取所有配置参数]
-            defaultConfig.setSvrHost(svrhost);//配置服务IP[回调]
-            defaultConfig.setSvrIp(svrip);//配置通道地址
-            configService.update(defaultConfig);
-        }
+        configService.save(config);
+
         log.info("----------初始化设备全局配置完成---------");
         CacheManager cacheManager = EhCacheManagerUtils.buildCacheManager("ehCacheCacheManager");
         EHCacheUtil.setCacheManager(cacheManager);
@@ -144,5 +127,18 @@ public class CommonApplication implements CommandLineRunner {
         //注入
         log.info("------------缓存加载完毕---------");
         log.info("------------运行完毕----------");
+    }
+    @Bean
+    public MultipartConfigElement multipartConfigElement() {
+        MultipartConfigFactory factory = new MultipartConfigFactory();
+        factory.setMaxFileSize(102400000);
+        factory.setMaxRequestSize(102400000);
+        String location = System.getProperty("user.dir") + File.separator+"upload";
+        File tmpFile = new File(location);
+        if (!tmpFile.exists()) {
+            tmpFile.mkdirs();
+        }
+        factory.setLocation(location);
+        return factory.createMultipartConfig();
     }
 }

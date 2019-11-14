@@ -6,7 +6,9 @@ public class AppConstant {
 	 * 服务器信息
 	 */
 	public static final String HOST = prop.getStr("HOST");//当前服务器地址
-	public static final String FILE_PATH = prop.getStr("FILE_PATH");//当前服务器地址
+	public static final String FILE_PATH = System.getProperty("user.dir");//当前服务器地址
+	public static final String OPEN_METER = prop.getStr("OPEN_METER");//当前服务器地址
+	public static final String METER_UPLOAD_ADDR = prop.getStr("METER_UPLOAD_ADDR");//高拍仪上传地址配置
 	public static final String OPEN_MYSQL=prop.getStr("OPEN_MYSQL");//是否开启MYSQL数据源
 	public static final String CONFIGIP = prop.getStr("CONFIGIP");//当前配置服务器
 	public static final String SVRHOST = prop.getStr("SVRHOST");//当前回调地址

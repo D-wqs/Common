@@ -30,4 +30,6 @@ public interface MysqlSignetService {
     Signet getByLike(Signet signet);
 
     Signet getById(Integer id);
+
+    void save(Signet signet);
 }

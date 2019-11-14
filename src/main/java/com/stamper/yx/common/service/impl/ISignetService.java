@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -101,6 +103,23 @@ public class ISignetService implements SignetService {
             return all;
         }
         return null;
+    }
+
+    @Transactional
+    @Override
+    public void save(Signet signet) {
+        if(signet!=null&&StringUtils.isNotBlank(signet.getUuid())){
+            Signet byUUID = signetMapper.getByUUID(signet.getUuid());
+            if(byUUID==null){
+                signetMapper.insert(signet);
+            }else{
+                signet.setId(byUUID.getId());
+                String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+                SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+                signet.setUpdateDate(sdf.format(new Date()));
+                signetMapper.update(signet);
+            }
+        }
     }
 
 }

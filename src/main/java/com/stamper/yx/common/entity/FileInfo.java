@@ -45,7 +45,7 @@ public class FileInfo implements Serializable {
     }
 
     public void setSealRecordInfoId(Integer sealRecordInfoId) {
-        sealRecordInfoId = sealRecordInfoId;
+        this.sealRecordInfoId = sealRecordInfoId;
     }
 
     /**

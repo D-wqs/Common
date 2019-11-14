@@ -11,8 +11,14 @@
         <result column="update_date" property="updateDate" jdbcType="VARCHAR"/>
         <result column="delete_date" property="deleteDate" jdbcType="VARCHAR"/>
     </resultMap>
+    <sql id="Base_Column_List">
+        id,create_date,update_date,delete_date,name,password,callback_url,accesstoken
+    </sql>
     <insert id="add" useGeneratedKeys="true" keyProperty="id">
-        INSERT into user (name,password,callback_url,accesstoken,create_date,update_date) VALUES (#{name},#{password},#{callbackUrl},#{accesstoken},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'))
+        INSERT into user (
+        <include refid="Base_Column_List"/>
+        ) VALUES (
+        #{id},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),null,#{name},#{password},#{callbackUrl},#{accesstoken})
     </insert>
     <update id="del">
         UPDATE user
@@ -22,12 +28,31 @@
     </update>
     <update id="update" parameterType="com.stamper.yx.common.entity.User">
         UPDATE user
-        SET accesstoken = #{accesstoken}
-        ,update_date = datetime(CURRENT_TIMESTAMP,'localtime')
-        ,callback_url=#{callbackUrl}
-        WHERE
-        delete_date is null and
-        id =#{id}
+        <set>
+            <if test="updateDate != null">
+                update_date = datetime(CURRENT_TIMESTAMP,'localtime'),
+            </if>
+            <if test="deleteDate != null">
+                delete_date = #{deleteDate,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="callbackUrl != null">
+                callback_url = #{callbackUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="accesstoken != null">
+                accesstoken = #{accesstoken,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where delete_date IS NULL
+        AND id = #{id,jdbcType=INTEGER}
     </update>
 
     <select id="getUserByName" parameterType="string" resultMap="userMap">

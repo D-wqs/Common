@@ -526,6 +526,35 @@
                             </div>
                         </div>
                     </div>
+                    <!--绑定高拍仪-->
+                    <div class="col-sm-12 col-md-4 col-lg-3 col-xl-3" style="margin-bottom: 16px">
+                        <div class="card">
+                            <div class="card-header">绑定高拍仪
+                                <blockquote>
+                                    <small>
+                                        <cite title="Source Title"><b>ip:port:</b></cite>
+                                        /meter/relevance/bind
+                                        <br>【返回值:ResultVO】
+                                    </small>
+                                </blockquote>
+                            </div>
+                            <div class="card-body" align="center">
+                                <!--<blockquote>-->
+                                <!--<small><cite title="Source Title"><b>status:</b></cite>{0:解锁}|{1:锁定}</small>-->
+                                <!--</blockquote>-->
+                                <input th:type="text" placeholder="int: signetId" name="signetId"
+                                       id="bind_signetId">
+                                <input th:type="text" placeholder="int: meterId" name="meterId"
+                                       id="bind_meterId">
+                                <hr/>
+                                <button type="button" class="btn btn-info btn-sm btn-block" id="bind">Go
+                                </button>
+                            </div>
+                            <div class="card-footer">返回参数：
+                                <span id="bind_res"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
@@ -1084,6 +1113,37 @@
                     } else {
 //                            alert("请求异常："+data.msg)
                         $("#reset_res").html('<span style="color:red">' + data.msg + '</span>');
+                    }
+                    console.log("返回的code", data.code);
+                } else {
+                    alert("请求失败");
+                }
+            });
+    });
+    //绑定高拍仪
+    $("#bind").click(function () {
+        var v1 = $("#bind_signetId").val();
+        var v2 = $("#bind_meterId").val();
+        if (v1 == "" || v2 == "") {
+            alert("参数有误");
+            return;
+        }
+        $.post("/meter/relevance/bind", {
+                signetId: v1,
+                meterId: v2,
+            },
+            function (data, status) {
+                if (status == "success") {
+                    if (data.msg == "undefined" || data.msg == undefined) {
+                        data = JSON.parse(data);
+                    }
+//                        alert("请求成功");
+                    if (data.code == 200) {
+                        //设置卡片底部的回调结果
+                        $("#bind_res").html('<span style="color:green">' + data.msg + '</span>');
+                    } else {
+//                            alert("请求异常："+data.msg)
+                        $("#bind_res").html('<span style="color:red">' + data.msg + '</span>');
                     }
                     console.log("返回的code", data.code);
                 } else {

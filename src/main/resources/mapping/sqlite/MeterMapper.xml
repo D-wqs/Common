@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.orgs//DTD Mapper 3.0//EN" "http://mybatis.orgs/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stamper.yx.common.mapper.sqlite.MeterMapper">
+    <resultMap id="baseMap" type="com.stamper.yx.common.entity.Meter">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="meter_index" property="meterIndex" jdbcType="INTEGER"/>
+        <result column="meter_type" property="meterType" jdbcType="INTEGER"/>
+        <result column="uuid" property="uuid" jdbcType="VARCHAR"/>
+        <result column="client_addr" property="clientAddr" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="VARCHAR"/>
+        <result column="update_date" property="updateDate" jdbcType="VARCHAR"/>
+        <result column="delete_date" property="deleteDate" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id,create_date,update_date,delete_date,name,meter_index,meter_type,uuid,client_addr
+    </sql>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT into meter (
+        <include refid="Base_Column_List"/>
+        ) VALUES (
+        #{id},datetime(CURRENT_TIMESTAMP,'localtime'),datetime(CURRENT_TIMESTAMP,'localtime'),null,
+        #{name},#{meterIndex},#{meterType},#{uuid},#{clientAddr})
+    </insert>
+
+    <update id="update" >
+        UPDATE meter
+        <set>
+            <if test="updateDate != null">
+                update_date = datetime(CURRENT_TIMESTAMP,'localtime'),
+            </if>
+            <if test="deleteDate != null">
+                delete_date = #{deleteDate,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="meterIndex != null">
+                meter_index = #{meterIndex},
+            </if>
+            <if test="meterType != null">
+                meter_type = #{meterType},
+            </if>
+            <if test="uuid != null">
+                uuid = #{uuid},
+            </if>
+            <if test="clientAddr != null">
+                client_addr = #{clientAddr},
+            </if>
+        </set>
+        where delete_date IS NULL
+        AND id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="getByName" parameterType="string" resultMap="baseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+            meter
+        WHERE
+            delete_date IS NULL
+            AND name = #{name}
+            LIMIT 1
+    </select>
+    <select id="getAll" resultMap="baseMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            meter
+        WHERE
+            delete_date IS NULL
+    </select>
+    <select id="getById" parameterType="integer" resultMap="baseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        meter
+        WHERE
+        delete_date IS NULL
+        AND id = #{meterId}
+        LIMIT 1
+    </select>
+    <select id="getAllBindInfo" resultType="com.stamper.yx.common.entity.SMBindInfo">
+        SELECT
+        m.id meterId,
+        m.name meterName,
+        m.client_addr meterOrigin,
+        s.id signetId,
+        s.name signetName
+        FROM
+        meter m
+        LEFT JOIN signet_meter sm ON m.id = sm.meter_id
+        LEFT JOIN signet s ON sm.signet_id = s.id
+    </select>
+
+
+</mapper>

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Configurable
-@EnableScheduling   //启动定时任务
+//@EnableScheduling   //启动定时任务
 public class MqSender {
 	@Autowired
 	private AmqpTemplate amqpTemplate;

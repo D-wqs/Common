@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Service
 public class IConfigService implements ConfigService {
     @Autowired
@@ -64,5 +67,22 @@ public class IConfigService implements ConfigService {
             return byUUID;
         }
         return null;
+    }
+
+    @Transactional
+    @Override
+    public void save(Config config) {
+        if(config!=null){
+            Config byUUID = configMapper.getByUUID(config.getUuid());
+            if(byUUID==null){
+                configMapper.insert(config);
+            }else{
+                config.setId(byUUID.getId());
+                String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+                SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+                config.setUpdateDate(sdf.format(new Date()));
+                configMapper.update(config);
+            }
+        }
     }
 }

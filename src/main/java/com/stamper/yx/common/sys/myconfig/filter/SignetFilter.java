@@ -39,6 +39,7 @@ public class SignetFilter extends OncePerRequestFilter{
         ignorePath.add("/device/config/getConfigByUUID");//获取配置
         ignorePath.add("/device/config/updateConfigByUUID");//更新设备配置
         ignorePath.add("/device/deviceCallBack/moduleCallback");//模块回调请求本地不拦截
+        ignorePath.add("/device/sealRecordInfo/meter");//测试高拍仪地址
         if(!ignorePath.contains(requestURI)){
             String token = httpServletRequest.getHeader(AppConstant.ACCESSTOKEN_KEY_PRIFIX);
             System.out.println("请求头：" + token);

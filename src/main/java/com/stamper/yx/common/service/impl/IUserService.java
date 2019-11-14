@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Slf4j
 @Service
 public class IUserService implements UserService {
@@ -77,6 +80,7 @@ public class IUserService implements UserService {
         return null;
     }
 
+    @Transactional
     @Override
     public void update(User user) {
         if(user!=null&&user.getId()!=null){
@@ -84,6 +88,24 @@ public class IUserService implements UserService {
             if(update!=1){
                 log.error("更新用户数据失败");
                 throw new PrintException("更新用户数据失败");
+            }
+        }
+    }
+
+    @Transactional
+    @Override
+    public void save(User user) {
+        if(user!=null){
+            User userByName = userMapper.getUserByName(AppConstant.USER);
+            if(userByName==null){
+                userMapper.add(user);
+            }else{
+                user.setId(userByName.getId());
+                String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(strDateFormat);
+                String format = simpleDateFormat.format(new Date());
+                user.setUpdateDate(format);
+                userMapper.update(user);
             }
         }
     }

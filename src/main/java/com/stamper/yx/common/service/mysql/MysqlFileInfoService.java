@@ -9,4 +9,5 @@ import com.stamper.yx.common.entity.FileInfo;
 public interface MysqlFileInfoService {
     int insert(FileInfo fileInfo);
     FileInfo get(Integer id);
+    void save(FileInfo fileInfo);
 }

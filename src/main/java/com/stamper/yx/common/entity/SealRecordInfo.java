@@ -10,7 +10,7 @@ public class SealRecordInfo {
     private Integer deviceID;//当前设备id
     private String uuid;//当前设备uuid
     private String identity;//用印人名称
-    private Integer picUseId;//用印人id
+    private Integer picUserId;//用印人id
     private String location;//当前地址
     private String recsn;//未知变量
     private String fpCode;//未知变量
@@ -92,12 +92,12 @@ public class SealRecordInfo {
         this.identity = identity;
     }
 
-    public Integer getPicUseId() {
-        return picUseId;
+    public Integer getPicUserId() {
+        return picUserId;
     }
 
-    public void setPicUseId(Integer picUseId) {
-        this.picUseId = picUseId;
+    public void setPicUserId(Integer picUserId) {
+        this.picUserId = picUserId;
     }
 
     public String getLocation() {
@@ -206,7 +206,7 @@ public class SealRecordInfo {
                 ", deviceID=" + deviceID +
                 ", uuid='" + uuid + '\'' +
                 ", identity='" + identity + '\'' +
-                ", picUseId=" + picUseId +
+                ", picUserId=" + picUserId +
                 ", location='" + location + '\'' +
                 ", recsn='" + recsn + '\'' +
                 ", fpCode='" + fpCode + '\'' +

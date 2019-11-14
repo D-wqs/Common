@@ -1,11 +1,12 @@
 package com.stamper.yx.common.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.stamper.yx.common.entity.FileInfo;
-import com.stamper.yx.common.entity.SealRecordInfo;
-import com.stamper.yx.common.entity.Signet;
+import com.stamper.yx.common.entity.*;
 import com.stamper.yx.common.mapper.mysql.MySealRecordInfoMapper;
 import com.stamper.yx.common.mapper.mysql.MysqlFileInfoMapper;
+import com.stamper.yx.common.service.MeterService;
+import com.stamper.yx.common.service.SignetMeterService;
+import com.stamper.yx.common.service.async.TalkMeterAsynvService;
 import com.stamper.yx.common.service.mysql.MysqlFileInfoService;
 import com.stamper.yx.common.service.mysql.MysqlSealRecordInfoService;
 import com.stamper.yx.common.service.mysql.MysqlSignetService;
@@ -21,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
 import java.io.File;
@@ -43,6 +45,12 @@ public class SealRecordInfoController {
     private MysqlSealRecordInfoService mysqlSealRecordInfoService;
     @Autowired
     private MysqlFileInfoService mysqlFileInfoService;
+    @Autowired
+    private TalkMeterAsynvService talkMeterAsynvService;
+    @Autowired
+    private SignetMeterService signetMeterService;
+    @Autowired
+    private MeterService meterService;
 
     /**
      * 指纹模式上传
@@ -53,6 +61,7 @@ public class SealRecordInfoController {
      */
     @RequestMapping(value = "addEasyInfo")
     public String addEasyInfo(SealRecordInfo sealRecordInfo) {
+        log.info("指纹模式传来的参数{{}}",sealRecordInfo);
         log.info("来自指纹模式的记录上传----------【从请求参数中获取fileupload参数，进行对称解密，获取图片详情】");
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
@@ -79,7 +88,7 @@ public class SealRecordInfoController {
                 return "1";
             }
             FileInfo fileInfo = fileUpload(deviceID, bytes, null, sealRecordInfo.getId());
-            if(fileInfo==null){
+            if(fileInfo.getSealRecordInfoId()==null){
                 log.info("fileInfo信息写入数据库失败，通知设备重新上传");
                 return "1";
             }
@@ -181,6 +190,16 @@ public class SealRecordInfoController {
                 return "1";
             }
 
+            //todo 通知高拍仪拍照
+            String openMeter = AppConstant.OPEN_METER;
+            if(openMeter.equalsIgnoreCase("true")){
+                //新开线程通知高拍仪拍照
+                SignetMeter bySignetId = signetMeterService.getBySignetId(deviceID);
+                //通过meterId获取传输地址
+                Meter meter = meterService.getById(bySignetId.getMeterId());
+                //通过设备id,记录id，高拍仪地址，请求图片传输
+                talkMeterAsynvService.postMeterUploadImage(sealRecordInfo.getId(),meter.getClientAddr());
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,9 +260,9 @@ public class SealRecordInfoController {
         }
         String filePath = AppConstant.FILE_PATH;
         String filePathV2 = DirFileUtils.getFilePathV2(corpId);//路径地址：CorpId/年/月/日
-        String realpath = filePath.replaceAll("/", File.separator) + filePathV2;//拼接文件最终所在磁盘地址
+        String realpath = filePath+File.separator+"upload"+File.separator+ filePathV2;//拼接文件最终所在磁盘地址
         //此处处理盖章记录文件
-        String absoultPath = realpath;//真实地址
+        String absoultPath = realpath;
         File path = new File(absoultPath);
         //创建父目录文件夹
         if (!path.exists()) {
@@ -269,10 +288,11 @@ public class SealRecordInfoController {
             fileInfo.setFileName(name+".jpg");//新文件名
             fileInfo.setRelativePath(absoultPath);//绝对路径地址
             fileInfo.setSealRecordInfoId(sealInfoId);
-            int insert = mysqlFileInfoService.insert(fileInfo);
-            if(insert==1){
-                return fileInfo;
-            }
+            mysqlFileInfoService.save(fileInfo);
+
+//            log.info("文件保存成功FileInfo{{}}",fileInfo);
+            return fileInfo;
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -285,8 +305,56 @@ public class SealRecordInfoController {
                     e.printStackTrace();
                 }
             }
-            return null;
         }
+        return null;
+    }
+    /**
+     * 高拍仪上传文件
+     *
+     */
+    @RequestMapping("meter")
+    public String eloamImageReceive(MultipartFile fileupload,Integer sealRecordId){
+        String corpId=null;
+        //地址
+        String filePath = AppConstant.FILE_PATH;
+        SealRecordInfo byId = mysqlSealRecordInfoService.getById(sealRecordId);
+        if(byId==null){
+            corpId="";
+        }else{
+            Integer deviceID = byId.getDeviceID();
+            Signet byId1 = mysqlSignetService.getById(deviceID);
+            corpId=byId1.getCorpId();
+        }
+        String filePathV2 = DirFileUtils.getFilePathV2(corpId);//路径地址：CorpId/年/月/日
+        String realpath = filePath+File.separator+"upload"+File.separator+ filePathV2;//拼接文件最终所在磁盘地址
+        File path=new File(realpath);
+        path.mkdirs();//文件夹地址
+        File image=new File(path,fileupload.getOriginalFilename());
+        try {
+            fileupload.transferTo(image);
+            //创建新的文件记录
+            FileInfo fileInfo = new FileInfo();
+            fileInfo.setOriginalName(fileupload.getOriginalFilename());//原文件名
+            fileInfo.setFileName(fileupload.getOriginalFilename());//新文件名
+            fileInfo.setRelativePath(realpath);//绝对路径地址
+            fileInfo.setSealRecordInfoId(sealRecordId);
+            mysqlFileInfoService.save(fileInfo);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "0";
     }
 
+    /**
+     * 通过设备获取使用记录
+     * @param deviceId
+     * @return
+     */
+    @RequestMapping("getInfoList")
+    public ResultVO getSealRecordInfoList(Integer deviceId){
+        if(deviceId!=null){
+
+        }
+        return null;
+    }
 }

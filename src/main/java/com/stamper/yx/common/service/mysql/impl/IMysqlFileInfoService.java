@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 /**
  * @author D-wqs
  * @data 2019/11/2 17:48
@@ -35,5 +37,19 @@ public class IMysqlFileInfoService implements MysqlFileInfoService {
             return mapper.get(id);
         }
         return null;
+    }
+
+    @Override
+    public void save(FileInfo fileInfo) {
+        if(fileInfo!=null){
+            FileInfo byFileName = mapper.getByFileName(fileInfo.getFileName());
+            if(byFileName==null){
+                mapper.insert(fileInfo);
+            }else{
+                fileInfo.setId(byFileName.getId());
+                fileInfo.setUpdateDate(new Date());
+                mapper.update(fileInfo);
+            }
+        }
     }
 }

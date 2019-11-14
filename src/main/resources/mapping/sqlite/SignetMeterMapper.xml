@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.orgs//DTD Mapper 3.0//EN" "http://mybatis.orgs/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stamper.yx.common.mapper.sqlite.SignetMeterMapper">
+    <resultMap id="baseMap" type="com.stamper.yx.common.entity.SignetMeter">
+        <result column="signet_id" property="signetId" jdbcType="INTEGER"/>
+        <result column="meter_id" property="meterId" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        signet_id,meter_id
+    </sql>
+    <insert id="insert" parameterType="com.stamper.yx.common.entity.SignetMeter">
+        INSERT into signet_meter (
+        <include refid="Base_Column_List"/>
+        ) VALUES (
+        #{signetId},#{meterId})
+    </insert>
+    <delete id="del" parameterType="com.stamper.yx.common.entity.SignetMeter">
+        DELETE
+        <include refid="Base_Column_List"/>
+        FROM
+            signet_meter
+        WHERE
+            signet_id = #{signetId}
+            AND meter_id =#{meterId}
+    </delete>
+    <select id="get" resultMap="baseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        signet_meter
+        WHERE
+        signet_id = #{signetId}
+        AND meter_id =#{meterId}
+    </select>
+    <select id="getBySignetId" parameterType="integer" resultMap="baseMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        signet_meter
+        WHERE
+        signet_id = #{signetId}
+        limit 1
+    </select>
+
+
+</mapper>
