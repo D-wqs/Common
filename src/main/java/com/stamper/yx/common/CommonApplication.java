@@ -60,7 +60,7 @@ public class CommonApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("------------安徽云玺----------");
+        log.info("------------安徽 云玺----------");
         String AdminName = AppConstant.USER;
         String password = AppConstant.PASSWORD;
         String configip = AppConstant.CONFIGIP;
