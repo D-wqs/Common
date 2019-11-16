@@ -108,6 +108,11 @@ public class CallBackController {
                     //申请单推送的响应：
                     // message：{{"Body":{"Msg":"申请单推送成功！","Res":0},"Crc":"","Head":{"Magic":42949207,"Cmd":22,"SerialNum":0,"Version":1}}}
                     log.info("【回调】接收到的申请单推送成功的返回：{{}}", message);
+                    //TODO 推送成功，标记通道已收到申请单，不在处理发送申请单的指令
+                    DeviceWebSocket dw = pool.get(signet.getId() + "");
+                    if(dw!=null){
+                        dw.setReceive(1);//设备已接收申请单，其他下发指令不能执行
+                    }
 //					deviceUnlockRes(signet, message);
                     break;
                 case AppConstant.RECORD_NOTICE_RES:

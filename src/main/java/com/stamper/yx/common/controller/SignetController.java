@@ -492,6 +492,11 @@ public class SignetController {
         if (webSocket == null) {
             return ResultVO.FAIL("设备不在线");
         }
+        int receive = webSocket.getReceive();
+        if(receive==1){
+            //todo 当前通道已收到申请单，不在接收申请单，只要盖章返回后，设置为0
+            return  ResultVO.FAIL(Code.ERROR501);
+        }
         //设备是否在使用中
         int status = webSocket.getStatus();
         if (status == 1) {

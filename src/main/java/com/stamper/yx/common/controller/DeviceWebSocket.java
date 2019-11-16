@@ -28,6 +28,8 @@ public class DeviceWebSocket extends DefaultWebSocket {
     private String addr = null;//当前客户端地址
     private String network = null;//当前客户端网络
 
+    private int receive=0;//TODO 【天津】标记通道已接受申请单，不在发送申请单指令
+
     @Override
     protected void receiveMessage(String message) {
         if (StringUtils.isNotBlank(message)) {
@@ -131,4 +133,11 @@ public class DeviceWebSocket extends DefaultWebSocket {
         this.network = network;
     }
 
+    public int getReceive() {
+        return receive;
+    }
+
+    public void setReceive(int receive) {
+        this.receive = receive;
+    }
 }

@@ -7,6 +7,7 @@ public enum Code {
     FAIL400(400,"请求失败"),
     ERROR_PARAMETER(501,"参数有误"),
     ERROR500(500,"系统异常"),
+    ERROR501(501,"当前设备已接收到申请单，请待此次使用后再次推送"),
     ERROR_DEVICE_NULL(400,"当前设备不存在");
     private int code;
     private String msg;

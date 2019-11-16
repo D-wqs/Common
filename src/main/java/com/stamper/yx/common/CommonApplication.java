@@ -60,15 +60,20 @@ public class CommonApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        log.info("------------安徽 云玺----------");
+        log.info("------------安徽云玺----------");
+        log.info("TJ分支");
+        //初始化websocket
+        DeviceWebSocket.service = service;
+        DefaultWebSocket.okHttpCli = okHttpCli;//注入okHttpCli,发送关机指令
+
+        //管理员信息中包含  用户名+密码+模块回调地址+接口ticket
         String AdminName = AppConstant.USER;
         String password = AppConstant.PASSWORD;
+        String modulecallback = AppConstant.MODULECALLBACK;
+
         String configip = AppConstant.CONFIGIP;
         String svrhost = AppConstant.SVRHOST;
         String svrip = AppConstant.SVRIP;
-        String modulecallback = AppConstant.MODULECALLBACK;
-        DeviceWebSocket.service = service;
-        DefaultWebSocket.okHttpCli = okHttpCli;//注入okHttpCli,发送关机指令
         //初始化admin信息
         User user = new User();
         user.setName(AdminName);
@@ -86,11 +91,19 @@ public class CommonApplication implements CommandLineRunner {
             log.info("ticket已设置，不需请求此值：{{}}", ticket);
         }
         user.setAccesstoken(ticket);
-
         userService.save(user);
-
         log.info("初始化用户名{{}},模块回调地址{{}}", user.getName(), user.getCallbackUrl());
-        //初始化测试设备
+
+        //初始化全局配置信息
+        Config config = new Config();
+        config.setUuid(AppConstant.defaultUUID);
+        config.setConfigIp(configip);//配置IP[用于获取所有配置参数]
+        config.setSvrHost(svrhost);//配置服务IP[回调]
+        config.setSvrIp(svrip);//配置通道地址
+        configService.save(config);
+        log.info("----------初始化设备全局配置完成---------");
+
+        //初始化测试设备,以后设备id从1000以后开始
         Signet signet = new Signet();
         signet.setId(1000);//初始化设备的id，从1000开始
         signet.setUuid(AppConstant.defaultUUID);
@@ -99,6 +112,7 @@ public class CommonApplication implements CommandLineRunner {
         signet.setName("测试章");
 
         signetService.save(signet);
+
         //mysql 数据源同步数据
         String openMysql = AppConstant.OPEN_MYSQL;
         if(openMysql.equalsIgnoreCase("false")){
@@ -109,15 +123,7 @@ public class CommonApplication implements CommandLineRunner {
             mysqlSignetService.save(signet);
         }
         log.info("----------初始化测试设备完成---------");
-        //初始化全局配置信息
-        Config config = new Config();
-        config.setUuid(AppConstant.defaultUUID);
-        config.setConfigIp(configip);//配置IP[用于获取所有配置参数]
-        config.setSvrHost(svrhost);//配置服务IP[回调]
-        config.setSvrIp(svrip);//配置通道地址
-        configService.save(config);
 
-        log.info("----------初始化设备全局配置完成---------");
         CacheManager cacheManager = EhCacheManagerUtils.buildCacheManager("ehCacheCacheManager");
         EHCacheUtil.setCacheManager(cacheManager);
         EHCacheUtil.initCache("user");

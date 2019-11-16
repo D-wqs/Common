@@ -3,6 +3,7 @@ package com.stamper.yx.common.sys;
 import net.sf.ehcache.util.PropertyUtil;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.*;

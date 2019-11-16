@@ -16,21 +16,45 @@
     <result column="delete_date" property="deleteDate" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List">
-    id,title,body,push_status,recipient_id,send_id,create_date,update_date,delete_date
+    id,create_date,update_date,delete_date,title,body,push_status,recipient_id,send_id
   </sql>
   <insert id="add" parameterType="com.stamper.yx.common.entity.DeviceMessage" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO signet ( create_date, update_date, title, body, push_status, recipient_id, send_id )
+    INSERT INTO signet (id, create_date, update_date, title, body, push_status, recipient_id, send_id )
     VALUES
-        (
+        (null,
         datetime(CURRENT_TIMESTAMP,'localtime'),
         datetime(CURRENT_TIMESTAMP,'localtime'), #{ title },#{ body },#{ push_status },#{ recipient_id },#{ send_id })
   </insert>
     <update id="update">
         UPDATE device_message
-        SET update_date = datetime(CURRENT_TIMESTAMP,'localtime')
-        WHERE
-        delete_date is null and
-        id =#{id}
+        <set>
+            <if test="updateDate != null">
+                update_date = datetime(CURRENT_TIMESTAMP,'localtime'),
+            </if>
+            <if test="deleteDate != null">
+                delete_date = #{deleteDate,jdbcType=VARCHAR},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="body != null">
+                body = #{body,jdbcType=VARCHAR},
+            </if>
+            <if test="pushStatus != null">
+                push_status = #{pushStatus,jdbcType=INTEGER},
+            </if>
+            <if test="recipientId != null">
+                recipient_id = #{recipientId,jdbcType=INTEGER},
+            </if>
+            <if test="sendId != null">
+                send_id = #{sendId,jdbcType=INTEGER},
+            </if>
+        </set>
+        where delete_date IS NULL
+        AND id = #{id,jdbcType=INTEGER}
     </update>
     <select id="getBySignet" resultType="com.stamper.yx.common.entity.DeviceMessage">
     SELECT
@@ -51,7 +75,7 @@
         LIMIT 1
     </select>
     <select id="selectLastOneByTitleAndSignetAndStatus"
-            resultType="com.stamper.yx.common.entity.DeviceMessage">
+            resultMap="BaseResultMap">
       SELECT
       	*
       FROM

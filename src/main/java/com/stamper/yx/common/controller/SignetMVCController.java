@@ -67,6 +67,7 @@ public class SignetMVCController {
         if (signet == null || StringUtils.isBlank(signet.getUuid())) {
             return ResultVO.FAIL("当前设备不存在");
         }
+        //通过uuid查询配置信息，没有查到就是用默认配置
         Config byUUID = configService.getByUUID(signet.getUuid());
         if (byUUID != null) {
             Map<String, Object> map = new HashMap<>();
