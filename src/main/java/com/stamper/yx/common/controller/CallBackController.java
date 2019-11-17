@@ -1,9 +1,15 @@
 package com.stamper.yx.common.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.stamper.yx.common.entity.Finger;
 import com.stamper.yx.common.entity.MHPkg;
 import com.stamper.yx.common.entity.Signet;
+import com.stamper.yx.common.entity.deviceModel.FingerPrintClearRes;
+import com.stamper.yx.common.entity.deviceModel.FingerPrintClearResPkg;
+import com.stamper.yx.common.entity.deviceModel.FpRecordRes;
+import com.stamper.yx.common.entity.deviceModel.FpRecordResPkg;
 import com.stamper.yx.common.service.SignetService;
+import com.stamper.yx.common.service.mysql.MysqlFingerService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheGlobal;
 import com.stamper.yx.common.sys.cache.EHCacheUtil;
@@ -17,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.sound.sampled.Line;
+import java.util.Date;
 
 /**
  * @author zhf_10@163.com
@@ -32,6 +39,8 @@ public class CallBackController {
     private SignetService signetService;
     @Autowired
     private DefaultWebSocketPool pool;
+    @Autowired
+    private MysqlFingerService mysqlFingerService;
 
     /**
      * 设备响应第三方回调接口(设备专用)
@@ -93,16 +102,24 @@ public class CallBackController {
              */
             int cmd = pkg.getHead().getCmd();
             log.info("【回调cmd汇总】响应请求===>设备:{{}}，命令号{{}}， 响应:{{}}", signet.getId(), cmd, message);
+            //todo 校验mysql数据源
+            boolean b = checkDatasource();
             switch (cmd) {
                 case AppConstant.FP_CLEAR_RES:
                     //指纹清空(删除)返回
-//                    fpClearRes(message);
                     log.info("【回调】接收到的指纹清空的返回：{{}}", message);
+                    if(b==true){
+                        //数据源启用
+                        fpClearRes(message);
+                    }
                     break;
                 case AppConstant.FP_RECORD_RES:
                     //指纹录入返回
-//                    fingerPrintRes(signet, message);
                     log.info("【回调】接收到的指纹录入的返回：{{}}", message);
+                    if(b==true){
+                        //数据源启用
+                        fingerPrintRes(signet, message);
+                    }
                     break;
                 case AppConstant.APPLICATION_STATUS_RES:
                     //申请单推送的响应：
@@ -149,56 +166,46 @@ public class CallBackController {
         return ResultVO.OK();
     }
 
-//    /**
-//     * 指纹录入后,设备回调响应调用的方法
-//     */
-//    public void fingerPrintRes(Signet signet, String message) {
-//        if (signet != null) {
-//            //解析消息体
-//            FpRecordRes body = JSONObject.parseObject(message, FpRecordResPkg.class).getBody();
-//
-//            if (body != null) {
-//                int res = body.getRes();
-//                if (res == 0) {
-//                    //录入成功,获取对应设备的指纹信息
-//                    int userID = body.getUserID();
-//                    int deviceId = body.getDeviceID();
-//                    Finger finger = fingerService.getByUser(userID, deviceId);
-//                    if (finger == null) {
-//                        finger = new Finger();
-//                        finger.setCreateDate(new Date());
-//                    }
-//                    finger.setDeviceId(deviceId);
-//                    finger.setAddrNum(body.getFingerAddr());
-//                    finger.setUserId(userID);
-//                    finger.setUserName(body.getUserName());
-//                    finger.setUpdateDate(new Date());
-//                    finger.setCodeId(body.getCodeID());
-//                    fingerService.add(finger);
-//                }
-//            }
-//        }
-//    }
-//
-//    /**
-//     * 指纹删除(清空)后,设备回调响应调用的方法
-//     */
-//    public void fpClearRes(String message) {
-//        //解析消息体
-//        FingerPrintClearRes res = JSONObject.parseObject(message, FingerPrintClearResPkg.class).getBody();
-//        if (res != null) {
-//            int fingerAddr = res.getFingerAddr();
-//            int deivceID = res.getDeviceID();
-//            int userID = res.getUserID();//要删除的用印人ID
-//            if (fingerAddr == 0) {
-//                //全部清空
-//                fingerService.deleteAllByDevice(deivceID);
-//            } else {
-//                //删除指定位置
-//                fingerService.deleteByDeviceAndAddr(deivceID, fingerAddr, userID);
-//            }
-//        }
-//    }
+    /**
+     * 指纹录入后,设备回调响应调用的方法
+     */
+    public void fingerPrintRes(Signet signet, String message) {
+        if (signet != null) {
+            //解析消息体
+            FpRecordRes body = JSONObject.parseObject(message, FpRecordResPkg.class).getBody();
+
+            if (body != null) {
+                int res = body.getRes();
+                if (res == 0) {
+                    //录入成功,获取对应设备的指纹信息
+                    int userID = body.getUserID();
+                    int deviceId = body.getDeviceID();
+                    Finger finger =mysqlFingerService.getByUserAndDevice(userID,deviceId);
+                    mysqlFingerService.save(finger);
+                }
+            }
+        }
+    }
+
+    /**
+     * 指纹删除(清空)后,设备回调响应调用的方法
+     */
+    public void fpClearRes(String message) {
+        //解析消息体
+        FingerPrintClearRes res = JSONObject.parseObject(message, FingerPrintClearResPkg.class).getBody();
+        if (res != null) {
+            int fingerAddr = res.getFingerAddr();
+            int deviceID = res.getDeviceID();
+            int userID = res.getUserID();//要删除的用印人ID
+            if (fingerAddr == 0) {
+                //全部清空
+                mysqlFingerService.delAllBydeviceId(deviceID);
+            } else {
+                //删除指定位置
+                mysqlFingerService.delByFingerAddr(deviceID,fingerAddr,userID);
+            }
+        }
+    }
 
 
     //模块回调地址
@@ -220,5 +227,18 @@ public class CallBackController {
             e.printStackTrace();
         }
         return ResultVO.OK();
+    }
+    /**
+     * 校验mysql数据源
+     * @return
+     */
+    public boolean checkDatasource() {
+        //mysql 数据源同步数据
+        String openMysql = AppConstant.OPEN_MYSQL;
+        if (openMysql.equalsIgnoreCase("false")) {
+            mysqlFingerService = null;
+            return false;
+        }
+        return true;
     }
 }

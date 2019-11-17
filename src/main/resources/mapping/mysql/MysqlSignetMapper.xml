@@ -9,7 +9,7 @@
     <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
     <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
     <result column="delete_date" property="deleteDate" jdbcType="TIMESTAMP" />
-      <result column="corp_id" property="corpId" jdbcType="VARCHAR" />
+    <result column="corp_id" property="corpId" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="net_type" property="netType" jdbcType="VARCHAR" />
     <result column="addr" property="addr" jdbcType="VARCHAR" />
@@ -101,7 +101,7 @@
             delete_date IS NULL
             AND corp_id = #{corpId}
             AND device_id = #{deviceId}
-        LIMIT 1;
+--         LIMIT 1;
     </select>
     <select id="getAllByCorpId" parameterType="string" resultMap="BaseResultMap">
         SELECT
@@ -141,7 +141,7 @@
         <if test="corpId!='' and corpId !=null">
           AND  corp_id=#{corpId}
         </if>
-        LIMIT 1
+--         LIMIT 1
     </select>
     <select id="getAll" resultMap="BaseResultMap">
         SELECT
@@ -159,7 +159,7 @@
         WHERE
         delete_date IS NULL
         AND id=#{deviceId}
-        LIMIT 1
+--         LIMIT 1
     </select>
 
 

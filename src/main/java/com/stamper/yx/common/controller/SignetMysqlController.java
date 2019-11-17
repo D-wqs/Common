@@ -2,6 +2,7 @@ package com.stamper.yx.common.controller;
 
 import com.stamper.yx.common.entity.Signet;
 import com.stamper.yx.common.service.mysql.MysqlSignetService;
+import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.response.Code;
 import com.stamper.yx.common.sys.response.ResultVO;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class SignetMysqlController {
     @RequestMapping(value = "getAll")
     public ResultVO getAlls() {
         //todo mysql 数据源异常
-        boolean b = checkDatasource(mysqlSignetService);
+        boolean b = checkDatasource();
         if (b == false) {
             return ResultVO.FAIL(Code.ERROR500);
         }
@@ -43,7 +44,7 @@ public class SignetMysqlController {
             return ResultVO.FAIL(Code.ERROR_PARAMETER);
         }
         //todo mysql 数据源异常
-        boolean b = checkDatasource(mysqlSignetService);
+        boolean b = checkDatasource();
         if (b == false) {
             return ResultVO.FAIL(Code.ERROR500);
         }
@@ -60,7 +61,7 @@ public class SignetMysqlController {
             return ResultVO.FAIL(Code.ERROR_PARAMETER);
         }
         //todo mysql 数据源异常
-        boolean b = checkDatasource(mysqlSignetService);
+        boolean b = checkDatasource();
         if (b == false) {
             return ResultVO.FAIL(Code.ERROR500);
         }
@@ -78,12 +79,13 @@ public class SignetMysqlController {
 
     /**
      * 校验mysql数据源
-     * @param mysqlSignetService
      * @return
      */
-    public boolean checkDatasource(MysqlSignetService mysqlSignetService) {
-        //校验数据源是否异常
-        if (mysqlSignetService == null) {
+    public boolean checkDatasource() {
+        //mysql 数据源同步数据
+        String openMysql = AppConstant.OPEN_MYSQL;
+        if (openMysql.equalsIgnoreCase("false")) {
+            mysqlSignetService = null;
             return false;
         }
         return true;

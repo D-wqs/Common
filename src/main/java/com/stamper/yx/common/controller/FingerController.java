@@ -5,6 +5,7 @@ import com.stamper.yx.common.entity.Signet;
 import com.stamper.yx.common.entity.deviceModel.FingerPrintClearReq;
 import com.stamper.yx.common.entity.deviceModel.FingerPrintRecordReq;
 import com.stamper.yx.common.service.SignetService;
+import com.stamper.yx.common.service.mysql.MysqlFingerService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.response.Code;
 import com.stamper.yx.common.sys.response.ResultVO;
@@ -12,6 +13,7 @@ import com.stamper.yx.common.websocket.container.DefaultWebSocketPool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +32,8 @@ public class FingerController {
     private SignetService service;
     @Autowired
     private DefaultWebSocketPool pool;
+    @Autowired
+    private MysqlFingerService mysqlFingerService;
 
     /**
      * 指纹录入
@@ -48,9 +52,16 @@ public class FingerController {
         if (deviceId == null || userId == null || fingerAddr == null || StringUtils.isBlank(userName)) {
             return ResultVO.FAIL(Code.ERROR_PARAMETER);
         }
+        boolean b = checkDatasource();
         //不允许录入指纹事，指纹地址为0
         if (fingerAddr.intValue() == 0) {
-            return ResultVO.FAIL("指纹地址不能为0");
+            if(b==false){
+                //数据源
+                return ResultVO.FAIL("指纹地址不能为0");
+            }else{
+                //todo 使用mysql数据源，当传入的指纹地址为0，程序计算指纹地址
+                fingerAddr=mysqlFingerService.getFineFingerAddr(deviceId);
+            }
         }
         //校验设备是否存在以及是否在线
         Integer integer = deviceStatus(deviceId);
@@ -202,5 +213,18 @@ public class FingerController {
             return 3;
         }
         return 0;
+    }
+    /**
+     * 校验mysql数据源
+     * @return
+     */
+    public boolean checkDatasource() {
+        //mysql 数据源同步数据
+        String openMysql = AppConstant.OPEN_MYSQL;
+        if (openMysql.equalsIgnoreCase("false")) {
+            mysqlFingerService = null;
+            return false;
+        }
+        return true;
     }
 }

@@ -104,7 +104,7 @@
         WHERE
         delete_date IS NULL
         AND device_id=#{deviceID}
-        LIMIT 1
+--         LIMIT 1
     </select>
     <select id="getBydeviceId" parameterType="integer" resultMap="BaseResultMap">
         SELECT
@@ -127,7 +127,7 @@
         <if test="applicationID!=null">
             AND application_id=#{applicationID}
         </if>
-        limit 1
+--         limit 1
     </select>
 
 </mapper>

@@ -23,10 +23,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheManagerUtils;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -115,11 +117,11 @@ public class CommonApplication implements CommandLineRunner {
 
         //mysql 数据源同步数据
         String openMysql = AppConstant.OPEN_MYSQL;
-        if(openMysql.equalsIgnoreCase("false")){
-            mysqlSignetService=null;
+        if (openMysql.equalsIgnoreCase("false")) {
+            mysqlSignetService = null;
             log.info("*****停止mysql数据源的使用*****");
         }
-        if(mysqlSignetService!=null){
+        if (mysqlSignetService != null) {
             mysqlSignetService.save(signet);
         }
         log.info("----------初始化测试设备完成---------");
@@ -134,12 +136,13 @@ public class CommonApplication implements CommandLineRunner {
         log.info("------------缓存加载完毕---------");
         log.info("------------运行完毕----------");
     }
+
     @Bean
     public MultipartConfigElement multipartConfigElement() {
         MultipartConfigFactory factory = new MultipartConfigFactory();
         factory.setMaxFileSize(102400000);
         factory.setMaxRequestSize(102400000);
-        String location = System.getProperty("user.dir") + File.separator+"upload";
+        String location = System.getProperty("user.dir") + File.separator + "upload";
         File tmpFile = new File(location);
         if (!tmpFile.exists()) {
             tmpFile.mkdirs();

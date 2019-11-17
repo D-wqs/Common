@@ -53,8 +53,8 @@ public class SignetController {
     private DeviceMessageService deviceMessageService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private MqSender mqSender;
+//    @Autowired
+//    private MqSender mqSender;
 
     //    @RequestMapping(value = "/getAll", method = RequestMethod.GET)
 //    public ResultVO getAll(@RequestParam(required = false, defaultValue = "10") Integer pageSize,
