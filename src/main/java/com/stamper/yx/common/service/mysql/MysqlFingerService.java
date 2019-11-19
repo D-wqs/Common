@@ -21,4 +21,5 @@ public interface MysqlFingerService {
     //获取最大指纹地址
     Integer getFineFingerAddr(Integer deviceId);
     Finger getByUserAndDevice(Integer userId,Integer deviceId);
+    Finger getFinger(Finger finger);
 }

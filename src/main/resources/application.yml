@@ -68,4 +68,4 @@ datasource:
 #服务关停
 openType:
   rabbit: false
-  mysql: false
+  mysql: true

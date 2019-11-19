@@ -112,8 +112,8 @@
     <!--<logger name="com.qyunxi.moduls.app_yxyz.dao" level="DEBUG"/>-->
     <!-- project default level -->
     <logger name="com.stamper.yx.common.service" level="ERROR" />
-
-    <!-- 日志输出级别 -->
+    <!--<logger name="MyBatis" level="DEBUG" addtivity="false"></logger>-->
+    <!-- 日志输出级别 INFO-->
     <root level="INFO">
         <appender-ref ref="console" />
         <appender-ref ref="infoFile" />
@@ -121,4 +121,5 @@
         <appender-ref ref="errorFile" />
         <!--<appender-ref ref="MyBatis" />-->
     </root>
+
 </configuration>

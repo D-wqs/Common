@@ -107,7 +107,7 @@ public class IMysqlFingerService implements MysqlFingerService {
                 i++;
             }
         }
-        return maxFingerAddr + 1;
+        return 1;
     }
 
     @Override
@@ -115,6 +115,15 @@ public class IMysqlFingerService implements MysqlFingerService {
         if (userId != null && deviceId != null) {
             Finger byUser = mapper.getByUser(deviceId, userId);
             return byUser;
+        }
+        return null;
+    }
+
+    @Override
+    public Finger getFinger(Finger finger) {
+        if(finger!=null){
+            Finger finger1 = mapper.getFinger(finger);
+            return finger1;
         }
         return null;
     }

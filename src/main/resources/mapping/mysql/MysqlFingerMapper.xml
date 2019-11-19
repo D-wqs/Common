@@ -73,7 +73,7 @@
       	  finger
         WHERE
       	  delete_date IS NULL
-        AND device_id = #{_parameter}
+        AND device_id = #{deviceId}
 --         LIMIT 1
     </select>
     <select id="getByUser" resultMap="BaseResultMap">
@@ -95,6 +95,17 @@
         WHERE
         delete_date IS NULL
         AND device_id = #{deviceId}
+    </select>
+    <select id="getFinger" resultType="com.stamper.yx.common.entity.Finger">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        finger
+        WHERE
+        delete_date IS NULL
+        AND device_id = #{deviceId}
+        AND user_id=#{userId}
+        AND finger_addr=#{fingerAddr}
     </select>
 
 

@@ -178,10 +178,27 @@ public class CallBackController {
                 int res = body.getRes();
                 if (res == 0) {
                     //录入成功,获取对应设备的指纹信息
-                    int userID = body.getUserID();
+                    int userId = body.getUserID();
                     int deviceId = body.getDeviceID();
-                    Finger finger =mysqlFingerService.getByUserAndDevice(userID,deviceId);
-                    mysqlFingerService.save(finger);
+                    int fingerAddr = body.getFingerAddr();
+                    String userName = body.getUserName();
+                    Finger finger = new Finger();
+                    finger.setFingerAddr(fingerAddr);
+                    finger.setUserId(userId);
+                    finger.setUserName(userName);
+                    finger.setDeviceId(deviceId);
+                    try {
+                        Finger finger1 = mysqlFingerService.getFinger(finger);
+                        if(finger1==null){
+                            mysqlFingerService.insert(finger);
+                        }else{
+                            finger.setUpdateDate(new Date());
+                            finger.setId(finger1.getId());
+                            mysqlFingerService.update(finger);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
