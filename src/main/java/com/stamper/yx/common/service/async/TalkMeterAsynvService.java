@@ -1,15 +1,8 @@
 package com.stamper.yx.common.service.async;
 
-import com.esotericsoftware.minlog.Log;
-import com.stamper.yx.common.controller.DeviceWebSocket;
-import com.stamper.yx.common.entity.MHPkg;
-import com.stamper.yx.common.entity.Signet;
-import com.stamper.yx.common.entity.User;
-import com.stamper.yx.common.entity.deviceModel.WifiInfoRes;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.okhttpUtil.OkHttpCli;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

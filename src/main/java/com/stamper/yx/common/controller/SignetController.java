@@ -1,44 +1,33 @@
 package com.stamper.yx.common.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.stamper.yx.common.entity.DeviceMessage;
 import com.stamper.yx.common.entity.MHPkg;
 import com.stamper.yx.common.entity.Signet;
 import com.stamper.yx.common.entity.User;
 import com.stamper.yx.common.entity.deviceModel.*;
-import com.stamper.yx.common.entity.mq.MQFinger;
-import com.stamper.yx.common.entity.mq.MQPKG;
-import com.stamper.yx.common.entity.mq.PushApplication;
 import com.stamper.yx.common.service.DeviceMessageService;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.UserService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheGlobal;
 import com.stamper.yx.common.sys.cache.EHCacheUtil;
-import com.stamper.yx.common.sys.context.SpringContextUtils;
 import com.stamper.yx.common.sys.jwt.AccessToken;
 import com.stamper.yx.common.sys.jwt.ApplicationToken;
 import com.stamper.yx.common.sys.jwt.JwtUtil;
-import com.stamper.yx.common.sys.mq.MqSender;
 import com.stamper.yx.common.sys.response.Code;
 import com.stamper.yx.common.sys.response.ResultVO;
 import com.stamper.yx.common.websocket.container.DefaultWebSocketPool;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.message.ReusableMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.concurrent.Future;
 
-import static org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers.data;
 
 @Slf4j
 @RestController
@@ -630,241 +619,241 @@ public class SignetController {
     /**
      * 真正通知设备上传日志的方法
      */
-    public void _getLogFile(MQPKG mhPkg) {
-        if (mhPkg != null && mhPkg.getDeviceId() != null) {
-            pool.send(mhPkg.getDeviceId() + "", mhPkg.getData());
-        }
-    }
-
-    /**
-     * 消息队列接收：推送申请单
-     */
-    public ResultVO pushApplication(MQPKG pkg) {
-        String data = pkg.getData();
-        PushApplication application = null;
-        if (StringUtils.isNotBlank(data)) {
-            application = JSONObject.parseObject(data, PushApplication.class);
-        }
-
-        if (application != null) {
-            Integer signetId = application.getSignetId();
-            Signet signet = signetService.get(signetId);
-            if (signet == null) {
-                return ResultVO.FAIL("该印章不存在");
-            }
-            if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
-                //印章已锁定了,无法开启/关闭指纹模式
-                return ResultVO.FAIL("设备已被锁定,无法链接wifi");
-            }
-
-            DeviceWebSocket socket = pool.get(signetId + "");
-            if (socket == null || !socket.isOpen()) {
-                return ResultVO.FAIL("指令下发失败,设备当前不在线或网络不稳定,请稍后重试");
-            }
-
-            int status = socket.getStatus();
-            if (status == 1) {
-                return ResultVO.FAIL("该设备正在使用中,请关锁后推送");
-            }
-
-            //生成token
-            ApplicationToken applicationToken = new ApplicationToken();
-            applicationToken.setApplication_id(application.getApplicationId());
-            applicationToken.setStatus(4);
-            applicationToken.setIs_qss(application.getIsQss());
-            String token = JwtUtil.createJWT2(applicationToken);
-            if (StringUtils.isNotBlank(token)) {
-                /**生成请求实体*/
-                ApplicationStatusReq req = new ApplicationStatusReq();
-                req.setApplicationToken(token);
-                req.setUseCount(application.getUseCount());
-                req.setIsQss(application.getIsQss());
-                req.setStatus(4);
-                req.setApplicationTitle(application.getTitle());
-                req.setApplicationID(application.getApplicationId());
-                req.setUserName(application.getUserName());
-                req.setUserID(application.getUserId());
-                req.setTotalCount(application.getTotalCount());
-                req.setNeedCount(application.getNeedCount());
-                MHPkg res = MHPkg.res(AppConstant.APPLICATION_STATUS_REQ, req);
-                pool.send(application.getSignetId() + "", res);
-                log.info("消息队列下发推送申请单指令成功");
-            }
-        }
-        return ResultVO.FAIL("指令下发失败");
-    }
-
-    /**
-     * 真正的指纹录入
-     */
-    public void _fingerPrint(MQPKG pkg) {
-        //TODO 区别于线上项目，这里只需要将发送来的数据直接接收即可
-        String data = pkg.getData();
-        if (StringUtils.isBlank(data)) {
-            return;
-        }
-        Integer deviceId = pkg.getDeviceId();
-        if (deviceId == null || deviceId.intValue() == 0) {
-            log.info("【消息队列接收】当前设备id不存在");
-            return;
-        }
-        Signet signet = signetService.get(deviceId);
-        if (signet == null) {
-            log.info("【消息队列接收】当前设备不存在：{{}}", deviceId);
-            return;
-        }
-        if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
-            log.info("【消息队列接收】当前设备已锁定，需解锁", deviceId);
-            return;
-        }
-        if (deviceId != null && deviceId.intValue() != 0) {
-            DeviceWebSocket webSocket = pool.get(deviceId + "");
-            if (webSocket != null) {
-                int status = webSocket.getStatus();
-                if (status == 1) {
-                    // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
-                    log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", deviceId);
-                    return;
-                }
-                pool.send(deviceId + "", data);
-            }
-        }
-    }
-
-    /**
-     * 真正删除指纹
-     */
-    public void _cleanOne(MQPKG pkg) {
-        Signet signet = verifyMqPkg(pkg);
-        if(signet==null){
-            log.info("【消息队列接收】指纹删除异常，请检查verify返回");
-            return;
-        }
-        //todo 区别于线上项目，这里的指令数据都在data里，校验后直接发送
-        if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
-            log.info("【消息队列接收】当前设备已锁定，需解锁", signet.getId());
-            return;
-        }
-        //上一个verify已经检验了deviceId
-        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
-        if (webSocket != null) {
-            int status = webSocket.getStatus();
-            if (status == 1) {
-                // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
-                log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", signet.getId());
-                return;
-            }
-            pool.send(signet.getId() + "", data);
-        }
-
-    }
-    /**
-     * 真正的指纹清空
-     */
-    public void _cleanAll(MQPKG pkg){
-        Signet signet = verifyMqPkg(pkg);
-        if(signet==null){
-            log.info("【消息队列接收】指纹清空异常，请检查verify返回");
-        }
-        //todo 区别于线上项目，这里的指令数据都在data里，校验后直接发送
-        if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
-            log.info("【消息队列接收】当前设备已锁定，需解锁", signet.getId());
-            return;
-        }
-        //上一个verify已经检验了deviceId
-        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
-        if (webSocket != null) {
-            int status = webSocket.getStatus();
-            if (status == 1) {
-                // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
-                log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", signet.getId());
-                return;
-            }
-            pool.send(signet.getId() + "", data);
-        }
-    }
-
-    public void commandToDevice(MQPKG pkg){
-        Signet signet = verifyMqPkg(pkg);
-        if(signet==null){
-            log.info("【消息队列接收】指令下发异常，请检查verify返回");
-        }
-        //todo 区别于线上项目，这里的指令数据都在data里，校验后直接发送
-        if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
-            log.info("【消息队列接收】当前设备已锁定，需解锁", signet.getId());
-            return;
-        }
-        //上一个verify已经检验了deviceId
-        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
-        if (webSocket != null) {
-            int status = webSocket.getStatus();
-            if (status == 1) {
-                // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
-                log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", signet.getId());
-                return;
-            }
-            webSocket.send(pkg.getData());
-        }
-    }
-    //真正的远程锁定
-    public void _setRemoteLock(MQPKG pkg){
-        Signet signet = verifyMqPkg(pkg);
-        if(signet==null){
-            log.info("【消息队列接收】指令下发异常，请检查verify返回");
-        }
-
-        //上一个verify已经检验了deviceId
-        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
-        if (webSocket != null) {
-            int status = webSocket.getStatus();
-            if (status == 1) {
-                // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
-                log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", signet.getId());
-                return;
-            }
-            webSocket.send(pkg.getData());
-        }
-    }
-    //真正的结束申请单
-    public void _endApplication(MQPKG pkg){
-        Signet signet = verifyMqPkg(pkg);
-        if(signet==null){
-            log.info("【消息队列接收】指令下发异常，请检查verify返回");
-        }
-
-        //上一个verify已经检验了deviceId
-        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
-        if (webSocket != null) {
-            webSocket.send(pkg.getData());
-        }
-    }
-    /**
-     * Mq校验：
-     * data指令是否为空
-     * deviceId是否不存在
-     * 返回一个signet
-     * @param pkg
-     * @return
-     */
-    public Signet verifyMqPkg(MQPKG pkg) {
-        if (pkg != null) {
-            String data = pkg.getData();
-            if (StringUtils.isBlank(data)) {
-                log.info("【消息队列接收】MQPKG的指令数据为空");
-                return null;
-            }
-            Integer deviceId = pkg.getDeviceId();
-            if (deviceId == null || deviceId.intValue() == 0) {
-                log.info("【消息队列接收】当前设备id不存在");
-                return null;
-            }
-            Signet signet = signetService.get(deviceId);
-            if (signet == null) {
-                log.info("【消息队列接收】当前设备{{}}不存在", deviceId);
-                return null;
-            }
-            return signet;
-        }
-        return null;
-    }
+//    public void _getLogFile(MQPKG mhPkg) {
+//        if (mhPkg != null && mhPkg.getDeviceId() != null) {
+//            pool.send(mhPkg.getDeviceId() + "", mhPkg.getData());
+//        }
+//    }
+//
+//    /**
+//     * 消息队列接收：推送申请单
+//     */
+//    public ResultVO pushApplication(MQPKG pkg) {
+//        String data = pkg.getData();
+//        PushApplication application = null;
+//        if (StringUtils.isNotBlank(data)) {
+//            application = JSONObject.parseObject(data, PushApplication.class);
+//        }
+//
+//        if (application != null) {
+//            Integer signetId = application.getSignetId();
+//            Signet signet = signetService.get(signetId);
+//            if (signet == null) {
+//                return ResultVO.FAIL("该印章不存在");
+//            }
+//            if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
+//                //印章已锁定了,无法开启/关闭指纹模式
+//                return ResultVO.FAIL("设备已被锁定,无法链接wifi");
+//            }
+//
+//            DeviceWebSocket socket = pool.get(signetId + "");
+//            if (socket == null || !socket.isOpen()) {
+//                return ResultVO.FAIL("指令下发失败,设备当前不在线或网络不稳定,请稍后重试");
+//            }
+//
+//            int status = socket.getStatus();
+//            if (status == 1) {
+//                return ResultVO.FAIL("该设备正在使用中,请关锁后推送");
+//            }
+//
+//            //生成token
+//            ApplicationToken applicationToken = new ApplicationToken();
+//            applicationToken.setApplication_id(application.getApplicationId());
+//            applicationToken.setStatus(4);
+//            applicationToken.setIs_qss(application.getIsQss());
+//            String token = JwtUtil.createJWT2(applicationToken);
+//            if (StringUtils.isNotBlank(token)) {
+//                /**生成请求实体*/
+//                ApplicationStatusReq req = new ApplicationStatusReq();
+//                req.setApplicationToken(token);
+//                req.setUseCount(application.getUseCount());
+//                req.setIsQss(application.getIsQss());
+//                req.setStatus(4);
+//                req.setApplicationTitle(application.getTitle());
+//                req.setApplicationID(application.getApplicationId());
+//                req.setUserName(application.getUserName());
+//                req.setUserID(application.getUserId());
+//                req.setTotalCount(application.getTotalCount());
+//                req.setNeedCount(application.getNeedCount());
+//                MHPkg res = MHPkg.res(AppConstant.APPLICATION_STATUS_REQ, req);
+//                pool.send(application.getSignetId() + "", res);
+//                log.info("消息队列下发推送申请单指令成功");
+//            }
+//        }
+//        return ResultVO.FAIL("指令下发失败");
+//    }
+//
+//    /**
+//     * 真正的指纹录入
+//     */
+//    public void _fingerPrint(MQPKG pkg) {
+//        //TODO 区别于线上项目，这里只需要将发送来的数据直接接收即可
+//        String data = pkg.getData();
+//        if (StringUtils.isBlank(data)) {
+//            return;
+//        }
+//        Integer deviceId = pkg.getDeviceId();
+//        if (deviceId == null || deviceId.intValue() == 0) {
+//            log.info("【消息队列接收】当前设备id不存在");
+//            return;
+//        }
+//        Signet signet = signetService.get(deviceId);
+//        if (signet == null) {
+//            log.info("【消息队列接收】当前设备不存在：{{}}", deviceId);
+//            return;
+//        }
+//        if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
+//            log.info("【消息队列接收】当前设备已锁定，需解锁", deviceId);
+//            return;
+//        }
+//        if (deviceId != null && deviceId.intValue() != 0) {
+//            DeviceWebSocket webSocket = pool.get(deviceId + "");
+//            if (webSocket != null) {
+//                int status = webSocket.getStatus();
+//                if (status == 1) {
+//                    // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
+//                    log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", deviceId);
+//                    return;
+//                }
+//                pool.send(deviceId + "", data);
+//            }
+//        }
+//    }
+//
+//    /**
+//     * 真正删除指纹
+//     */
+//    public void _cleanOne(MQPKG pkg) {
+//        Signet signet = verifyMqPkg(pkg);
+//        if(signet==null){
+//            log.info("【消息队列接收】指纹删除异常，请检查verify返回");
+//            return;
+//        }
+//        //todo 区别于线上项目，这里的指令数据都在data里，校验后直接发送
+//        if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
+//            log.info("【消息队列接收】当前设备已锁定，需解锁", signet.getId());
+//            return;
+//        }
+//        //上一个verify已经检验了deviceId
+//        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
+//        if (webSocket != null) {
+//            int status = webSocket.getStatus();
+//            if (status == 1) {
+//                // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
+//                log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", signet.getId());
+//                return;
+//            }
+//            pool.send(signet.getId() + "", data);
+//        }
+//
+//    }
+//    /**
+//     * 真正的指纹清空
+//     */
+//    public void _cleanAll(MQPKG pkg){
+//        Signet signet = verifyMqPkg(pkg);
+//        if(signet==null){
+//            log.info("【消息队列接收】指纹清空异常，请检查verify返回");
+//        }
+//        //todo 区别于线上项目，这里的指令数据都在data里，校验后直接发送
+//        if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
+//            log.info("【消息队列接收】当前设备已锁定，需解锁", signet.getId());
+//            return;
+//        }
+//        //上一个verify已经检验了deviceId
+//        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
+//        if (webSocket != null) {
+//            int status = webSocket.getStatus();
+//            if (status == 1) {
+//                // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
+//                log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", signet.getId());
+//                return;
+//            }
+//            pool.send(signet.getId() + "", data);
+//        }
+//    }
+//
+//    public void commandToDevice(MQPKG pkg){
+//        Signet signet = verifyMqPkg(pkg);
+//        if(signet==null){
+//            log.info("【消息队列接收】指令下发异常，请检查verify返回");
+//        }
+//        //todo 区别于线上项目，这里的指令数据都在data里，校验后直接发送
+//        if (signet.getStatus() != null && signet.getStatus().intValue() == 4) {
+//            log.info("【消息队列接收】当前设备已锁定，需解锁", signet.getId());
+//            return;
+//        }
+//        //上一个verify已经检验了deviceId
+//        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
+//        if (webSocket != null) {
+//            int status = webSocket.getStatus();
+//            if (status == 1) {
+//                // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
+//                log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", signet.getId());
+//                return;
+//            }
+//            webSocket.send(pkg.getData());
+//        }
+//    }
+//    //真正的远程锁定
+//    public void _setRemoteLock(MQPKG pkg){
+//        Signet signet = verifyMqPkg(pkg);
+//        if(signet==null){
+//            log.info("【消息队列接收】指令下发异常，请检查verify返回");
+//        }
+//
+//        //上一个verify已经检验了deviceId
+//        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
+//        if (webSocket != null) {
+//            int status = webSocket.getStatus();
+//            if (status == 1) {
+//                // 当前客户端状态,初始化为'关锁状态'  0:关锁 1:开锁
+//                log.info("【消息队列接收】当前设备{{}}正在使用中，请关锁后重试", signet.getId());
+//                return;
+//            }
+//            webSocket.send(pkg.getData());
+//        }
+//    }
+//    //真正的结束申请单
+//    public void _endApplication(MQPKG pkg){
+//        Signet signet = verifyMqPkg(pkg);
+//        if(signet==null){
+//            log.info("【消息队列接收】指令下发异常，请检查verify返回");
+//        }
+//
+//        //上一个verify已经检验了deviceId
+//        DeviceWebSocket webSocket = pool.get(signet.getId() + "");
+//        if (webSocket != null) {
+//            webSocket.send(pkg.getData());
+//        }
+//    }
+//    /**
+//     * Mq校验：
+//     * data指令是否为空
+//     * deviceId是否不存在
+//     * 返回一个signet
+//     * @param pkg
+//     * @return
+//     */
+//    public Signet verifyMqPkg(MQPKG pkg) {
+//        if (pkg != null) {
+//            String data = pkg.getData();
+//            if (StringUtils.isBlank(data)) {
+//                log.info("【消息队列接收】MQPKG的指令数据为空");
+//                return null;
+//            }
+//            Integer deviceId = pkg.getDeviceId();
+//            if (deviceId == null || deviceId.intValue() == 0) {
+//                log.info("【消息队列接收】当前设备id不存在");
+//                return null;
+//            }
+//            Signet signet = signetService.get(deviceId);
+//            if (signet == null) {
+//                log.info("【消息队列接收】当前设备{{}}不存在", deviceId);
+//                return null;
+//            }
+//            return signet;
+//        }
+//        return null;
+//    }
 }
