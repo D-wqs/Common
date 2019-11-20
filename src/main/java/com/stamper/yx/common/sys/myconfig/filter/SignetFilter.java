@@ -3,10 +3,12 @@ package com.stamper.yx.common.sys.myconfig.filter;
 import com.alibaba.fastjson.JSONObject;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.jwt.JwtUtil;
+import com.stamper.yx.common.sys.myconfig.IgnorePath;
 import com.stamper.yx.common.sys.response.Code;
 import com.stamper.yx.common.sys.response.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,26 +23,29 @@ import java.util.List;
 @Slf4j
 @Component
 public class SignetFilter extends OncePerRequestFilter{
+    @Autowired
+    private IgnorePath ignorePath;
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         log.info("指令过滤器");
 //        获取path
         String requestURI = httpServletRequest.getRequestURI();
         log.info("请求path:{{}}",requestURI);
-        List<String> ignorePath=new ArrayList<>();
-        ignorePath.add("/device/getAccessToken");
-        ignorePath.add("/device/ws");//websocket地址
-        ignorePath.add("/device/deviceCallBack/res");//设备回调到本地的地址
-        ignorePath.add("/device/config/addConfigError");//设备日志上传
-        ignorePath.add("/device/config/updateAPK");//更新apk
-        ignorePath.add("/device/sealRecordInfo/addEasyInfo");//记录上传
-        ignorePath.add("/device/sealRecordInfo/addNormalInfo");
-        ignorePath.add("/device/sealRecordInfo/addAuditInfo");
-        ignorePath.add("/device/config/getConfigByUUID");//获取配置
-        ignorePath.add("/device/config/updateConfigByUUID");//更新设备配置
-        ignorePath.add("/device/deviceCallBack/moduleCallback");//模块回调请求本地不拦截
-        ignorePath.add("/device/sealRecordInfo/meter");//测试高拍仪地址
-        if(!ignorePath.contains(requestURI)){
+//        List<String> ignorePath=new ArrayList<>();
+//        ignorePath.add("/device/getAccessToken");
+//        ignorePath.add("/device/ws");//websocket地址
+//        ignorePath.add("/device/deviceCallBack/res");//设备回调到本地的地址
+//        ignorePath.add("/device/config/addConfigError");//设备日志上传
+//        ignorePath.add("/device/config/updateAPK");//更新apk
+//        ignorePath.add("/device/sealRecordInfo/addEasyInfo");//记录上传
+//        ignorePath.add("/device/sealRecordInfo/addNormalInfo");
+//        ignorePath.add("/device/sealRecordInfo/addAuditInfo");
+//        ignorePath.add("/device/config/getConfigByUUID");//获取配置
+//        ignorePath.add("/device/config/updateConfigByUUID");//更新设备配置
+//        ignorePath.add("/device/deviceCallBack/moduleCallback");//模块回调请求本地不拦截
+//        ignorePath.add("/device/sealRecordInfo/meter");//测试高拍仪地址
+        List<String> paths = ignorePath.getPaths();
+        if(!paths.contains(requestURI)){
             String token = httpServletRequest.getHeader(AppConstant.ACCESSTOKEN_KEY_PRIFIX);
             System.out.println("请求头：" + token);
             if (token == null|| StringUtils.isBlank(token)) {

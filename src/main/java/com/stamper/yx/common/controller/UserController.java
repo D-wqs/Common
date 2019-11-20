@@ -6,6 +6,7 @@ import com.stamper.yx.common.sys.cache.EHCacheGlobal;
 import com.stamper.yx.common.sys.cache.EHCacheUtil;
 import com.stamper.yx.common.sys.jwt.JwtUtil;
 import com.stamper.yx.common.sys.md5.MD5;
+import com.stamper.yx.common.sys.myconfig.IgnorePath;
 import com.stamper.yx.common.sys.response.Code;
 import com.stamper.yx.common.sys.response.ResultVO;
 import lombok.extern.slf4j.Slf4j;

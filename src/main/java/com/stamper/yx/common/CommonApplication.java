@@ -12,10 +12,12 @@ import com.stamper.yx.common.service.mysql.MysqlSignetService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheUtil;
 import com.stamper.yx.common.sys.md5.MD5;
+import com.stamper.yx.common.sys.myconfig.IgnorePath;
 import com.stamper.yx.common.sys.okhttpUtil.OkHttpCli;
 import com.stamper.yx.common.websocket.core.DefaultWebSocket;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.ehcache.CacheManager;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,11 @@ import org.springframework.cache.ehcache.EhCacheManagerUtils;
 import org.springframework.context.annotation.Bean;
 
 import javax.servlet.MultipartConfigElement;
+import javax.sound.midi.Soundbank;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @MapperScan("com.stamper.yx.common.mapper")

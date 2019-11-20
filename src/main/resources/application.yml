@@ -24,12 +24,35 @@ server:
 mybatis:
   type-aliases-package: com.stamper.yx.common.entity
   mapper-locations: classpath:mapping/*.xml
+#配置不受校验的地址
+#   /device/getAccessToken #获取token
+#    /device/ws #websocket地址
+#    /device/deviceCallBack/res #设备回调
+#    /device/config/addConfigError  #
+#    /device/config/updateAPK #更新apk
+#    /device/sealRecordInfo/addEasyInfo #指纹模式上传
+#    /device/sealRecordInfo/addNormalInfo #申请单模式上传
+#    /device/sealRecordInfo/addAuditInfo #审计模式上传
+#    /device/config/getConfigByUUID #获取配置信息
+#    /device/config/updateConfigByUUID #更新配置信息
+#    /device/deviceCallBack/moduleCallback #模块回调地址
+#    /device/sealRecordInfo/meter #高拍仪记录上传
 
-config-attributes:
-  uuid: 6d34ec9ac4f4338d8a1102acbe237172_7
-  ignorePathList:
-    - /user/login
-    - /user/hello
+ignorePaths:
+  test: hello
+  Paths:
+    - /device/getAccessToken
+    - /device/ws
+    - /device/deviceCallBack/res
+    - /device/config/addConfigError
+    - /device/config/updateAPK
+    - /device/sealRecordInfo/addEasyInfo
+    - /device/sealRecordInfo/addNormalInfo
+    - /device/sealRecordInfo/addAuditInfo
+    - /device/config/getConfigByUUID
+    - /device/config/updateConfigByUUID
+    - /device/deviceCallBack/moduleCallback
+    - /device/sealRecordInfo/meter
 
 #ok.http.connect-timeout=5
 #ok.http.read-timeout=30
