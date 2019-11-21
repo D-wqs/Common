@@ -106,8 +106,11 @@ public class IMysqlFingerService implements MysqlFingerService {
                 }
                 i++;
             }
+        }else{
+            //地址不存在？，默认值0 实际传出地址1
+            maxFingerAddr=0;
         }
-        return 1;
+        return maxFingerAddr+1;
     }
 
     @Override

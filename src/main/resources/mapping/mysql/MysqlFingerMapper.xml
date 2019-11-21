@@ -95,6 +95,7 @@
         WHERE
         delete_date IS NULL
         AND device_id = #{deviceId}
+        ORDER BY finger_addr
     </select>
     <select id="getFinger" resultType="com.stamper.yx.common.entity.Finger">
         SELECT

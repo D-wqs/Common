@@ -113,10 +113,10 @@ public class FingerController {
         if (userId == null || fingerAddr == null || deviceId == null) {
             return ResultVO.FAIL(Code.ERROR_PARAMETER);
         }
-//        //删除指纹时，指纹地址不能为0，否则删除虽有响应，但是实际上没有删除
-//        if (fingerAddr.intValue() == 0) {
-//            return ResultVO.FAIL(Code.ERROR_PARAMETER);
-//        }
+        //删除指纹时，指纹地址不能为0，否则删除虽有响应，但是实际上没有删除
+        if (fingerAddr.intValue() == 0) {
+            return ResultVO.FAIL(Code.ERROR_PARAMETER);
+        }
         Integer integer = deviceStatus(deviceId);
         switch (integer) {
             case 0:

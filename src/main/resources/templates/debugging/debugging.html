@@ -151,6 +151,7 @@
                             <div class="card-header">指纹录入
                                 <blockquote>
                                     <small>
+                                        启用第二数据源后，指纹地址可以为0，将由程序计算指纹地址<br/>
                                         <cite title="Source Title"><b>ip:port:</b></cite>
                                         /device/finger/add
                                         <br>【返回值:ResultVO】
@@ -179,6 +180,7 @@
                             <div class="card-header">指纹删除
                                 <blockquote>
                                     <small>
+                                        指纹地址必须是录入地址，否则删除无效
                                         <cite title="Source Title"><b>ip:port:</b></cite>
                                         /device/finger/del
                                         <br>【返回值:ResultVO】
