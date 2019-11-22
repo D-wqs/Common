@@ -1,14 +1,14 @@
 package com.stamper.yx.common.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.stamper.yx.common.entity.Finger;
-import com.stamper.yx.common.entity.MHPkg;
-import com.stamper.yx.common.entity.Signet;
+import com.stamper.yx.common.entity.*;
 import com.stamper.yx.common.entity.deviceModel.FingerPrintClearRes;
 import com.stamper.yx.common.entity.deviceModel.FingerPrintClearResPkg;
 import com.stamper.yx.common.entity.deviceModel.FpRecordRes;
 import com.stamper.yx.common.entity.deviceModel.FpRecordResPkg;
 import com.stamper.yx.common.service.SignetService;
+import com.stamper.yx.common.service.mysql.MyApplicationService;
 import com.stamper.yx.common.service.mysql.MysqlFingerService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheGlobal;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.sound.sampled.Line;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author zhf_10@163.com
@@ -41,6 +42,8 @@ public class CallBackController {
     private DefaultWebSocketPool pool;
     @Autowired
     private MysqlFingerService mysqlFingerService;
+    @Autowired
+    private MyApplicationService myApplicationService;
 
     /**
      * 设备响应第三方回调接口(设备专用)
@@ -154,6 +157,11 @@ public class CallBackController {
                     break;
                 case AppConstant.CURRENT_APPLICATION_CLEAR_RES:
                     log.info("【回调】申请单结束的返回（设备确认按钮按下也会被触发）：{{}}", message);
+                    //todo 将通道置为0，可以接收申请单,否则仍会返回501
+                    DeviceWebSocket revice_closeButton = pool.get(signet.getId() + "");
+                    if(revice_closeButton!=null){
+                        revice_closeButton.setReceive(0);
+                    }
                     break;
                 case AppConstant.REMOTE_LOCK_RETURN_RES:
                     log.info("【回调】锁定设置的返回:{{}}", message);
@@ -240,6 +248,35 @@ public class CallBackController {
         try {
             String decrypt = AesUtil.decrypt(message, aesKey);
             log.info("【模块回调】设备：{}，事件类型：{},解密消息：{}",deviceId,event,decrypt);
+            switch (event){
+                case AppConstant.DEVICE_HISTORY_APPLICATION:
+//                {"Body":[{"applicationId":19,"useCount":3}],"Head":{"Cmd":13,"Magic":-46510,"SerialNum":0,"Version":1}}
+                    log.info("模块回调事件{{}}",event);
+                    //todo 更新申请单的使用次数，
+                    JSONObject jsonObject = JSONObject.parseObject(decrypt);
+                    String body = jsonObject.getString("Body");
+                    List<HistoryApplicationInfo> historyApplicationInfos = JSONArray.parseArray(body, HistoryApplicationInfo.class);
+                    HistoryApplicationInfo historyApplicationInfo = historyApplicationInfos.get(0);
+                    Integer applicationId = historyApplicationInfo.getApplicationId();
+                    Integer useCount = historyApplicationInfo.getUseCount();
+                    //更新申请单
+                    Applications applications=new Applications();
+                    applications.setApplicationId(applicationId);
+                    applications.setNeedCount(useCount);
+                    try {
+//                        myApplicationService.update(applications);
+                    } catch (Exception e) {
+                        log.error("【历史申请单使用次数同步】更新申请单失败");
+                        e.printStackTrace();
+                    }
+                    break;
+                case "":
+                    break;
+                default:
+                    log.info("【模块回调】未知事件请求-->{{}}", event);
+                    break;
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

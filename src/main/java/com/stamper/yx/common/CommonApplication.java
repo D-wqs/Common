@@ -28,6 +28,7 @@ import org.springframework.boot.web.servlet.MultipartConfigFactory;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheManagerUtils;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 import javax.servlet.MultipartConfigElement;
 import javax.sound.midi.Soundbank;
@@ -40,6 +41,7 @@ import java.util.UUID;
 @MapperScan("com.stamper.yx.common.mapper")
 @SpringBootApplication
 @EnableCaching
+@EnableAsync
 @Slf4j
 public class CommonApplication implements CommandLineRunner {
 

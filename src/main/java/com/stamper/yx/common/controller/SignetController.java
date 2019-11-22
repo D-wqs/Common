@@ -1,14 +1,13 @@
 package com.stamper.yx.common.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.stamper.yx.common.entity.DeviceMessage;
-import com.stamper.yx.common.entity.MHPkg;
-import com.stamper.yx.common.entity.Signet;
-import com.stamper.yx.common.entity.User;
+import com.stamper.yx.common.entity.*;
 import com.stamper.yx.common.entity.deviceModel.*;
+import com.stamper.yx.common.service.DeviceAsyncService;
 import com.stamper.yx.common.service.DeviceMessageService;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.UserService;
+import com.stamper.yx.common.service.mysql.MyApplicationService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheGlobal;
 import com.stamper.yx.common.sys.cache.EHCacheUtil;
@@ -42,6 +41,10 @@ public class SignetController {
     private DeviceMessageService deviceMessageService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private DeviceAsyncService deviceAsyncService;
+    @Autowired
+    private MyApplicationService myApplicationService;
 //    @Autowired
 //    private MqSender mqSender;
 
@@ -483,7 +486,7 @@ public class SignetController {
         }
         int receive = webSocket.getReceive();
         if(receive==1){
-            //todo 当前通道已收到申请单，不在接收申请单，只要盖章返回后，设置为0
+            //todo 当前通道已收到申请单，不再接收申请单，只要盖章返回后，设置为0
             return  ResultVO.FAIL(Code.ERROR501);
         }
         //设备是否在使用中
@@ -510,14 +513,33 @@ public class SignetController {
             req.setUserName(userName);
             req.setUserID(userId);
             req.setTotalCount(totalCount);//申请单总次数，原来的useCount
+            //TODO 根据第二数据源处理已使用的次数
+            if(AppConstant.OPEN_MYSQL.equalsIgnoreCase("true")){
+                //获取已使用的次数
+                Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
+                if(byApplicationId!=null){
+                    needCount=byApplicationId.getNeedCount();
+                }
+            }
             req.setNeedCount(needCount);
             MHPkg res = MHPkg.res(AppConstant.APPLICATION_STATUS_REQ, req);
             pool.send(deviceId + "", res);
             //Future future = pool.send(application.getSignetId() + "", res);
+
+            //todo 异步记录申请单,在第二数据源开启的前提下，备份到第二数据源
+            if(AppConstant.OPEN_MYSQL.equalsIgnoreCase("true")){
+                Applications applications=new Applications();
+                applications.setApplicationId(applicationId);
+                applications.setTitle(title);
+                applications.setTotalCount(totalCount);
+                applications.setNeedCount(needCount);
+                applications.setDeviceId(deviceId);
+                applications.setUserId(userId);
+                applications.setUserName(userName);
+                deviceAsyncService.synchApplications(applications);
+            }
+//            return ResultVO.FUTRUE(future);
             return ResultVO.OK("申请单推送指令已下发");
-            //异步记录申请单
-            //deviceAsyncService.pushApplication(future, req, pool.get(application.getSignetId() + ""));
-            //return ResultVO.FUTRUE(future);
         }
         return ResultVO.FAIL(Code.ERROR500);
 

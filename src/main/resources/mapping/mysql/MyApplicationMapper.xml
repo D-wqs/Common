@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.stamper.yx.common.mapper.mysql.MyApplicationMapper">
+    <resultMap id="BaseResultMap" type="com.stamper.yx.common.entity.Applications">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="application_id" property="applicationId" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="total_count" property="totalCount" jdbcType="INTEGER"/>
+        <result column="need_count" property="needCount" jdbcType="INTEGER"/>
+        <result column="device_id" property="deviceId" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="delete_date" property="deleteDate" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id,create_date,update_date,delete_date,application_id,title,total_count,need_count,device_id,user_id,user_name
+  </sql>
+    <insert id="insert" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into tj_applications (<include refid="Base_Column_List"/>)
+        values
+        (#{id},now(),now(),null,#{applicationId},#{title},#{totalCount},#{needCount},#{deviceId},#{userId},#{userName})
+    </insert>
+    <update id="update">
+        update tj_applications
+        <set>
+            <if test="updateDate != null">
+                update_date = NOW(),
+            </if>
+            <if test="deleteDate != null">
+                delete_date = #{deleteDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applicationId != null">
+                application_id = #{applicationId,jdbcType=INTEGER},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="totalCount != null">
+                total_count = #{totalCount,jdbcType=INTEGER},
+            </if>
+            <if test="needCount != null">
+                need_count = #{needCount,jdbcType=INTEGER},
+            </if>
+            <if test="deviceId != null">
+                device_id = #{deviceId,jdbcType=INTEGER},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=INTEGER},
+            </if>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where delete_date IS NULL
+        AND id = #{id,jdbcType=INTEGER}
+    </update>
+    <select id="getByApplicationId" resultType="integer" resultMap="BaseResultMap">
+        SELECT
+            <include refid="Base_Column_List"/>
+        FROM
+            tj_applications
+        WHERE
+            delete_date IS NULL
+            AND application_id = #{applicationId}
+--             LIMIT 1
+    </select>
+
+
+</mapper>

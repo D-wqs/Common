@@ -28,7 +28,7 @@ public class DeviceWebSocket extends DefaultWebSocket {
     private String addr = null;//当前客户端地址
     private String network = null;//当前客户端网络
 
-    private int receive=0;//TODO 【天津】标记通道已接受申请单，不在发送申请单指令
+    private int receive=0;//TODO 1【天津】标记通道已接受申请单，不在发送申请单指令 0表示能接受
 
     @Override
     protected void receiveMessage(String message) {

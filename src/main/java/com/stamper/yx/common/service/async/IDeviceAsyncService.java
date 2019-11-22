@@ -1,6 +1,7 @@
 package com.stamper.yx.common.service.async;
 
 import com.stamper.yx.common.controller.DeviceWebSocket;
+import com.stamper.yx.common.entity.Applications;
 import com.stamper.yx.common.entity.DeviceMessage;
 import com.stamper.yx.common.entity.MHPkg;
 import com.stamper.yx.common.entity.Signet;
@@ -10,6 +11,7 @@ import com.stamper.yx.common.service.DeviceAsyncService;
 import com.stamper.yx.common.service.DeviceMessageService;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.UserService;
+import com.stamper.yx.common.service.mysql.MyApplicationService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.okhttpUtil.OkHttpCli;
 import com.stamper.yx.common.websocket.container.DefaultWebSocketPool;
@@ -41,6 +43,8 @@ public class IDeviceAsyncService implements DeviceAsyncService {
 	private UserService userService;
 	@Autowired
 	private SignetService signetService;
+	@Autowired
+	private MyApplicationService myApplicationService;
 
 //	/**
 //	 * 指纹清空下发监控
@@ -526,5 +530,16 @@ public class IDeviceAsyncService implements DeviceAsyncService {
 		}
 	}
 
-
+	@Async
+	@Override
+	public void synchApplications(Applications applications) {
+		if(applications!=null){
+			try {
+				myApplicationService.save(applications);
+			} catch (Exception e) {
+				log.error("同步保存申请单到第二数据源失败：{{}}",applications.toString());
+				e.printStackTrace();
+			}
+		}
+	}
 }

@@ -1,6 +1,7 @@
 package com.stamper.yx.common.service;
 
 import com.stamper.yx.common.controller.DeviceWebSocket;
+import com.stamper.yx.common.entity.Applications;
 import com.stamper.yx.common.entity.Signet;
 import com.stamper.yx.common.entity.deviceModel.LoginApplication;
 import com.stamper.yx.common.entity.deviceModel.WifiInfoRes;
@@ -54,4 +55,7 @@ public interface DeviceAsyncService {
 //
 //	//同步印章最近5次申请单记录,解决印章无网情况下次数同步问题
 	void synchApplicationInfo(Signet signet, List<LoginApplication> loginApplicationInfo);
+
+	//同步保存就到第二数据源
+	void synchApplications(Applications applications);
 }
