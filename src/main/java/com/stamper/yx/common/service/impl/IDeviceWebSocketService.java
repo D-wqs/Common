@@ -288,9 +288,15 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
      */
     private void highDeviceOnUsing(@NotEmpty String message, @NotNull DeviceWebSocket webSocket) {
         webSocket.setStatus(1);
-
+        HighDeviceOnUsingPkg res = null;
+        try {
+            res = JSONObject.parseObject(message, HighDeviceOnUsingPkg.class);
+        } catch (Exception e) {
+            log.error("盖章拍照的返回解析json异常：{{}}",message);
+            e.printStackTrace();
+        }
+        HighDeviceOnUseRes body = res.getBody();
         //解析消息体
-        HighDeviceOnUseRes res = JSONObject.parseObject(message, HighDeviceOnUsingPkg.class).getBody();
         if (res != null) {
             Signet signet = null;
             try {
@@ -299,14 +305,14 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                 e.printStackTrace();
             }
             if (signet != null) {
-                Integer applicationID = res.getApplicationID();
-                Integer useTimes = res.getUseTimes();
+                Integer applicationID = body.getApplicationID();
+                Integer useTimes = body.getUseTimes();
 
                 //设备盖章通知:设备{印章(新2)} 次数{11} 申请单ID{101}   这里的useTimes是指设备出厂后的总体使用次数（出厂后由0累加）
                 log.info("设备盖章通知:设备{{}} 次数{{}} 申请单ID{{}}", signet.getName(), useTimes, applicationID);
 
                 //TODO 回调通知第三方使用次数同步
-                okHttpCli.sendCallback(signet, AppConstant.USE_COUNT, message);//使用次数同步
+                okHttpCli.sendCallback(signet, AppConstant.USE_COUNT, res);//使用次数同步
             }
         }
     }

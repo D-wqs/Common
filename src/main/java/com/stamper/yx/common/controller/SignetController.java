@@ -495,6 +495,20 @@ public class SignetController {
             log.info("该设备{{}} 正在使用中,请关锁后推送", deviceId);
             return ResultVO.FAIL("该设备正在使用中,请关锁后推送");
         }
+        //TODO 根据第二数据源处理已使用的次数
+        if(AppConstant.OPEN_MYSQL.equalsIgnoreCase("true")){
+            //获取已使用的次数
+            Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
+            if(byApplicationId!=null){
+                needCount=byApplicationId.getNeedCount();
+                int tag=totalCount - needCount;
+                if(tag<=0){
+                    //todo 当前申请单次数已使用完
+                    return ResultVO.FAIL("当前申请单次数已用完");
+                }
+            }
+        }
+
         //生成token
         ApplicationToken applicationToken = new ApplicationToken();
         applicationToken.setApplication_id(applicationId);
@@ -513,14 +527,6 @@ public class SignetController {
             req.setUserName(userName);
             req.setUserID(userId);
             req.setTotalCount(totalCount);//申请单总次数，原来的useCount
-            //TODO 根据第二数据源处理已使用的次数
-            if(AppConstant.OPEN_MYSQL.equalsIgnoreCase("true")){
-                //获取已使用的次数
-                Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
-                if(byApplicationId!=null){
-                    needCount=byApplicationId.getNeedCount();
-                }
-            }
             req.setNeedCount(needCount);
             MHPkg res = MHPkg.res(AppConstant.APPLICATION_STATUS_REQ, req);
             pool.send(deviceId + "", res);

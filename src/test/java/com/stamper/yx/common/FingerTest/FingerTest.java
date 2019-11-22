@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.stamper.yx.common.CommonApplication;
 import com.stamper.yx.common.entity.HistoryApplicationInfo;
+import com.stamper.yx.common.entity.deviceModel.HighDeviceOnUseRes;
+import com.stamper.yx.common.entity.deviceModel.HighDeviceOnUsingPkg;
 import com.stamper.yx.common.entity.deviceModel.LoginApplication;
 import com.stamper.yx.common.service.mysql.MysqlFingerService;
 import org.junit.Test;
@@ -40,6 +42,7 @@ public class FingerTest {
     }
     @Test
     public void test3(){
+        //这个章剩余的次数
         String decrypt="{\"Body\":[{\"applicationId\":19,\"useCount\":3}],\"Head\":{\"Cmd\":13,\"Magic\":-46510,\"SerialNum\":0,\"Version\":1}}";
         JSONObject jsonObject = JSONObject.parseObject(decrypt);
         String body = jsonObject.getString("Body");
@@ -47,6 +50,17 @@ public class FingerTest {
         HistoryApplicationInfo historyApplicationInfo = historyApplicationInfos.get(0);
         System.out.println(historyApplicationInfo);
 
+    }
+    @Test
+    public void test4(){
+        //useTimes：这个章在该公司使用的次数（出厂累加值）
+        String str="\"{\\\"Body\\\":{\\\"ApplicationID\\\":10,\\\"DeviceID\\\":1001,\\\"Res\\\":0,\\\"UseTimes\\\":13},\\\"Head\\\":{\\\"Magic\\\":42949207,\\\"Cmd\\\":4,\\\"SerialNum\\\":762,\\\"Version\\\":1}}\"";
+        String s = str.replaceAll("\\\\","");
+        System.out.println(str);
+        System.out.println(s);
+        String message="{\"Body\":{\"ApplicationID\":1001,\"DeviceID\":1001,\"Res\":0,\"UseTimes\":6},\"Head\":{\"Magic\":42949207,\"Cmd\":4,\"SerialNum\":1403,\"Version\":1}}";
+        HighDeviceOnUseRes res = JSONObject.parseObject(s, HighDeviceOnUsingPkg.class).getBody();
+        System.out.println(res.toString());
     }
 
 }

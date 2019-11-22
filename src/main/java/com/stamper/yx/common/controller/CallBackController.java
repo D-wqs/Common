@@ -3,10 +3,7 @@ package com.stamper.yx.common.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.stamper.yx.common.entity.*;
-import com.stamper.yx.common.entity.deviceModel.FingerPrintClearRes;
-import com.stamper.yx.common.entity.deviceModel.FingerPrintClearResPkg;
-import com.stamper.yx.common.entity.deviceModel.FpRecordRes;
-import com.stamper.yx.common.entity.deviceModel.FpRecordResPkg;
+import com.stamper.yx.common.entity.deviceModel.*;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.mysql.MyApplicationService;
 import com.stamper.yx.common.service.mysql.MysqlFingerService;
@@ -253,24 +250,63 @@ public class CallBackController {
 //                {"Body":[{"applicationId":19,"useCount":3}],"Head":{"Cmd":13,"Magic":-46510,"SerialNum":0,"Version":1}}
                     log.info("模块回调事件{{}}",event);
                     //todo 更新申请单的使用次数，
-                    JSONObject jsonObject = JSONObject.parseObject(decrypt);
-                    String body = jsonObject.getString("Body");
-                    List<HistoryApplicationInfo> historyApplicationInfos = JSONArray.parseArray(body, HistoryApplicationInfo.class);
-                    HistoryApplicationInfo historyApplicationInfo = historyApplicationInfos.get(0);
+                    HistoryApplicationInfo historyApplicationInfo = null;
+                    try {
+                        JSONObject jsonObject = JSONObject.parseObject(decrypt);
+                        String body = jsonObject.getString("Body");
+                        List<HistoryApplicationInfo> historyApplicationInfos = JSONArray.parseArray(body, HistoryApplicationInfo.class);
+                        historyApplicationInfo = historyApplicationInfos.get(0);
+                    } catch (Exception e) {
+                        log.error("模块回调事件{{}}，json转换失败",event);
+                        e.printStackTrace();
+                    }
                     Integer applicationId = historyApplicationInfo.getApplicationId();
                     Integer useCount = historyApplicationInfo.getUseCount();
+                    //=====================================================
+                    Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
+                    Integer totalCount = byApplicationId.getTotalCount();
+                    System.out.println("历史申请单回调");
+                    System.out.println("这个申请单的总次数"+totalCount);
+                    System.out.println("这个申请单已用的次数needCount："+useCount);
+                    //=-====================================================
                     //更新申请单
                     Applications applications=new Applications();
                     applications.setApplicationId(applicationId);
                     applications.setNeedCount(useCount);
+                    applications.setDeviceId(Integer.parseInt(deviceId));
                     try {
-//                        myApplicationService.update(applications);
+                        myApplicationService.save(applications);
                     } catch (Exception e) {
                         log.error("【历史申请单使用次数同步】更新申请单失败");
                         e.printStackTrace();
                     }
                     break;
-                case "":
+                case AppConstant.USE_COUNT://使用次数，盖章通知的返回
+                //{\"Body\":{\"ApplicationID\":1001,\"DeviceID\":1001,\"Res\":0,\"UseTimes\":6},\"Head\":{\"Magic\":42949207,\"Cmd\":4,\"SerialNum\":1403,\"Version\":1}}
+                    HighDeviceOnUseRes res = JSONObject.parseObject(decrypt, HighDeviceOnUsingPkg.class).getBody();
+                    //通过盖章通知的返回，得到当前已使用的次数，更新needCount
+                    Integer applicationID = res.getApplicationID();
+                    Integer useTimes = res.getUseTimes();
+                    Integer deviceId1 = res.getDeviceId();
+                    Applications apps=new Applications();
+                    apps.setApplicationId(applicationID);
+                    apps.setNeedCount(useTimes);
+                    apps.setDeviceId(deviceId1);
+                    //=====================================================
+                    Applications test = myApplicationService.getByApplicationId(applicationID);
+                    Integer totalCount_test = test.getTotalCount();
+                    System.out.println("每次盖章的返回");
+                    System.out.println("这个申请单的总次数"+totalCount_test);
+                    System.out.println("这个章当前已用的次数（应该是一次次累加的值）："+useTimes);
+                    //=-====================================================
+                    //TODO 通知对应的申请单 已用次数needCount加1
+                    Applications needCount_bak = myApplicationService.getByApplicationId(applicationID);
+                    Integer needCount = needCount_bak.getNeedCount();
+                    needCount_bak.setNeedCount(needCount+1);
+                    int update = myApplicationService.update(needCount_bak);
+                    if(update!=1){
+                        log.error("盖章通知的返回：通过申请单id（第三方业务id）：{{}}获取剩余次数，递减时保存失败,之前的已用次数needCouture{{}},应为{{}}",applicationID,needCount,needCount+1);
+                    }
                     break;
                 default:
                     log.info("【模块回调】未知事件请求-->{{}}", event);
