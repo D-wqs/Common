@@ -2,12 +2,15 @@ package com.stamper.yx.common.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.stamper.yx.common.controller.DeviceWebSocket;
+import com.stamper.yx.common.entity.AuditButtonInfo;
+import com.stamper.yx.common.entity.AuditButtonPkg;
 import com.stamper.yx.common.entity.MHPkg;
 import com.stamper.yx.common.entity.Signet;
 import com.stamper.yx.common.entity.deviceModel.*;
 import com.stamper.yx.common.service.DeviceAsyncService;
 import com.stamper.yx.common.service.DeviceWebSocketService;
 import com.stamper.yx.common.service.SignetService;
+import com.stamper.yx.common.service.mysql.MysqlSealRecordInfoService;
 import com.stamper.yx.common.service.mysql.MysqlSignetService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheGlobal;
@@ -46,6 +49,8 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
     private OkHttpCli okHttpCli;
     @Autowired
     private MysqlSignetService mysqlSignetService;
+    @Autowired
+    private MysqlSealRecordInfoService mysqlSealRecordInfoService;
 
     /**
      * 接待websocket发送过来的请求
@@ -124,7 +129,8 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                 updateSleepTime(message, webSocket);
                 break;
             case AppConstant.TAKE_AUDIT_PIC_REQ:    //审计按钮触发--高拍仪拍照
-
+                //印章解锁用章后，才能触发审计功能，此时通知高拍仪拍照
+                auditButton(message,webSocket);
             default:
                 log.info("未知协议请求-->{{}}", message);
                 break;
@@ -132,10 +138,37 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
     }
 
     /**
+     * 审计按钮被触发，通知高拍仪拍照(未绑定高拍仪则不处理)
+     * @param message
+     * @param webSocket
+     */
+    private void auditButton(@NotEmpty String message, @NotNull DeviceWebSocket webSocket) {
+        AuditButtonInfo body = JSONObject.parseObject(message, AuditButtonPkg.class).getBody();
+        //审计请求--目的是为了通知高拍仪拍照
+        Integer applicationID = body.getApplicationID();
+        Integer userID = body.getUserID();
+        String userName = body.getUserName();
+        Integer useTimes = body.getUseTimes();
+        log.info("审计按钮触发——获取到的参数：applicationID:{{}},userID:{{}},userName：{{}}，useTimes:{{}}",applicationID,userID,userName,useTimes);
+        //判断是否开启第二数据源
+        String openMysql = AppConstant.OPEN_MYSQL;
+        if(openMysql.equalsIgnoreCase("true")){
+            String uuid = webSocket.getUuid();
+            Signet byUUID = mysqlSignetService.getByUUID(uuid);
+            if(byUUID!=null){
+                //获取到印章，检查高拍仪绑定关系
+
+            }
+            return;
+        }
+        log.info("数据源未开启，不通知高拍仪拍照");
+
+    }
+    /**
      * 设置休眠 状态返回
      * {"Body":{"res":0,"sleepTime":4},"Head":{"Magic":42949207,"Cmd":83,"SerialNum":980,"Version":1}}
      */
-    private void updateSleepTime(@NotEmpty String message, @NotNull DeviceWebSocket webSocket) {
+        private void updateSleepTime(@NotEmpty String message, @NotNull DeviceWebSocket webSocket) {
         DeviceSleepTime sleepTime = JSONObject.parseObject(message, DeviceSleepTimePkg.class).getBody();
 
         if (sleepTime != null && sleepTime.getRes() != null && sleepTime.getRes().intValue() == 0) {
