@@ -31,5 +31,5 @@ public interface MysqlSealRecordInfoService {
      */
     List<SealRecordInfo> getByReal(@Param("uuid") String uuid,@Param("applicationId") Integer applicationId,@Param("count") Integer count);
 
-
+    SealRecordInfo getRecordAndAuditIs0(@Param("uuid") String uuid,@Param("applicationId") Integer applicationId,@Param("count") Integer count);
 }

@@ -32,4 +32,5 @@ public interface MySealRecordInfoMapper {
      */
     List<SealRecordInfo> getByReal(@Param("uuid") String uuid,@Param("applicationID") Integer applicationId,@Param("count") Integer count);
 
+    SealRecordInfo getRecordAndAuditIs0(@Param("uuid") String uuid,@Param("applicationID") Integer applicationId,@Param("count") Integer count);
 }

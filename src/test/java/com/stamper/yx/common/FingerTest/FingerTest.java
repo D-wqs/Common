@@ -3,6 +3,8 @@
 //import com.alibaba.fastjson.JSONArray;
 //import com.alibaba.fastjson.JSONObject;
 //import com.stamper.yx.common.CommonApplication;
+//import com.stamper.yx.common.entity.AuditButtonInfo;
+//import com.stamper.yx.common.entity.AuditButtonPkg;
 //import com.stamper.yx.common.entity.HistoryApplicationInfo;
 //import com.stamper.yx.common.entity.deviceModel.HighDeviceOnUseRes;
 //import com.stamper.yx.common.entity.deviceModel.HighDeviceOnUsingPkg;
@@ -63,4 +65,11 @@
 //        System.out.println(res.toString());
 //    }
 //
+//    @Test
+//    public void test5(){
+//        String str="{\"Body\":{\"UserName\":\"admin\",\"applicationID\":1,\"useTimes\":33,\"userID\":1},\"Crc\":\"\",\"Head\":{\"Cmd\":55,\"Magic\":42949207,\"SerialNum\":1,\"Version\":1}}";
+//        AuditButtonInfo body = JSONObject.parseObject(str, AuditButtonPkg.class).getBody();
+//        System.out.println(body);
+//
+//    }
 //}

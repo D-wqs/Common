@@ -138,4 +138,12 @@ public class IMysqlSealRecordInfoService implements MysqlSealRecordInfoService {
         }
         return null;
     }
+
+    @Override
+    public SealRecordInfo getRecordAndAuditIs0(String uuid, Integer applicationId, Integer count) {
+        if (StringUtils.isNotBlank(uuid) && applicationId != null && count != null) {
+            return mySealRecordInfoMapper.getRecordAndAuditIs0(uuid, applicationId, count);
+        }
+        return null;
+    }
 }

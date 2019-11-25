@@ -41,4 +41,14 @@ public class AuditButtonInfo {
     public void setApplicationID(Integer applicationID) {
         this.applicationID = applicationID;
     }
+
+    @Override
+    public String toString() {
+        return "AuditButtonInfo{" +
+                "userID=" + userID +
+                ", useTimes=" + useTimes +
+                ", userName='" + userName + '\'' +
+                ", applicationID=" + applicationID +
+                '}';
+    }
 }

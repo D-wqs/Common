@@ -106,7 +106,7 @@
         WHERE
         delete_date IS NULL
         AND device_id=#{deviceID,jdbcType=INTEGER}
---         LIMIT 1
+        -- LIMIT 1
     </select>
     <select id="getBydeviceId" parameterType="integer" resultMap="BaseResultMap">
         SELECT
@@ -129,6 +129,19 @@
         <if test="applicationID!=null">
             AND application_id=#{applicationID,jdbcType=INTEGER}
         </if>
+    </select>
+    <select id="getRecordAndAuditIs0" resultType="com.stamper.yx.common.entity.SealRecordInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        seal_record_info
+        WHERE
+        delete_date IS NULL
+        AND uuid=#{uuid,jdbcType=VARCHAR}
+        AND count=#{count,jdbcType=INTEGER}
+        AND application_id=#{applicationID,jdbcType=INTEGER}
+        AND is_audit=0
+        LIMIT 1
     </select>
 
 </mapper>
