@@ -30,6 +30,6 @@ public interface MySealRecordInfoMapper {
      *  2.指纹模式时无申请单id
      *
      */
-    SealRecordInfo getByReal(@Param("uuid") String uuid,@Param("applicationID") Integer applicationId,@Param("count") Integer count);
+    List<SealRecordInfo> getByReal(@Param("uuid") String uuid,@Param("applicationID") Integer applicationId,@Param("count") Integer count);
 
 }

@@ -5,46 +5,48 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
-    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
-    <result column="delete_date" property="deleteDate" jdbcType="TIMESTAMP" />
-    <result column="corp_id" property="corpId" jdbcType="VARCHAR" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="net_type" property="netType" jdbcType="VARCHAR" />
-    <result column="addr" property="addr" jdbcType="VARCHAR" />
-    <result column="count" property="count" jdbcType="INTEGER" />
-    <result column="uuid" property="uuid" jdbcType="VARCHAR" />
-    <result column="sim_num" property="simNum" jdbcType="VARCHAR" />
-    <result column="iccid" property="iccid" jdbcType="VARCHAR" />
-    <result column="imsi" property="imsi" jdbcType="VARCHAR" />
-    <result column="imei" property="imei" jdbcType="VARCHAR" />
-    <result column="type" property="type" jdbcType="INTEGER" />
-    <result column="status" property="status" jdbcType="INTEGER" />
-    <result column="sleep_time" property="sleepTime" jdbcType="INTEGER" />
-    <result column="finger_pattern" property="fingerPattern" jdbcType="BIT" />
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="DELETE_DATE" property="deleteDate" jdbcType="TIMESTAMP" />
+    <result column="CORP_ID" property="corpId" jdbcType="VARCHAR" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="NET_TYPE" property="netType" jdbcType="VARCHAR" />
+    <result column="ADDR" property="addr" jdbcType="VARCHAR" />
+    <result column="COUNT" property="count" jdbcType="INTEGER" />
+    <result column="UUID" property="uuid" jdbcType="VARCHAR" />
+    <result column="SIM_NUM" property="simNum" jdbcType="VARCHAR" />
+    <result column="ICCID" property="iccid" jdbcType="VARCHAR" />
+    <result column="IMSI" property="imsi" jdbcType="VARCHAR" />
+    <result column="IMEI" property="imei" jdbcType="VARCHAR" />
+    <result column="TYPE" property="type" jdbcType="INTEGER" />
+    <result column="STATUS" property="status" jdbcType="INTEGER" />
+    <result column="SLEEP_TIME" property="sleepTime" jdbcType="INTEGER" />
+    <result column="FINGER_PATTERN" property="fingerPattern" jdbcType="BIT" />
   </resultMap>
     <sql id="Base_Column_List">
     id,create_date,update_date,delete_date,corp_id,name,net_type,addr,count,uuid,sim_num,iccid,imsi,imei,type,status,sleep_time,finger_pattern
     </sql>
 
-  <insert id="insert" parameterType="com.stamper.yx.common.entity.Signet" useGeneratedKeys="true"
-          keyProperty="id">
-        insert into signet (<include refid="Base_Column_List"/>)
-        values (#{id},now(),now(),null,#{corpId},#{name},#{netType},#{addr},#{count},#{uuid},#{simNum},#{iccid}
-        ,#{imsi},#{imei},#{type},#{status},#{sleepTime},#{fingerPattern})
+  <insert id="insert" parameterType="com.stamper.yx.common.entity.Signet">
+      <selectKey keyProperty="id" resultType="int" order="BEFORE">
+          select SIGNET_SEQ.nextval from dual
+      </selectKey>
+      insert into signet (<include refid="Base_Column_List"/>)
+        values (#{id,jdbcType=INTEGER},sysdate,sysdate,null,#{corpId,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{netType,jdbcType=VARCHAR},#{addr,jdbcType=VARCHAR},#{count,jdbcType=INTEGER},#{uuid,jdbcType=VARCHAR},#{simNum,jdbcType=VARCHAR},#{iccid,jdbcType=VARCHAR}
+        ,#{imsi,jdbcType=VARCHAR},#{imei,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},#{status,jdbcType=INTEGER},#{sleepTime,jdbcType=INTEGER},#{fingerPattern,jdbcType=BIT})
     </insert>
   <update id="update" parameterType="com.stamper.yx.common.entity.Signet">
       update signet
       <set>
           <if test="updateDate != null">
-              update_date = NOW(),
+              update_date = sysdate,
           </if>
           <if test="deleteDate != null">
-              delete_date = #{deleteDate,jdbcType=TIMESTAMP},
+              delete_date = sysdate,
           </if>
           <if test="createDate != null">
-              create_date = #{createDate,jdbcType=TIMESTAMP},
+              create_date = sysdate,
           </if>
           <if test="corpId != null">
               corp_id = #{corpId,jdbcType=VARCHAR},
@@ -88,9 +90,9 @@
   </update>
     <delete id="delete">
         UPDATE signet
-        SET delete_date = now( )
+        SET delete_date = sysdate
         WHERE
-            id = #{deviceId}
+            id = #{deviceId,jdbcType=INTEGER}
     </delete>
     <select id="get" resultMap="BaseResultMap" >
         SELECT
@@ -99,8 +101,8 @@
             signet
         WHERE
             delete_date IS NULL
-            AND corp_id = #{corpId}
-            AND device_id = #{deviceId}
+            AND corp_id = #{corpId,jdbcType=VARCHAR}
+            AND device_id = #{deviceId,jdbcType=INTEGER}
 --         LIMIT 1;
     </select>
     <select id="getAllByCorpId" parameterType="string" resultMap="BaseResultMap">
@@ -110,7 +112,7 @@
             signet
         WHERE
             delete_date IS NULL
-        AND corp_id=#{corpId}
+        AND corp_id=#{corpId,jdbcType=VARCHAR}
     </select>
     <select id="getByUUID" parameterType="string" resultMap="BaseResultMap">
         SELECT
@@ -119,8 +121,8 @@
             signet
         WHERE
             delete_date IS NULL
-            and uuid=#{uuid}
-            LIMIT 1
+            and uuid=#{uuid,jdbcType=VARCHAR}
+--             LIMIT 1
     </select>
     <select id="getByLike" resultMap="BaseResultMap">
         SELECT
@@ -130,16 +132,16 @@
         WHERE
           delete_date is null
         <if test="id!=0 and id !=null">
-          AND  id=#{id}
+          AND  id=#{id,jdbcType=INTEGER}
         </if>
         <if test="name!='' and name !=null">
-          AND name=#{name}
+          AND name=#{name,jdbcType=VARCHAR}
         </if>
         <if test="uuid!='' and uuid !=null">
-          AND  uuid=#{uuid}
+          AND  uuid=#{uuid,jdbcType=VARCHAR}
         </if>
         <if test="corpId!='' and corpId !=null">
-          AND  corp_id=#{corpId}
+          AND  corp_id=#{corpId,jdbcType=VARCHAR}
         </if>
 --         LIMIT 1
     </select>
@@ -147,7 +149,7 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        signet
+          signet
         WHERE
         delete_date IS NULL
     </select>
@@ -155,10 +157,10 @@
         SELECT
         <include refid="Base_Column_List"/>
         FROM
-        signet
+          signet
         WHERE
         delete_date IS NULL
-        AND id=#{deviceId}
+        AND id=#{deviceId,jdbcType=INTEGER}
 --         LIMIT 1
     </select>
 

@@ -35,27 +35,37 @@ public class IMysqlSealRecordInfoService implements MysqlSealRecordInfoService {
             if(sealRecordInfo.getApplicationID()==null){
                 sealRecordInfo.setApplicationID(0);
             }
-            SealRecordInfo byReal = mySealRecordInfoMapper.getByReal(sealRecordInfo.getUuid(), sealRecordInfo.getApplicationID(), sealRecordInfo.getCount());
-            if(byReal==null){
-                count = mySealRecordInfoMapper.insert(sealRecordInfo);
+            //区分盖章和审计的需求：盖章时、审计时，记录insert，有is_audit判断，
+            //假如记录上传慢，审计先上传，那就先insert，不影响，假如insert多个同时出现，需要加锁，或者索引，
+            //审计多个相同insert，那就直接inset，对于天津来说不影响
+            //因为审计模式可以多次，这里接收到的不止一个记录，应该是个数组
+            //记录只会出现一个？不会更新？还是记录只会
 
-            }else{
-                //TODO 判断是否是审计，因为有先后顺序，以及审计可以多次。
-                if(sealRecordInfo.getIsAudit().intValue()!=0||byReal.getIsAudit().intValue()==1) {
-                    //只要是审计记录，就插入
-                    count = mySealRecordInfoMapper.insert(sealRecordInfo);
-                }else{
-                    //假如查出的是盖章记录，就更新，不是盖章记录，就插入
-                    sealRecordInfo.setId(byReal.getId());
-                    String strDateFormat = "yyyy-MM-dd HH:mm:ss";
-                    SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
-                    sealRecordInfo.setUpdateDate(new Date());
-                    count = mySealRecordInfoMapper.update(sealRecordInfo);
-                    if(count==0){
-                        count=1;
-                    }
-                }
-            }
+            //记录是推送过来，我保存，假如保存失败，会再次上传。数据库记录不出insert，所以，不需要校验是否已存在该记录，直接插入即可
+            //当记录同时插入，我需要加锁
+            count = mySealRecordInfoMapper.insert(sealRecordInfo);
+//            List<SealRecordInfo> byReal = mySealRecordInfoMapper.getByReal(sealRecordInfo.getUuid(), sealRecordInfo.getApplicationID(), sealRecordInfo.getCount());
+//            if(byReal==null){
+//                count = mySealRecordInfoMapper.insert(sealRecordInfo);
+//
+//            }else{
+//                //TODO 判断是否是审计，因为有先后顺序，以及审计可以多次。
+//                if(sealRecordInfo.getIsAudit().intValue()!=0||byReal.getIsAudit().intValue()==1) {
+//                    //只要是审计记录，就插入
+//                    count = mySealRecordInfoMapper.insert(sealRecordInfo);
+//                }else{
+//                    //假如查出的是盖章记录，就更新，不是盖章记录，就插入
+//                    sealRecordInfo.setId(byReal.getId());
+//                    String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+//                    SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+//                    sealRecordInfo.setUpdateDate(new Date());
+//                    count = mySealRecordInfoMapper.update(sealRecordInfo);
+//                    if(count==0){
+//                        count=1;
+//                    }
+//                }
+//            }
+
         }
         if(count!=1){
             throw new PrintException("记录上传异常");
@@ -122,7 +132,7 @@ public class IMysqlSealRecordInfoService implements MysqlSealRecordInfoService {
     }
 
     @Override
-    public SealRecordInfo getByReal(String uuid, Integer applicationId, Integer count) {
+    public List<SealRecordInfo> getByReal(String uuid, Integer applicationId, Integer count) {
         if (StringUtils.isNotBlank(uuid) && applicationId != null && count != null) {
             return mySealRecordInfoMapper.getByReal(uuid, applicationId, count);
         }

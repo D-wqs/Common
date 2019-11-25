@@ -262,13 +262,6 @@ public class CallBackController {
                     }
                     Integer applicationId = historyApplicationInfo.getApplicationId();
                     Integer useCount = historyApplicationInfo.getUseCount();
-                    //=====================================================
-                    Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
-                    Integer totalCount = byApplicationId.getTotalCount();
-                    System.out.println("历史申请单回调");
-                    System.out.println("这个申请单的总次数"+totalCount);
-                    System.out.println("这个申请单已用的次数needCount："+useCount);
-                    //=-====================================================
                     //更新申请单
                     Applications applications=new Applications();
                     applications.setApplicationId(applicationId);
@@ -292,13 +285,6 @@ public class CallBackController {
                     apps.setApplicationId(applicationID);
                     apps.setNeedCount(useTimes);
                     apps.setDeviceId(deviceId1);
-                    //=====================================================
-                    Applications test = myApplicationService.getByApplicationId(applicationID);
-                    Integer totalCount_test = test.getTotalCount();
-                    System.out.println("每次盖章的返回");
-                    System.out.println("这个申请单的总次数"+totalCount_test);
-                    System.out.println("这个章当前已用的次数（应该是一次次累加的值）："+useTimes);
-                    //=-====================================================
                     //TODO 通知对应的申请单 已用次数needCount加1
                     Applications needCount_bak = myApplicationService.getByApplicationId(applicationID);
                     Integer needCount = needCount_bak.getNeedCount();

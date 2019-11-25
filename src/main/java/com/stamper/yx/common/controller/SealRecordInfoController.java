@@ -105,7 +105,7 @@ public class SealRecordInfoController {
         } finally {
             //设置通道为receive为0
             DeviceWebSocket webSocket = pool.get(deviceID + "");
-            if(webSocket!=null){
+            if (webSocket != null) {
                 //todo 启用接收申请单
                 webSocket.setReceive(0);
             }
@@ -158,10 +158,10 @@ public class SealRecordInfoController {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             //设置通道为receive为0
             DeviceWebSocket webSocket = pool.get(deviceID + "");
-            if(webSocket!=null){
+            if (webSocket != null) {
                 //todo 启用接收申请单
                 webSocket.setReceive(0);
             }
@@ -213,20 +213,21 @@ public class SealRecordInfoController {
             //todo 通知高拍仪拍照
             String openMeter = AppConstant.OPEN_METER;
             if (openMeter.equalsIgnoreCase("true")) {
-                //新开线程通知高拍仪拍照
-                SignetMeter bySignetId = signetMeterService.getBySignetId(deviceID);
-                //通过meterId获取传输地址
-                Meter meter = meterService.getById(bySignetId.getMeterId());
-                //通过设备id,记录id，高拍仪地址，请求图片传输
-                talkMeterAsynvService.postMeterUploadImage(sealRecordInfo.getId(), meter.getClientAddr());
+                log.info("当前高拍仪不允许使用，此处隔离请求高拍仪代码，触发接口由按钮控制");
+//                //新开线程通知高拍仪拍照
+//                SignetMeter bySignetId = signetMeterService.getBySignetId(deviceID);
+//                //通过meterId获取传输地址
+//                Meter meter = meterService.getById(bySignetId.getMeterId());
+//                //通过设备id,记录id，高拍仪地址，请求图片传输
+//                talkMeterAsynvService.postMeterUploadImage(sealRecordInfo.getId(), meter.getClientAddr());
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             //设置通道为receive为0
             DeviceWebSocket webSocket = pool.get(deviceID + "");
-            if(webSocket!=null){
+            if (webSocket != null) {
                 //todo 启用接收申请单
                 webSocket.setReceive(0);
             }

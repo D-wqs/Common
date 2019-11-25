@@ -29,7 +29,7 @@ public interface MysqlSealRecordInfoService {
      *  2.指纹模式时无申请单id
      *
      */
-    SealRecordInfo getByReal(@Param("uuid") String uuid,@Param("applicationId") Integer applicationId,@Param("count") Integer count);
+    List<SealRecordInfo> getByReal(@Param("uuid") String uuid,@Param("applicationId") Integer applicationId,@Param("count") Integer count);
 
 
 }

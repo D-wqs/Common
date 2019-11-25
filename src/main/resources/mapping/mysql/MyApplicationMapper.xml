@@ -5,38 +5,40 @@
         <!--
           WARNING - @mbg.generated
         -->
-        <id column="id" property="id" jdbcType="INTEGER"/>
-        <result column="application_id" property="applicationId" jdbcType="INTEGER"/>
-        <result column="title" property="title" jdbcType="VARCHAR"/>
-        <result column="total_count" property="totalCount" jdbcType="INTEGER"/>
-        <result column="need_count" property="needCount" jdbcType="INTEGER"/>
-        <result column="device_id" property="deviceId" jdbcType="INTEGER"/>
-        <result column="user_id" property="userId" jdbcType="INTEGER"/>
-        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
-        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
-        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
-        <result column="delete_date" property="deleteDate" jdbcType="TIMESTAMP"/>
+        <id column="ID" property="id" jdbcType="INTEGER"/>
+        <result column="APPLICATION_ID" property="applicationId" jdbcType="INTEGER"/>
+        <result column="TITLE" property="title" jdbcType="VARCHAR"/>
+        <result column="TOTAL_COUNT" property="totalCount" jdbcType="INTEGER"/>
+        <result column="NEED_COUNT" property="needCount" jdbcType="INTEGER"/>
+        <result column="DEVICE_ID" property="deviceId" jdbcType="INTEGER"/>
+        <result column="USER_ID" property="userId" jdbcType="INTEGER"/>
+        <result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
+        <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="DELETE_DATE" property="deleteDate" jdbcType="TIMESTAMP"/>
     </resultMap>
     <sql id="Base_Column_List">
     id,create_date,update_date,delete_date,application_id,title,total_count,need_count,device_id,user_id,user_name
   </sql>
-    <insert id="insert" useGeneratedKeys="true"
-            keyProperty="id">
+    <insert id="insert" >
+        <selectKey keyProperty="id" resultType="int" order="BEFORE">
+            select TJ_APPLICATIONS_SEQ.nextval from dual
+        </selectKey>
         insert into tj_applications (<include refid="Base_Column_List"/>)
         values
-        (#{id},now(),now(),null,#{applicationId},#{title},#{totalCount},#{needCount},#{deviceId},#{userId},#{userName})
+        (#{id,jdbcType=INTEGER},sysdate,sysdate,null,#{applicationId,jdbcType=INTEGER},#{title,jdbcType=VARCHAR},#{totalCount,jdbcType=INTEGER},#{needCount,jdbcType=INTEGER},#{deviceId,jdbcType=INTEGER},#{userId,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR})
     </insert>
     <update id="update">
         update tj_applications
         <set>
             <if test="updateDate != null">
-                update_date = NOW(),
+                update_date = sysdate,
             </if>
             <if test="deleteDate != null">
-                delete_date = #{deleteDate,jdbcType=TIMESTAMP},
+                delete_date = sysdate,
             </if>
             <if test="createDate != null">
-                create_date = #{createDate,jdbcType=TIMESTAMP},
+                create_date = sysdate,
             </if>
             <if test="applicationId != null">
                 application_id = #{applicationId,jdbcType=INTEGER},
@@ -70,7 +72,7 @@
             tj_applications
         WHERE
             delete_date IS NULL
-            AND application_id = #{applicationId}
+            AND application_id = #{applicationId,jdbcType=INTEGER}
 --             LIMIT 1
     </select>
 
