@@ -29,7 +29,7 @@
 
     <insert id="insert" parameterType="com.stamper.yx.common.entity.SealRecordInfo">
         <selectKey keyProperty="id" resultType="int" order="BEFORE">
-            select SEALRECORD_INFO_SEQ.nextval from dual
+            select SEAL_RECORD_INFO_SEQ.nextval from dual
         </selectKey>
         insert into seal_record_info (<include refid="Base_Column_List"/>)
         values

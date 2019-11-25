@@ -123,6 +123,8 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
             case AppConstant.SLEEP_TIME_RETURN_RES:    //设置休眠 状态返回【数据源】
                 updateSleepTime(message, webSocket);
                 break;
+            case AppConstant.TAKE_AUDIT_PIC_REQ:    //审计按钮触发--高拍仪拍照
+
             default:
                 log.info("未知协议请求-->{{}}", message);
                 break;
