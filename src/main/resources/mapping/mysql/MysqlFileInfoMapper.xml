@@ -5,39 +5,37 @@
         <!--
           WARNING - @mbg.generated
         -->
-        <id column="ID" property="id" jdbcType="INTEGER"/>
-        <result column="SEAL_RECORD_INFO_ID" property="sealRecordInfoId" jdbcType="INTEGER"/>
-        <result column="ORIGINAL_NAME" property="originalName" jdbcType="VARCHAR"/>
-        <result column="FILE_NAME" property="fileName" jdbcType="VARCHAR"/>
-        <result column="PATH" property="path" jdbcType="VARCHAR"/>
-        <result column="RELATIVE_PATH" property="relativePath" jdbcType="VARCHAR"/>
-        <result column="ABSOLUTE_PATH" property="absolutePath" jdbcType="VARCHAR"/>
-        <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP"/>
-        <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP"/>
-        <result column="DELETE_DATE" property="deleteDate" jdbcType="TIMESTAMP"/>
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="seal_record_info_id" property="sealRecordInfoId" jdbcType="INTEGER"/>
+        <result column="original_name" property="originalName" jdbcType="VARCHAR"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <result column="relative_path" property="relativePath" jdbcType="VARCHAR"/>
+        <result column="absolute_path" property="absolutePath" jdbcType="VARCHAR"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="delete_date" property="deleteDate" jdbcType="TIMESTAMP"/>
     </resultMap>
     <sql id="Base_Column_List">
     id,create_date,update_date,delete_date,seal_record_info_id,original_name,file_name,path,relative_path,absolute_path
   </sql>
-    <insert id="insert">
-        <selectKey keyProperty="id" resultType="int" order="BEFORE">
-            select FILE_INFO_SEQ.nextval from dual
-        </selectKey>
+    <insert id="insert" useGeneratedKeys="true"
+            keyProperty="id">
         insert into file_info (<include refid="Base_Column_List"/>)
         values
-        (#{id,jdbcType=INTEGER},sysdate,sysdate,null,#{sealRecordInfoId,jdbcType=INTEGER},#{originalName,jdbcType=VARCHAR},#{fileName,jdbcType=VARCHAR},#{path,jdbcType=VARCHAR},#{relativePath,jdbcType=VARCHAR},#{absolutePath,jdbcType=VARCHAR})
+        (#{id},now(),now(),null,#{sealRecordInfoId},#{originalName},#{fileName},#{path},#{relativePath},#{absolutePath})
     </insert>
     <update id="update">
         update file_info
         <set>
             <if test="updateDate != null">
-                update_date = sysdate,
+                update_date = NOW(),
             </if>
             <if test="deleteDate != null">
-                delete_date = sysdate,
+                delete_date = #{deleteDate,jdbcType=TIMESTAMP},
             </if>
             <if test="createDate != null">
-                create_date = sysdate,
+                create_date = #{createDate,jdbcType=TIMESTAMP},
             </if>
             <if test="sealRecordInfoId != null">
                 seal_record_info_id = #{sealRecordInfoId,jdbcType=VARCHAR},
@@ -72,7 +70,7 @@
         file_info
         WHERE
         delete_date IS NULL
-        AND id=#{id,jdbcType=INTEGER}
+        AND id=#{id}
     </select>
     <select id="getByFileName" parameterType="string" resultMap="BaseResultMap">
         SELECT
@@ -81,7 +79,7 @@
         file_info
         WHERE
         delete_date IS NULL
-        AND file_name=#{fileName,jdbcType=VARCHAR}
+        AND file_name=#{fileName}
     </select>
 
 

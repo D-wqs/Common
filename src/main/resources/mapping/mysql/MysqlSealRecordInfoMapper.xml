@@ -5,48 +5,46 @@
         <!--
           WARNING - @mbg.generated
         -->
-        <id column="ID" property="id" jdbcType="INTEGER"/>
-        <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP"/>
-        <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP"/>
-        <result column="DELETE_DATE" property="deleteDate" jdbcType="TIMESTAMP"/>
-        <result column="DEVICE_ID" property="deviceID" jdbcType="INTEGER"/>
-        <result column="UUID" property="uuid" jdbcType="VARCHAR"/>
-        <result column="IDENTITY" property="identity" jdbcType="VARCHAR"/>
-        <result column="PICUSERID" property="picUserId" jdbcType="INTEGER"/>
-        <result column="LOCATION" property="location" jdbcType="VARCHAR"/>
-        <result column="COUNT" property="count" jdbcType="INTEGER"/>
-        <result column="APPLICATION_ID" property="applicationID" jdbcType="INTEGER"/>
-        <result column="IS_AUDIT" property="isAudit" jdbcType="INTEGER"/>
-        <result column="TIME" property="time" jdbcType="VARCHAR"/>
-        <result column="SEAL_COUNT" property="sealCount" jdbcType="INTEGER"/>
-        <result column="SEAL_ID" property="sealId" jdbcType="INTEGER"/>
-        <result column="ALARM" property="alarm" jdbcType="INTEGER"/>
-        <result column="FILE_ID" property="fileId" jdbcType="INTEGER"/>
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="delete_date" property="deleteDate" jdbcType="TIMESTAMP"/>
+        <result column="device_id" property="deviceID" jdbcType="INTEGER"/>
+        <result column="uuid" property="uuid" jdbcType="VARCHAR"/>
+        <result column="identity" property="identity" jdbcType="VARCHAR"/>
+        <result column="picUserId" property="picUserId" jdbcType="INTEGER"/>
+        <result column="location" property="location" jdbcType="VARCHAR"/>
+        <result column="count" property="count" jdbcType="INTEGER"/>
+        <result column="application_id" property="applicationID" jdbcType="INTEGER"/>
+        <result column="is_audit" property="isAudit" jdbcType="INTEGER"/>
+        <result column="time" property="time" jdbcType="VARCHAR"/>
+        <result column="seal_count" property="sealCount" jdbcType="INTEGER"/>
+        <result column="seal_id" property="sealId" jdbcType="INTEGER"/>
+        <result column="alarm" property="alarm" jdbcType="INTEGER"/>
+        <result column="file_id" property="fileId" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
     id,create_date,update_date,delete_date,device_id,uuid,identity,picUserId,location,count,application_id,is_audit,time,seal_count,seal_id,alarm,file_id
     </sql>
 
-    <insert id="insert" parameterType="com.stamper.yx.common.entity.SealRecordInfo">
-        <selectKey keyProperty="id" resultType="int" order="BEFORE">
-            select SEALRECORD_INFO_SEQ.nextval from dual
-        </selectKey>
+    <insert id="insert" parameterType="com.stamper.yx.common.entity.SealRecordInfo" useGeneratedKeys="true"
+            keyProperty="id">
         insert into seal_record_info (<include refid="Base_Column_List"/>)
         values
-        (#{id,jdbcType=INTEGER},sysdate,sysdate,null,#{deviceID,jdbcType=INTEGER},#{uuid,jdbcType=VARCHAR},#{identity,jdbcType=VARCHAR},#{picUserId,jdbcType=INTEGER},#{location,jdbcType=VARCHAR},#{count,jdbcType=INTEGER},#{applicationID,jdbcType=INTEGER},#{isAudit,jdbcType=INTEGER}
-        ,#{time,jdbcType=VARCHAR},#{sealCount,jdbcType=INTEGER},#{sealId,jdbcType=INTEGER},#{alarm,jdbcType=INTEGER},#{fileId,jdbcType=INTEGER})
+        (#{id},now(),now(),null,#{deviceID},#{uuid},#{identity},#{picUserId},#{location},#{count},#{applicationID},#{isAudit}
+        ,#{time},#{sealCount},#{sealId},#{alarm},#{fileId})
     </insert>
     <update id="update" parameterType="com.stamper.yx.common.entity.SealRecordInfo">
         update seal_record_info
         <set>
             <if test="updateDate != null">
-                update_date = sysdate,
+                update_date = NOW(),
             </if>
             <if test="deleteDate != null">
-                delete_date = sysdate,
+                delete_date = #{deleteDate,jdbcType=TIMESTAMP},
             </if>
             <if test="createDate != null">
-                create_date = sysdate,
+                create_date = #{createDate,jdbcType=TIMESTAMP},
             </if>
             <if test="deviceID != null">
                 device_id = #{deviceID,jdbcType=INTEGER},
@@ -93,7 +91,7 @@
     </update>
     <delete id="delete">
         UPDATE seal_record_info
-        SET delete_date = sysdate
+        SET delete_date = now( )
         WHERE
             device_id = #{deviceID}
     </delete>
@@ -105,8 +103,8 @@
         seal_record_info
         WHERE
         delete_date IS NULL
-        AND device_id=#{deviceID,jdbcType=INTEGER}
---         LIMIT 1
+        AND device_id=#{deviceID}
+        LIMIT 1
     </select>
     <select id="getBydeviceId" parameterType="integer" resultMap="BaseResultMap">
         SELECT
@@ -115,7 +113,7 @@
         seal_record_info
         WHERE
         delete_date IS NULL
-        AND device_id=#{deviceID,jdbcType=INTEGER}
+        AND device_id=#{deviceID}
     </select>
     <select id="getByReal" resultMap="BaseResultMap">
         SELECT
@@ -124,11 +122,12 @@
         seal_record_info
         WHERE
         delete_date IS NULL
-        AND uuid=#{uuid,jdbcType=VARCHAR}
-        AND count=#{count,jdbcType=INTEGER}
+        AND uuid=#{uuid}
+        AND count=#{count}
         <if test="applicationID!=null">
-            AND application_id=#{applicationID,jdbcType=INTEGER}
+            AND application_id=#{applicationID}
         </if>
+        limit 1
     </select>
 
 </mapper>

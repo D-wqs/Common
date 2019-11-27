@@ -5,37 +5,35 @@
         <!--
           WARNING - @mbg.generated
         -->
-        <id column="ID" property="id" jdbcType="INTEGER"/>
-        <result column="USER_ID" property="userId" jdbcType="INTEGER"/>
-        <result column="USER_NAME" property="userName" jdbcType="VARCHAR"/>
-        <result column="DEVICE_ID" property="deviceId" jdbcType="INTEGER"/>
-        <result column="FINGER_ADDR" property="fingerAddr" jdbcType="INTEGER"/>
-        <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP"/>
-        <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP"/>
-        <result column="DELETE_DATE" property="deleteDate" jdbcType="TIMESTAMP"/>
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="user_id" property="userId" jdbcType="INTEGER"/>
+        <result column="user_name" property="userName" jdbcType="VARCHAR"/>
+        <result column="device_id" property="deviceId" jdbcType="INTEGER"/>
+        <result column="finger_addr" property="fingerAddr" jdbcType="INTEGER"/>
+        <result column="create_date" property="createDate" jdbcType="TIMESTAMP"/>
+        <result column="update_date" property="updateDate" jdbcType="TIMESTAMP"/>
+        <result column="delete_date" property="deleteDate" jdbcType="TIMESTAMP"/>
     </resultMap>
     <sql id="Base_Column_List">
     id,create_date,update_date,delete_date,user_id,user_name,device_id,finger_addr
   </sql>
-    <insert id="insert" >
-        <selectKey keyProperty="id" resultType="int" order="BEFORE">
-            select FINGER_SEQ.nextval from dual
-        </selectKey>
+    <insert id="insert" useGeneratedKeys="true"
+            keyProperty="id">
         insert into finger (<include refid="Base_Column_List"/>)
         values
-        (#{id,jdbcType=INTEGER},sysdate,sysdate,null,#{userId,jdbcType=INTEGER},#{userName,jdbcType=VARCHAR},#{deviceId,jdbcType=INTEGER},#{fingerAddr,jdbcType=INTEGER})
+        (#{id},now(),now(),null,#{userId},#{userName},#{deviceId},#{fingerAddr})
     </insert>
     <update id="update">
         update finger
         <set>
             <if test="updateDate != null">
-                update_date = sysdate,
+                update_date = NOW(),
             </if>
             <if test="deleteDate != null">
-                delete_date = sysdate,
+                delete_date = #{deleteDate,jdbcType=TIMESTAMP},
             </if>
             <if test="createDate != null">
-                create_date = sysdate,
+                create_date = #{createDate,jdbcType=TIMESTAMP},
             </if>
             <if test="userId != null">
                 user_id = #{userId,jdbcType=INTEGER},
@@ -56,17 +54,17 @@
     </update>
     <update id="delAllByDeviceId">
         UPDATE finger
-        SET delete_date = sysdate
+        SET delete_date = NOW()
         WHERE
-            device_id =#{deviceId,jdbcType=INTEGER}
+            device_id =#{deviceId}
     </update>
     <update id="delByFingerAddr">
         UPDATE finger
         SET delete_date = NOW()
         WHERE
-            device_id = #{deviceId,jdbcType=INTEGER}
-            AND finger_addr=#{fingerAddr,jdbcType=INTEGER}
-            AND user_id=#{userId,jdbcType=INTEGER}
+            device_id = #{deviceId}
+            AND finger_addr=#{fingerAddr}
+            AND user_id=#{userId}
     </update>
     <select id="getMaxFingerAddr" resultType="java.lang.Integer">
         SELECT
@@ -75,8 +73,7 @@
       	  finger
         WHERE
       	  delete_date IS NULL
-        AND device_id = #{deviceId,jdbcType=INTEGER}
---         LIMIT 1
+        AND device_id = #{deviceId}
     </select>
     <select id="getByUser" resultMap="BaseResultMap">
         SELECT
@@ -85,9 +82,9 @@
         finger
         WHERE
         delete_date IS NULL
-        AND device_id = #{deviceId,jdbcType=INTEGER}
-        AND user_id = #{userId,jdbcType=INTEGER}
-        -- LIMIT 1
+        AND device_id = #{deviceId}
+        AND user_id = #{userId}
+        LIMIT 1
     </select>
     <select id="getFingerByDevice" parameterType="integer" resultMap="BaseResultMap">
         SELECT
@@ -96,7 +93,7 @@
         finger
         WHERE
         delete_date IS NULL
-        AND device_id = #{deviceId,jdbcType=INTEGER}
+        AND device_id = #{deviceId}
         ORDER BY finger_addr
     </select>
     <select id="getFinger" resultType="com.stamper.yx.common.entity.Finger">
@@ -106,9 +103,9 @@
         finger
         WHERE
         delete_date IS NULL
-        AND device_id = #{deviceId,jdbcType=INTEGER}
-        AND user_id=#{userId,jdbcType=INTEGER}
-        AND finger_addr=#{fingerAddr,jdbcType=INTEGER}
+        AND device_id = #{deviceId}
+        AND user_id=#{userId}
+        AND finger_addr=#{fingerAddr}
     </select>
 
 
