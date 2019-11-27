@@ -1,0 +1,216 @@
+13:13:24.690 [main] INFO  c.s.yx.common.CommonApplication - Starting CommonApplication on DESKTOP-RMTEKLK with PID 4340 (E:\Yunxi\javaSvr\common\target\classes started by 11377 in E:\Yunxi\javaSvr\common)
+13:13:24.692 [main] INFO  c.s.yx.common.CommonApplication - No active profile set, falling back to default profiles: default
+13:13:24.741 [main] INFO  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Refreshing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@74960bfa: startup date [Wed Nov 27 13:13:24 CST 2019]; root of context hierarchy
+13:13:24.956 [background-preinit] WARN  o.s.h.c.j.Jackson2ObjectMapperBuilder - For Jackson Kotlin classes support please add "com.fasterxml.jackson.module:jackson-module-kotlin" to the classpath
+13:13:25.429 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'myApplicationMapper' and 'com.stamper.yx.common.mapper.mysql.MyApplicationMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.429 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'myFingerMapper' and 'com.stamper.yx.common.mapper.mysql.MyFingerMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.429 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'mySealRecordInfoMapper' and 'com.stamper.yx.common.mapper.mysql.MySealRecordInfoMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.430 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'mySignetMapper' and 'com.stamper.yx.common.mapper.mysql.MySignetMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.430 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'mysqlFileInfoMapper' and 'com.stamper.yx.common.mapper.mysql.MysqlFileInfoMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.430 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'configMapper' and 'com.stamper.yx.common.mapper.sqlite.ConfigMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.430 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'deviceMessageMapper' and 'com.stamper.yx.common.mapper.sqlite.DeviceMessageMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.430 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'meterMapper' and 'com.stamper.yx.common.mapper.sqlite.MeterMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.430 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'orderLogMapper' and 'com.stamper.yx.common.mapper.sqlite.OrderLogMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.431 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'signetMapper' and 'com.stamper.yx.common.mapper.sqlite.SignetMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.431 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'signetMeterMapper' and 'com.stamper.yx.common.mapper.sqlite.SignetMeterMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.431 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - Skipping MapperFactoryBean with name 'userMapper' and 'com.stamper.yx.common.mapper.sqlite.UserMapper' mapperInterface. Bean already defined with the same name!
+13:13:25.431 [main] WARN  o.m.s.mapper.ClassPathMapperScanner - No MyBatis mapper was found in '[com.stamper.yx.common.mapper]' package. Please check your configuration.
+13:13:28.141 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port(s): 8888 (http)
+13:13:28.153 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8888"]
+13:13:28.161 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+13:13:28.162 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet Engine: Apache Tomcat/8.5.32
+13:13:28.169 [localhost-startStop-1] INFO  o.a.c.core.AprLifecycleListener - The APR based Apache Tomcat Native library which allows optimal performance in production environments was not found on the java.library.path: [D:\Program Files\Java\jdk1.8.0_202\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;D:\Program Files\Java\jdk1.8.0_202\bin;D:\Program Files\Git\cmd;D:\Program Files\apache-maven-3.5.4\bin;D:\Program Files\MySQL\MySQL Server 5.5\bin;C:\Users\11377\AppData\Local\Microsoft\WindowsApps;;D:\Microsoft VS Code\bin;.]
+13:13:28.296 [localhost-startStop-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+13:13:28.296 [localhost-startStop-1] INFO  o.s.web.context.ContextLoader - Root WebApplicationContext: initialization completed in 3555 ms
+13:13:28.454 [localhost-startStop-1] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'characterEncodingFilter' to: [/*]
+13:13:28.455 [localhost-startStop-1] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'hiddenHttpMethodFilter' to: [/*]
+13:13:28.455 [localhost-startStop-1] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'httpPutFormContentFilter' to: [/*]
+13:13:28.455 [localhost-startStop-1] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'requestContextFilter' to: [/*]
+13:13:28.455 [localhost-startStop-1] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'yxFilter' to urls: [/yunxi/*]
+13:13:28.455 [localhost-startStop-1] INFO  o.s.b.w.s.FilterRegistrationBean - Mapping filter: 'signetFilter' to urls: [/device/*]
+13:13:28.455 [localhost-startStop-1] INFO  o.s.b.w.s.ServletRegistrationBean - Servlet dispatcherServlet mapped to [/]
+13:13:28.623 [main] INFO  o.s.s.c.ThreadPoolTaskExecutor - Initializing ExecutorService  'taskExecutor'
+13:13:28.723 [main] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/**/favicon.ico] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+13:13:28.906 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerAdapter - Looking for @ControllerAdvice: org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@74960bfa: startup date [Wed Nov 27 13:13:24 CST 2019]; root of context hierarchy
+13:13:28.967 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/deviceCallBack/res]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.CallBackController.res(java.lang.String,java.lang.String)
+13:13:28.968 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/deviceCallBack/moduleCallback]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.CallBackController.moduleCallbackInfo(java.lang.String,java.lang.String,java.lang.String)
+13:13:28.969 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/config/updateAPK],methods=[POST || GET]}" onto public com.stamper.yx.common.entity.deviceModel.UpdateAPK com.stamper.yx.common.controller.ConfigController.updateAPK(java.lang.String)
+13:13:28.969 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/config/getConfigByUUID],methods=[POST || GET]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.ConfigController.getConfigByUUID(java.lang.String)
+13:13:28.970 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/config/updateConfigByUUID],methods=[POST || GET]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.ConfigController.updateConfig(com.stamper.yx.common.entity.Config,java.lang.String)
+13:13:28.970 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/config/addConfigError],methods=[POST || GET]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.ConfigController.addConfigError(org.springframework.web.multipart.MultipartFile)
+13:13:28.971 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/finger/del],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.FingerController.fingerDel(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+13:13:28.971 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/finger/add],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.FingerController.fingerPrint(java.lang.Integer,java.lang.Integer,java.lang.Integer,java.lang.String)
+13:13:28.971 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/finger/clean],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.FingerController.fingerClean(java.lang.Integer)
+13:13:28.972 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/meter/relevance/bind],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.MeterController.bind(java.lang.Integer,java.lang.Integer)
+13:13:28.972 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/meter/relevance/getAll],methods=[GET]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.MeterController.getAll()
+13:13:28.973 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/meter/relevance/reg],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.MeterController.reg(com.stamper.yx.common.entity.Meter)
+13:13:28.973 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/meter/relevance/checkBindInfo],methods=[GET]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.MeterController.checkBindInfo()
+13:13:28.975 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/sealRecordInfo/addNormalInfo],methods=[POST]}" onto public java.lang.String com.stamper.yx.common.controller.SealRecordInfoController.addNormalInfo(com.stamper.yx.common.entity.SealRecordInfo)
+13:13:28.975 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/sealRecordInfo/addAuditInfo],methods=[POST]}" onto public java.lang.String com.stamper.yx.common.controller.SealRecordInfoController.addAuditInfo(com.stamper.yx.common.entity.SealRecordInfo)
+13:13:28.975 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/sealRecordInfo/addEasyInfo],methods=[POST]}" onto public java.lang.String com.stamper.yx.common.controller.SealRecordInfoController.addEasyInfo(com.stamper.yx.common.entity.SealRecordInfo)
+13:13:28.975 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/sealRecordInfo/meter],methods=[POST]}" onto public java.lang.String com.stamper.yx.common.controller.SealRecordInfoController.eloamImageReceive(org.springframework.web.multipart.MultipartFile,java.lang.Integer)
+13:13:28.975 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/sealRecordInfo/getInfoList],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SealRecordInfoController.getSealRecordInfoList(java.lang.Integer)
+13:13:28.977 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/getAll],methods=[GET]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.getAll()
+13:13:28.977 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/setWifiLink],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.setWifiLink(java.lang.Integer,java.lang.Integer,java.lang.String,java.lang.String)
+13:13:28.978 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/setSleepTimes],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.setSleepTimes(java.lang.Integer,java.lang.Integer)
+13:13:28.978 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/closeWifiLink],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.closeWifiLink(java.lang.Integer,java.lang.Integer,java.lang.String,java.lang.String)
+13:13:28.978 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/isOnline]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.deviceIsOnline(java.lang.Integer)
+13:13:28.978 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/getWifiList],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.getWifiList(java.lang.Integer,java.lang.Integer)
+13:13:28.978 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/unlockById],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.deviceUnlock(java.lang.Integer,java.lang.Integer,java.lang.String)
+13:13:28.978 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/getAccessToken],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.getAccessToken(java.lang.String)
+13:13:28.979 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/getAesKey]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.getAesKey(java.lang.Integer)
+13:13:28.980 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/setRemoteLock],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.setRemoteLock(java.lang.Integer,java.lang.Integer)
+13:13:28.980 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/reset],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.endApplication(java.lang.Integer,java.lang.Integer,java.lang.String)
+13:13:28.980 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/endApplication],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.endApplication(java.lang.Integer,java.lang.Integer,java.lang.Integer)
+13:13:28.981 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/pushApplication],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.pushApplication(java.lang.Integer,java.lang.String,java.lang.Integer,java.lang.Integer,java.lang.String,java.lang.Integer,java.lang.Integer)
+13:13:28.981 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/device/changePattern],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetController.deviceChangePattern(java.lang.Integer,java.lang.Integer)
+13:13:28.984 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/yunxi/signetList],methods=[GET]}" onto public java.lang.String com.stamper.yx.common.controller.SignetMVCController.list(org.springframework.ui.Model)
+13:13:28.984 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/signOut],methods=[GET]}" onto public java.lang.String com.stamper.yx.common.controller.SignetMVCController.signOut(javax.servlet.http.HttpSession)
+13:13:28.984 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/yunxi/MysqlsignetList],methods=[GET]}" onto public java.lang.String com.stamper.yx.common.controller.SignetMVCController.Mysqllist(org.springframework.ui.Model)
+13:13:28.985 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/yunxi/getSignetConfigById],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetMVCController.getSignetInfoById(java.lang.Integer)
+13:13:28.985 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/yunxi/getMysqlSignetById],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetMVCController.getMysqlSignetById(java.lang.Integer)
+13:13:28.986 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/signets/get],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetMysqlController.get(com.stamper.yx.common.entity.Signet)
+13:13:28.986 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/signets/update],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetMysqlController.update(com.stamper.yx.common.entity.Signet)
+13:13:28.986 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/signets/getAll],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.SignetMysqlController.getAlls()
+13:13:28.987 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/add],methods=[POST]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.UserController.addUser(com.stamper.yx.common.entity.User)
+13:13:28.987 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/getTicket],methods=[POST]}" onto public java.lang.String com.stamper.yx.common.controller.UserController.getTicket(java.lang.String,java.lang.String)
+13:13:28.987 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/login],methods=[POST]}" onto public java.lang.String com.stamper.yx.common.controller.UserController.loginV1(java.lang.String,java.lang.String,javax.servlet.http.HttpSession,java.util.Map<java.lang.String, java.lang.Object>)
+13:13:28.987 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/user/get],methods=[GET]}" onto public com.stamper.yx.common.sys.response.ResultVO com.stamper.yx.common.controller.UserController.getUser(java.lang.String)
+13:13:28.989 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/error]}" onto public org.springframework.http.ResponseEntity<java.util.Map<java.lang.String, java.lang.Object>> org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.error(javax.servlet.http.HttpServletRequest)
+13:13:28.990 [main] INFO  o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped "{[/error],produces=[text/html]}" onto public org.springframework.web.servlet.ModelAndView org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController.errorHtml(javax.servlet.http.HttpServletRequest,javax.servlet.http.HttpServletResponse)
+13:13:29.003 [main] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Root mapping to handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
+13:13:29.003 [main] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/index.html] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
+13:13:29.003 [main] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/yunxi/main.html] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
+13:13:29.004 [main] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/yunxi/debugging] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
+13:13:29.004 [main] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/error.html] onto handler of type [class org.springframework.web.servlet.mvc.ParameterizableViewController]
+13:13:29.017 [main] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/webjars/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+13:13:29.017 [main] INFO  o.s.w.s.h.SimpleUrlHandlerMapping - Mapped URL path [/**] onto handler of type [class org.springframework.web.servlet.resource.ResourceHttpRequestHandler]
+13:13:29.471 [main] INFO  o.s.w.s.s.s.ServerEndpointExporter - Registering @ServerEndpoint class: class com.stamper.yx.common.controller.DeviceWebSocket
+13:13:29.480 [main] INFO  o.s.j.e.a.AnnotationMBeanExporter - Registering beans for JMX exposure on startup
+13:13:29.481 [main] INFO  o.s.j.e.a.AnnotationMBeanExporter - Bean with name 'mysqlDataSource' has been autodetected for JMX exposure
+13:13:29.486 [main] INFO  o.s.j.e.a.AnnotationMBeanExporter - Located MBean 'mysqlDataSource': registering with JMX server as MBean [com.zaxxer.hikari:name=mysqlDataSource,type=HikariDataSource]
+13:13:29.498 [main] INFO  o.s.s.a.ScheduledAnnotationBeanPostProcessor - No TaskScheduler/ScheduledExecutorService bean found for scheduled processing
+13:13:29.505 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8888"]
+13:13:29.516 [main] INFO  o.a.tomcat.util.net.NioSelectorPool - Using a shared selector for servlet write/read
+13:13:29.530 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port(s): 8888 (http) with context path ''
+13:13:29.533 [main] INFO  c.s.yx.common.CommonApplication - Started CommonApplication in 5.254 seconds (JVM running for 6.425)
+13:13:29.536 [main] INFO  c.s.yx.common.CommonApplication - ------------安徽云玺----------
+13:13:29.536 [main] INFO  c.s.yx.common.CommonApplication - TJ分支
+13:13:29.541 [main] INFO  c.s.yx.common.CommonApplication - ticket已设置，不需请求此值：{5d0179df6aba600a9f40a661ef3a45b8}
+13:13:29.547 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+13:13:29.549 [main] WARN  c.z.hikari.util.DriverDataSource - Registered driver with driverClassName=oracle.jdbc.driver.OracleDriver was not found, trying direct instantiation.
+13:14:12.682 [main] ERROR com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Exception during pool initialization.
+java.sql.SQLRecoverableException: IO 错误: The Network Adapter could not establish the connection
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:774)
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:688)
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:39)
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:691)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:117)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:123)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:365)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:194)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:460)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:534)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115)
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112)
+	at org.springframework.jdbc.datasource.DataSourceTransactionManager.doBegin(DataSourceTransactionManager.java:262)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:378)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:474)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:289)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:98)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:688)
+	at com.stamper.yx.common.service.impl.IUserService$$EnhancerBySpringCGLIB$$ede9a194.save(<generated>)
+	at com.stamper.yx.common.CommonApplication.run(CommonApplication.java:98)
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:800)
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:784)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1258)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1246)
+	at com.stamper.yx.common.CommonApplication.main(CommonApplication.java:49)
+Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:523)
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:521)
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:660)
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:286)
+	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1438)
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:518)
+	... 26 common frames omitted
+Caused by: java.io.IOException: Connection timed out: connect, socket connect lapse 21001 ms. /192.168.85.143 1521 30000 1 true
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:209)
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:161)
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:470)
+	... 31 common frames omitted
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at sun.nio.ch.Net.connect0(Native Method)
+	at sun.nio.ch.Net.connect(Net.java:454)
+	at sun.nio.ch.Net.connect(Net.java:446)
+	at sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:648)
+	at java.nio.channels.SocketChannel.open(SocketChannel.java:189)
+	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:81)
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:169)
+	... 33 common frames omitted
+13:14:12.685 [main] INFO  o.s.b.a.l.ConditionEvaluationReportLoggingListener - 
+
+Error starting ApplicationContext. To display the conditions report re-run your application with 'debug' enabled.
+13:14:12.689 [main] ERROR o.s.boot.SpringApplication - Application run failed
+java.lang.IllegalStateException: Failed to execute CommandLineRunner
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:803)
+	at org.springframework.boot.SpringApplication.callRunners(SpringApplication.java:784)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:338)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1258)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1246)
+	at com.stamper.yx.common.CommonApplication.main(CommonApplication.java:49)
+Caused by: org.springframework.transaction.CannotCreateTransactionException: Could not open JDBC Connection for transaction; nested exception is java.sql.SQLRecoverableException: IO 错误: The Network Adapter could not establish the connection
+	at org.springframework.jdbc.datasource.DataSourceTransactionManager.doBegin(DataSourceTransactionManager.java:305)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:378)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:474)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:289)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:98)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:185)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:688)
+	at com.stamper.yx.common.service.impl.IUserService$$EnhancerBySpringCGLIB$$ede9a194.save(<generated>)
+	at com.stamper.yx.common.CommonApplication.run(CommonApplication.java:98)
+	at org.springframework.boot.SpringApplication.callRunner(SpringApplication.java:800)
+	... 5 common frames omitted
+Caused by: java.sql.SQLRecoverableException: IO 错误: The Network Adapter could not establish the connection
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:774)
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:688)
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:39)
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:691)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:117)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:123)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:365)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:194)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:460)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:534)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:115)
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:112)
+	at org.springframework.jdbc.datasource.DataSourceTransactionManager.doBegin(DataSourceTransactionManager.java:262)
+	... 14 common frames omitted
+Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:523)
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:521)
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:660)
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:286)
+	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:1438)
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:518)
+	... 26 common frames omitted
+Caused by: java.io.IOException: Connection timed out: connect, socket connect lapse 21001 ms. /192.168.85.143 1521 30000 1 true
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:209)
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:161)
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:470)
+	... 31 common frames omitted
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at sun.nio.ch.Net.connect0(Native Method)
+	at sun.nio.ch.Net.connect(Net.java:454)
+	at sun.nio.ch.Net.connect(Net.java:446)
+	at sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:648)
+	at java.nio.channels.SocketChannel.open(SocketChannel.java:189)
+	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:81)
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:169)
+	... 33 common frames omitted
+13:14:12.696 [main] INFO  o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext - Closing org.springframework.boot.web.servlet.context.AnnotationConfigServletWebServerApplicationContext@74960bfa: startup date [Wed Nov 27 13:13:24 CST 2019]; root of context hierarchy
+13:14:12.700 [main] INFO  o.s.j.e.a.AnnotationMBeanExporter - Unregistering JMX-exposed beans on shutdown
+13:14:12.700 [main] INFO  o.s.j.e.a.AnnotationMBeanExporter - Unregistering JMX-exposed beans
+13:14:12.700 [main] INFO  o.s.s.c.ThreadPoolTaskExecutor - Shutting down ExecutorService 'taskExecutor'
