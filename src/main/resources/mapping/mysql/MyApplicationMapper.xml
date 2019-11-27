@@ -22,12 +22,12 @@
   </sql>
     <insert id="insert" useGeneratedKeys="true"
             keyProperty="id">
-        insert into tj_applications (<include refid="Base_Column_List"/>)
+        insert into ding_applications (<include refid="Base_Column_List"/>)
         values
         (#{id},now(),now(),null,#{applicationId},#{title},#{totalCount},#{needCount},#{deviceId},#{userId},#{userName})
     </insert>
     <update id="update">
-        update tj_applications
+        update ding_applications
         <set>
             <if test="updateDate != null">
                 update_date = NOW(),
@@ -67,7 +67,7 @@
         SELECT
             <include refid="Base_Column_List"/>
         FROM
-            tj_applications
+            ding_applications
         WHERE
             delete_date IS NULL
             AND application_id = #{applicationId}
