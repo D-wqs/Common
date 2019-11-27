@@ -78,17 +78,17 @@ datasource:
       username:
       password:
     #多数据源：mysql
-#    mysql:
-#      jdbc-url: jdbc:mysql://localhost:3306/common?useUnicode=true&characterEncoding=utf-8
-#      driver-class-name: com.mysql.jdbc.Driver
-#      username: root
-#      password: root
-    #天津切换Oracle
     mysql:
-      jdbc-url: jdbc:oracle:thin:@192.168.85.143:1521:XE
-      driver-class-name: oracle.jdbc.driver.OracleDriver
+      jdbc-url: jdbc:mysql://localhost:3306/common?useUnicode=true&characterEncoding=utf-8
+      driver-class-name: com.mysql.jdbc.Driver
       username: root
       password: root
+    #天津切换Oracle
+#    mysql:
+#      jdbc-url: jdbc:oracle:thin:@192.168.85.143:1521:XE
+#      driver-class-name: oracle.jdbc.driver.OracleDriver
+#      username: root
+#      password: root
 
 #服务关停:true:开启、false:关闭
 #需配合host.properties中的OPEN_MYSQL同步
