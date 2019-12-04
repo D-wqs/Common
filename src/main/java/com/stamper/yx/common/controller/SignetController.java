@@ -102,12 +102,12 @@ public class SignetController {
         Object o = EHCacheUtil.get(key);
         if (o != null && StringUtils.isNotBlank(o.toString())) {
             return ResultVO.OK(o.toString());
-        }else{
+        } else {
             //如果缓存中去不到该值，从通道中获取
             DeviceWebSocket webSocket = pool.get(deviceId + "");
             String symmetricKey = webSocket.getSymmetricKey();
-            if(StringUtils.isNotBlank(symmetricKey)){
-                log.info("AesKey从缓存中获取失败，直接从通道中获取：",symmetricKey);
+            if (StringUtils.isNotBlank(symmetricKey)) {
+                log.info("AesKey从缓存中获取失败，直接从通道中获取：", symmetricKey);
                 return ResultVO.OK(symmetricKey);
             }
         }
@@ -485,9 +485,9 @@ public class SignetController {
             return ResultVO.FAIL("设备不在线");
         }
         int receive = webSocket.getReceive();
-        if(receive==1){
+        if (receive == 1) {
             //todo 当前通道已收到申请单，不再接收申请单，只要盖章返回后，设置为0
-            return  ResultVO.FAIL(Code.ERROR501);
+            return ResultVO.FAIL(Code.ERROR501);
         }
         //设备是否在使用中
         int status = webSocket.getStatus();
@@ -496,13 +496,16 @@ public class SignetController {
             return ResultVO.FAIL("该设备正在使用中,请关锁后推送");
         }
         //TODO 根据第二数据源处理已使用的次数
-        if(AppConstant.OPEN_MYSQL.equalsIgnoreCase("true")){
+        if ("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)) {
             //获取已使用的次数
             Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
-            if(byApplicationId!=null){
-                needCount=byApplicationId.getNeedCount();
-                int tag=totalCount - needCount;
-                if(tag<=0){
+            if (byApplicationId != null) {
+                needCount = byApplicationId.getNeedCount();
+                if(needCount==null){
+                    needCount=0;
+                }
+                int tag = totalCount - needCount;
+                if (tag <= 0) {
                     //todo 当前申请单次数已使用完
                     return ResultVO.FAIL("当前申请单次数已用完");
                 }
@@ -533,8 +536,8 @@ public class SignetController {
             //Future future = pool.send(application.getSignetId() + "", res);
 
             //todo 异步记录申请单,在第二数据源开启的前提下，备份到第二数据源
-            if(AppConstant.OPEN_MYSQL.equalsIgnoreCase("true")){
-                Applications applications=new Applications();
+            if ("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)) {
+                Applications applications = new Applications();
                 applications.setApplicationId(applicationId);
                 applications.setTitle(title);
                 applications.setTotalCount(totalCount);

@@ -317,8 +317,6 @@ public class SealRecordInfoController {
             fileInfo.setRelativePath(absoultPath);//绝对路径地址
             fileInfo.setSealRecordInfoId(sealInfoId);
             mysqlFileInfoService.save(fileInfo);
-
-//            log.info("文件保存成功FileInfo{{}}",fileInfo);
             return fileInfo;
 
         } catch (FileNotFoundException e) {

@@ -274,7 +274,8 @@ public class CallBackController {
                         e.printStackTrace();
                     }
                     break;
-                case AppConstant.USE_COUNT://使用次数，盖章通知的返回
+                //使用次数，盖章通知的返回
+                case AppConstant.USE_COUNT:
                 //{\"Body\":{\"ApplicationID\":1001,\"DeviceID\":1001,\"Res\":0,\"UseTimes\":6},\"Head\":{\"Magic\":42949207,\"Cmd\":4,\"SerialNum\":1403,\"Version\":1}}
                     HighDeviceOnUseRes res = JSONObject.parseObject(decrypt, HighDeviceOnUsingPkg.class).getBody();
                     //通过盖章通知的返回，得到当前已使用的次数，更新needCount

@@ -90,16 +90,16 @@
             <version>${lombok.version}</version>
         </dependency>
         <!--mysql依赖-->
-        <!--<dependency>-->
-            <!--<groupId>mysql</groupId>-->
-            <!--<artifactId>mysql-connector-java</artifactId>-->
-        <!--</dependency>-->
-        <!--oracle无法从maven库中下载，需要下载jar包手动导入-->
         <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>8.0.0.1</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
         </dependency>
+        <!--oracle无法从maven库中下载，需要下载jar包手动导入-->
+        <!--<dependency>-->
+            <!--<groupId>com.oracle</groupId>-->
+            <!--<artifactId>ojdbc8</artifactId>-->
+            <!--<version>8.0.0.1</version>-->
+        <!--</dependency>-->
         <!-- SQLite 驱动 -->
         <dependency>
             <groupId>org.xerial</groupId>

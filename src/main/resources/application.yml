@@ -39,7 +39,6 @@ mybatis:
 #    /device/sealRecordInfo/meter #高拍仪记录上传
 
 ignorePaths:
-  test: hello
   Paths:
     - /device/getAccessToken
     - /device/ws
@@ -72,11 +71,11 @@ ok:
 #是否启用rabbitMQ
 #注意：配置数据源时：【driverClassName不能写成driver-class-name】【url 换成jdbc-url】
 datasource:
-    sqlite:
-      jdbc-url: jdbc:sqlite:src\main\resources\static\yx_data.db
-      driver-class-name: org.sqlite.JDBC
-      username:
-      password:
+#    sqlite:
+#      jdbc-url: jdbc:sqlite:src\main\resources\static\yx_data.db
+#      driver-class-name: org.sqlite.JDBC
+#      username:
+#      password:
     #多数据源：mysql
     mysql:
       jdbc-url: jdbc:mysql://localhost:3306/common?useUnicode=true&characterEncoding=utf-8

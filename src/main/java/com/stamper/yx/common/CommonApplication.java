@@ -65,7 +65,7 @@ public class CommonApplication implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         log.info("------------安徽云玺----------");
-        log.info("TJ分支");
+        log.info("ding分支");
         //初始化websocket
         DeviceWebSocket.service = service;
         DefaultWebSocket.okHttpCli = okHttpCli;//注入okHttpCli,发送关机指令
@@ -119,7 +119,7 @@ public class CommonApplication implements CommandLineRunner {
 
         //mysql 数据源同步数据
         String openMysql = AppConstant.OPEN_MYSQL;
-        if (openMysql.equalsIgnoreCase("true")) {
+        if ("true".equalsIgnoreCase(openMysql)) {
             mysqlSignetService.save(signet);
         }else{
             log.info("*****停止第二数据源的使用*****");
