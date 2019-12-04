@@ -501,6 +501,9 @@ public class SignetController {
             Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
             if(byApplicationId!=null){
                 needCount=byApplicationId.getNeedCount();
+                if(needCount==null){
+                    needCount=0;
+                }
                 int tag=totalCount - needCount;
                 if(tag<=0){
                     //todo 当前申请单次数已使用完
