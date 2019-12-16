@@ -288,9 +288,9 @@ public class SealRecordInfoController {
         }
         String filePath = AppConstant.FILE_PATH;
         String filePathV2 = DirFileUtils.getFilePathV2(corpId);//路径地址：CorpId/年/月/日
-        String realpath = filePath + File.separator + "upload" + File.separator + filePathV2;//拼接文件最终所在磁盘地址
+        String realpath =  "upload" + File.separator + filePathV2;//拼接文件最终所在磁盘地址
         //此处处理盖章记录文件
-        String absoultPath = realpath;
+        String absoultPath = filePath + File.separator +realpath;
         File path = new File(absoultPath);
         //创建父目录文件夹
         if (!path.exists()) {
@@ -314,7 +314,8 @@ public class SealRecordInfoController {
             FileInfo fileInfo = new FileInfo();
             fileInfo.setOriginalName(fileName);//原文件名
             fileInfo.setFileName(name + ".jpg");//新文件名
-            fileInfo.setRelativePath(absoultPath);//绝对路径地址
+            fileInfo.setAbsolutePath(absoultPath);//绝对路径地址
+            fileInfo.setRelativePath(realpath);//绝对路径地址
             fileInfo.setSealRecordInfoId(sealInfoId);
             mysqlFileInfoService.save(fileInfo);
             return fileInfo;
