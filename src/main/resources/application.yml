@@ -17,7 +17,7 @@ queue:
   signet: queue.signet.${random.value}
 
 server:
-  port: 8082
+  port: 8888
   connection-timeout: 100000
 #  servlet:
 #    context-path: /yunxi

@@ -288,7 +288,7 @@ public class SealRecordInfoController {
         }
         String filePath = AppConstant.FILE_PATH;
         String filePathV2 = DirFileUtils.getFilePathV2(corpId);//路径地址：CorpId/年/月/日
-        String realpath =  "upload" + File.separator + filePathV2;//拼接文件最终所在磁盘地址
+        String realpath =  "upload" + filePathV2;//拼接文件最终所在磁盘地址
         //此处处理盖章记录文件
         String absoultPath = filePath + File.separator +realpath;
         File path = new File(absoultPath);
