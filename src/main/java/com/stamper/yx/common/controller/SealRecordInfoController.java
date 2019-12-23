@@ -67,7 +67,7 @@ public class SealRecordInfoController {
      */
     @RequestMapping(value = "addEasyInfo")
     public String addEasyInfo(SealRecordInfo sealRecordInfo) {
-        log.info("指纹模式传来的参数{{}}", sealRecordInfo);
+//        log.info("指纹模式传来的参数{{}}", sealRecordInfo);
         log.info("来自指纹模式的记录上传----------【从请求参数中获取fileupload参数，进行对称解密，获取图片详情】");
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();

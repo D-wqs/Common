@@ -12,7 +12,7 @@
         <result column="DEVICE_ID" property="deviceID" jdbcType="INTEGER"/>
         <result column="UUID" property="uuid" jdbcType="VARCHAR"/>
         <result column="IDENTITY" property="identity" jdbcType="VARCHAR"/>
-        <result column="PICUSERID" property="picUserId" jdbcType="INTEGER"/>
+        <result column="PICUSEID" property="picUseId" jdbcType="INTEGER"/>
         <result column="LOCATION" property="location" jdbcType="VARCHAR"/>
         <result column="COUNT" property="count" jdbcType="INTEGER"/>
         <result column="APPLICATION_ID" property="applicationID" jdbcType="INTEGER"/>
@@ -24,7 +24,7 @@
         <result column="FILE_ID" property="fileId" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id,create_date,update_date,delete_date,device_id,uuid,identity,picUserId,location,count,application_id,is_audit,time,seal_count,seal_id,alarm,file_id
+    id,create_date,update_date,delete_date,device_id,uuid,identity,picUseId,location,count,application_id,is_audit,time,seal_count,seal_id,alarm,file_id
     </sql>
 
     <insert id="insert" parameterType="com.stamper.yx.common.entity.SealRecordInfo">
@@ -33,7 +33,7 @@
         </selectKey>
         insert into seal_record_info (<include refid="Base_Column_List"/>)
         values
-        (#{id,jdbcType=INTEGER},sysdate,sysdate,null,#{deviceID,jdbcType=INTEGER},#{uuid,jdbcType=VARCHAR},#{identity,jdbcType=VARCHAR},#{picUserId,jdbcType=INTEGER},#{location,jdbcType=VARCHAR},#{count,jdbcType=INTEGER},#{applicationID,jdbcType=INTEGER},#{isAudit,jdbcType=INTEGER}
+        (#{id,jdbcType=INTEGER},sysdate,sysdate,null,#{deviceID,jdbcType=INTEGER},#{uuid,jdbcType=VARCHAR},#{identity,jdbcType=VARCHAR},#{picUseId,jdbcType=INTEGER},#{location,jdbcType=VARCHAR},#{count,jdbcType=INTEGER},#{applicationID,jdbcType=INTEGER},#{isAudit,jdbcType=INTEGER}
         ,#{time,jdbcType=VARCHAR},#{sealCount,jdbcType=INTEGER},#{sealId,jdbcType=INTEGER},#{alarm,jdbcType=INTEGER},#{fileId,jdbcType=INTEGER})
     </insert>
     <update id="update" parameterType="com.stamper.yx.common.entity.SealRecordInfo">
@@ -58,7 +58,7 @@
                 identity = #{identity,jdbcType=VARCHAR},
             </if>
             <if test="picUserId != null">
-                picUserId = #{picUserId,jdbcType=INTEGER},
+                picUseId = #{picUseId,jdbcType=INTEGER},
             </if>
             <if test="location != null">
                 location = #{location,jdbcType=VARCHAR},

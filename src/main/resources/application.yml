@@ -70,7 +70,6 @@ ok:
     max-idle-connections: 200
     keep-alive-duration: 300
 #是否启用rabbitMQ
-#注意：配置数据源时：【driverClassName不能写成driver-class-name】【url 换成jdbc-url】
 datasource:
     sqlite:
       jdbc-url: jdbc:sqlite:src\main\resources\static\yx_data.db
@@ -85,7 +84,7 @@ datasource:
 #      password: root
     #天津切换Oracle
     mysql:
-      jdbc-url: jdbc:oracle:thin:@192.168.85.143:1521:XE
+      jdbc-url: jdbc:oracle:thin:@192.168.74.129:1521:XE
       driver-class-name: oracle.jdbc.driver.OracleDriver
       username: root
       password: root
