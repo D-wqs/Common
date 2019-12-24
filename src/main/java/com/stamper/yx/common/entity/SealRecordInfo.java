@@ -24,6 +24,7 @@ public class SealRecordInfo {
     private Integer alarm;//0:正常 1:长按警报 2:防拆卸报警
     private String fileupload;//文件密文数据
     private Integer fileId;//关联上传的文件信息
+    private Integer sriType;//0:申请单模式 1:申请单模式(量子) 2:指纹模式 3:指纹模式(量子)
 
     public Integer getId() {
         return id;
@@ -196,6 +197,14 @@ public class SealRecordInfo {
         this.fileId = fileId;
     }
 
+    public Integer getSriType() {
+        return sriType;
+    }
+
+    public void setSriType(Integer sriType) {
+        this.sriType = sriType;
+    }
+
     @Override
     public String toString() {
         return "SealRecordInfo{" +
@@ -206,7 +215,7 @@ public class SealRecordInfo {
                 ", deviceID=" + deviceID +
                 ", uuid='" + uuid + '\'' +
                 ", identity='" + identity + '\'' +
-                ", picUserId=" + picUseId +
+                ", picUseId=" + picUseId +
                 ", location='" + location + '\'' +
                 ", recsn='" + recsn + '\'' +
                 ", fpCode='" + fpCode + '\'' +
@@ -220,6 +229,7 @@ public class SealRecordInfo {
                 ", alarm=" + alarm +
                 ", fileupload='" + fileupload + '\'' +
                 ", fileId=" + fileId +
+                ", sriType=" + sriType +
                 '}';
     }
 }

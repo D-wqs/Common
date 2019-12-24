@@ -25,6 +25,10 @@ public class AppConstant {
 	public static final String LOCATION_INFO="LOCATION_INFO";//同步地址信息
 	public static final String DEVICE_LOGOUT="DEVICE_LOGOUT";//设备关机回调
 
+	public static final String GET_TICKET_URL=prop.getStr("GET_TICKET_URL");//获取票据
+	public static final String GET_ACCESSTOKEN_URL=prop.getStr("GET_ACCESSTOKEN_URL");//获取接口凭证
+	public static final String GET_AESKEY_URL=prop.getStr("GET_AESKEY_URL");//获取对称密钥
+
 	public static int pit = 1;
 
 	/**

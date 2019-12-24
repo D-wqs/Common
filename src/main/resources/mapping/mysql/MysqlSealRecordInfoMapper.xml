@@ -22,9 +22,10 @@
         <result column="SEAL_ID" property="sealId" jdbcType="INTEGER"/>
         <result column="ALARM" property="alarm" jdbcType="INTEGER"/>
         <result column="FILE_ID" property="fileId" jdbcType="INTEGER"/>
+        <result column="SRI_TYPE" property="sriType" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id,create_date,update_date,delete_date,device_id,uuid,identity,picUseId,location,count,application_id,is_audit,time,seal_count,seal_id,alarm,file_id
+    id,create_date,update_date,delete_date,device_id,uuid,identity,picUseId,location,count,application_id,is_audit,time,seal_count,seal_id,alarm,file_id,sri_type
     </sql>
 
     <insert id="insert" parameterType="com.stamper.yx.common.entity.SealRecordInfo">
@@ -34,7 +35,7 @@
         insert into seal_record_info (<include refid="Base_Column_List"/>)
         values
         (#{id,jdbcType=INTEGER},sysdate,sysdate,null,#{deviceID,jdbcType=INTEGER},#{uuid,jdbcType=VARCHAR},#{identity,jdbcType=VARCHAR},#{picUseId,jdbcType=INTEGER},#{location,jdbcType=VARCHAR},#{count,jdbcType=INTEGER},#{applicationID,jdbcType=INTEGER},#{isAudit,jdbcType=INTEGER}
-        ,#{time,jdbcType=VARCHAR},#{sealCount,jdbcType=INTEGER},#{sealId,jdbcType=INTEGER},#{alarm,jdbcType=INTEGER},#{fileId,jdbcType=INTEGER})
+        ,#{time,jdbcType=VARCHAR},#{sealCount,jdbcType=INTEGER},#{sealId,jdbcType=INTEGER},#{alarm,jdbcType=INTEGER},#{fileId,jdbcType=INTEGER},#{sriType,jdbcType=INTEGER})
     </insert>
     <update id="update" parameterType="com.stamper.yx.common.entity.SealRecordInfo">
         update seal_record_info
@@ -86,6 +87,9 @@
             </if>
             <if test="fileId != null">
                 file_id = #{fileId,jdbcType=INTEGER},
+            </if>
+            <if test="sriType != null">
+                sri_type = #{sriType,jdbcType=INTEGER},
             </if>
         </set>
         where delete_date IS NULL

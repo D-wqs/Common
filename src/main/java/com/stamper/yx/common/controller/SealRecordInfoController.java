@@ -61,13 +61,14 @@ public class SealRecordInfoController {
     /**
      * 指纹模式上传
      * 0:成功  1:失败  2:图片重复 3:出错
-     *
+     * 0:申请单模式 1:申请单模式(量子) 2:指纹模式 3:指纹模式(量子)
      * @param sealRecordInfo
      * @return
      */
     @RequestMapping(value = "addEasyInfo")
     public String addEasyInfo(SealRecordInfo sealRecordInfo) {
-//        log.info("指纹模式传来的参数{{}}", sealRecordInfo);
+        log.info("指纹模式传来的参数,设置sriType=2");
+        sealRecordInfo.setSriType(2);
         log.info("来自指纹模式的记录上传----------【从请求参数中获取fileupload参数，进行对称解密，获取图片详情】");
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
@@ -118,13 +119,14 @@ public class SealRecordInfoController {
     /**
      * 申请单模式上传
      * 0:成功  1:失败  2:图片重复 3:出错
-     *
+     * 0:申请单模式 1:申请单模式(量子) 2:指纹模式 3:指纹模式(量子)
      * @param sealRecordInfo
      * @return
      */
     @RequestMapping(value = "addNormalInfo")
     public String addNormalInfo(SealRecordInfo sealRecordInfo) {
         log.info("来自申请单模式的记录上传----------【从请求参数中获取fileupload参数，进行对称解密，获取图片详情】");
+        sealRecordInfo.setSriType(0);
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
@@ -243,16 +245,16 @@ public class SealRecordInfoController {
         //请求参数：name，password
         //请求地址：url:http://ip:port/user/getTicket【无需校验请求头】
         Map<String, String> ticket = new HashMap<>();
-        ticket.put("name", "admin");
-        ticket.put("password", "admin_123456");
-        String s2 = okHttpCli.doPost("http://localhost:8888/user/getTicket", ticket);
+        ticket.put("name", AppConstant.USER);
+        ticket.put("password", AppConstant.PASSWORD);
+        String s2 = okHttpCli.doPost(AppConstant.GET_TICKET_URL, ticket);
 
         //TODO 获取token，获取密钥
         //请求参数：ticket
         //请求地址：url:http://ip:port/device/getAccessToken【无需校验请求头】
         Map<String, String> getToken = new HashMap<>();
         getToken.put("ticket", s2);
-        String s1 = okHttpCli.doPost("http://localhost:8888/device/getAccessToken", getToken);
+        String s1 = okHttpCli.doPost(AppConstant.GET_ACCESSTOKEN_URL, getToken);
         ResultVO resultVO = JSONObject.parseObject(s1, ResultVO.class);
         Object token = resultVO.getData();
         //TODO 获取对称密钥aesKey
@@ -260,7 +262,7 @@ public class SealRecordInfoController {
         //请求地址：url:http://ip:port/device/getAesKey
         Map<String, String> map = new HashMap<>();
         map.put("deviceId", deviceId + "");
-        String s = okHttpCli.doPostWithHeader("http://localhost:8888/device/getAesKey", map, token.toString());//添加请求头：Authorization
+        String s = okHttpCli.doPostWithHeader(AppConstant.GET_AESKEY_URL, map, token.toString());//添加请求头：Authorization
         ResultVO aesData = JSONObject.parseObject(s, ResultVO.class);
         Object aesKey = aesData.getData();
         log.info("获取到的返回值{{}}", aesKey.toString());
