@@ -15,7 +15,7 @@ spring:
 ## 消息队列名称
 queue:
   signet: queue.signet.${random.value}
-
+# 处理记录时
 server:
   port: 8888
   connection-timeout: 100000
