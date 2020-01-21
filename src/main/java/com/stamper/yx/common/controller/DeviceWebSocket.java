@@ -55,6 +55,10 @@ public class DeviceWebSocket extends DefaultWebSocket {
      * 心跳回应
      */
     private boolean heartbeat(String message) {
+        if (message.startsWith("ping-null")) {
+            log.info("ping:【{}】设备：【{}】您的数据包格式不正确,请重新注册/登录", message,this.getKey());
+            return true;
+        }
         if (message.startsWith("ping")) {
             if (isCaller()) {
                 log.info("ping:您当前处于访客状态,请先注册/登录");

@@ -86,6 +86,8 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                 }
             } catch (Exception e) {
                 log.error("设备通信：对称解密异常", e.getMessage());
+                //让设备去注册
+
                 e.printStackTrace();
                 return;
             }
@@ -147,10 +149,10 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     signetService.update(signet);
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if(StringUtils.isBlank(openMysql)||openMysql.equalsIgnoreCase("false")){
-                        mysqlSignetService=null;
+                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+                        mysqlSignetService = null;
                     }
-                    if(mysqlSignetService!=null){
+                    if (mysqlSignetService != null) {
                         mysqlSignetService.add(signet);
                     }
                     log.info("设备:{{}} 设置休眠:{{}}分钟", signet.getName(), times);
@@ -177,10 +179,10 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     signetService.update(signet);
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if(StringUtils.isBlank(openMysql)||openMysql.equalsIgnoreCase("false")){
-                        mysqlSignetService=null;
+                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+                        mysqlSignetService = null;
                     }
-                    if(mysqlSignetService!=null){
+                    if (mysqlSignetService != null) {
                         mysqlSignetService.add(signet);
                     }
                     log.info("设备:{{}} 远程锁定:{{}}", signet.getName(), status.intValue() == 2 ? "锁定" : "解锁");
@@ -207,10 +209,10 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     signetService.update(signet);
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if(StringUtils.isBlank(openMysql)||openMysql.equalsIgnoreCase("false")){
-                        mysqlSignetService=null;
+                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+                        mysqlSignetService = null;
                     }
-                    if(mysqlSignetService!=null){
+                    if (mysqlSignetService != null) {
                         mysqlSignetService.add(signet);
                     }
                     log.info("设备:{{}} 使用模式:{{}}", signet.getName(), signet.getFingerPattern() ? "指纹模式(开)" : "指纹模式(关)");
@@ -292,7 +294,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
         try {
             res = JSONObject.parseObject(message, HighDeviceOnUsingPkg.class);
         } catch (Exception e) {
-            log.error("盖章拍照的返回解析json异常：{{}}",message);
+            log.error("盖章拍照的返回解析json异常：{{}}", message);
             e.printStackTrace();
         }
         HighDeviceOnUseRes body = res.getBody();
@@ -421,10 +423,10 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
 
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if(StringUtils.isBlank(openMysql)||openMysql.equalsIgnoreCase("false")){
-                        mysqlSignetService=null;
+                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+                        mysqlSignetService = null;
                     }
-                    if(mysqlSignetService!=null){
+                    if (mysqlSignetService != null) {
                         mysqlSignetService.add(signet);
                     }
                     //监控网络状态
@@ -598,7 +600,9 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
      */
     private void signetLoginReq(DeviceLoginReq body, @NotNull DeviceWebSocket webSocket) {
         DeviceLoginInfo info = body.getDeviceLoginInfo();
-
+        System.out.println("=================================印章登陆start=============================");
+        System.out.println(info.toString());
+        System.out.println("===============================印章登陆end=================================");
         //构建返回值对象
         DeviceLoginRes res = new DeviceLoginRes();
         res.setJwtTokenNew("");
@@ -651,12 +655,17 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
 
                 //todo 存入mysql
                 String openMysql = AppConstant.OPEN_MYSQL;
-                if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
-                    mysqlSignetService = null;
-                }
-                if (mysqlSignetService != null) {
+                if ("true".equalsIgnoreCase(openMysql)) {
                     mysqlSignetService.add(signet);
                 }
+
+//                String openMysql = AppConstant.OPEN_MYSQL;
+//                if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+//                    mysqlSignetService = null;
+//                }
+//                if (mysqlSignetService != null) {
+//                    mysqlSignetService.add(signet);
+//                }
                 //异步推送离线消息
                 deviceAsyncService.pushUnline(signet, webSocket);
 
@@ -716,6 +725,10 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
      * 印章注册
      */
     private void signetRegReq(DeviceLoginInfo info, @NotNull DeviceWebSocket webSocket) {
+        System.out.println("=================================印章注册start=============================");
+        System.out.println(info.toString());
+        System.out.println("===============================印章注册end=================================");
+
         String uuid = info.getStm32UUID();
         Signet signet = null;
         if (StringUtils.isBlank(uuid)) {
@@ -744,12 +757,16 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
         }
         //todo 存入mysql
         String openMysql = AppConstant.OPEN_MYSQL;
-        if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
-            mysqlSignetService = null;
-        }
-        if (mysqlSignetService != null) {
+        if ("true".equalsIgnoreCase(openMysql)) {
             mysqlSignetService.add(signet);
         }
+//        String openMysql = AppConstant.OPEN_MYSQL;
+//        if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+//            mysqlSignetService = null;
+//        }
+//        if (mysqlSignetService != null) {
+//            mysqlSignetService.add(signet);
+//        }
         //确定身份
         webSocket.setCaller(false);//设置非访客
         webSocket.setName(signet.getName());
@@ -878,7 +895,10 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     return message;
                 }
             }
-
+            //TODO: 2020年1月14日14:14:58 若是通信异常,标记0的数据包始终无法重新注册,则设置通道为访客通道
+            if (cmd == 0) {
+                webSocket.setCaller(true);
+            }
             //最后将密文返回进行逻辑处理
             if (encrypt != null && StringUtils.isNotBlank(encrypt.toString())) {
                 message = encrypt.toString();

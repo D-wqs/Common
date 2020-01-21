@@ -585,7 +585,11 @@ public class SignetController {
         //组包
         MHPkg res = MHPkg.end(applicationId);
         pool.send(deviceId + "", res);
-        return ResultVO.OK("结束申请单指令已下发");
+        //结束申请单的时候,允许设备接收申请单
+        DeviceWebSocket webSocket = pool.get(deviceId + "");
+        webSocket.setReceive(0);
+
+        return ResultVO.OK("结束申请单指令已下发,通道允许接收申请单");
     }
 
     /**
