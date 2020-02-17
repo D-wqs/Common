@@ -2,11 +2,12 @@ package com.stamper.yx.common.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.stamper.yx.common.controller.DeviceWebSocket;
-import com.stamper.yx.common.entity.*;
+import com.stamper.yx.common.entity.MHPkg;
+import com.stamper.yx.common.entity.Signet;
 import com.stamper.yx.common.entity.deviceModel.*;
-import com.stamper.yx.common.service.*;
-import com.stamper.yx.common.service.async.TalkMeterAsynvService;
-import com.stamper.yx.common.service.mysql.MysqlSealRecordInfoService;
+import com.stamper.yx.common.service.DeviceAsyncService;
+import com.stamper.yx.common.service.DeviceWebSocketService;
+import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.mysql.MysqlSignetService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheGlobal;
@@ -45,14 +46,6 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
     private OkHttpCli okHttpCli;
     @Autowired
     private MysqlSignetService mysqlSignetService;
-    @Autowired
-    private MysqlSealRecordInfoService mysqlSealRecordInfoService;
-    @Autowired
-    private SignetMeterService signetMeterService;
-    @Autowired
-    private MeterService meterService;
-    @Autowired
-    private TalkMeterAsynvService talkMeterAsynvService;
 
     /**
      * 接待websocket发送过来的请求
@@ -93,6 +86,8 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                 }
             } catch (Exception e) {
                 log.error("设备通信：对称解密异常", e.getMessage());
+                //让设备去注册
+
                 e.printStackTrace();
                 return;
             }
@@ -130,72 +125,10 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
             case AppConstant.SLEEP_TIME_RETURN_RES:    //设置休眠 状态返回【数据源】
                 updateSleepTime(message, webSocket);
                 break;
-            case AppConstant.TAKE_AUDIT_PIC_REQ:    //审计按钮触发--高拍仪拍照
-                //印章解锁用章后，才能触发审计功能，此时通知高拍仪拍照
-                auditButton(message, webSocket);
-                break;
             default:
                 log.info("未知协议请求-->{{}}", message);
                 break;
         }
-    }
-
-    /**
-     * 审计按钮被触发，通知高拍仪拍照(未绑定高拍仪则不处理)
-     *
-     * @param message
-     * @param webSocket
-     */
-    private void auditButton(@NotEmpty String message, @NotNull DeviceWebSocket webSocket) {
-        //{{"Body":{"UserName":"admin","applicationID":1,"useTimes":32,"userID":1},"Crc":"","Head":{"Cmd":55,"Magic":42949207,"SerialNum":1,"Version":1}}}
-        AuditButtonInfo body = JSONObject.parseObject(message, AuditButtonPkg.class).getBody();
-        //审计请求--目的是为了通知高拍仪拍照
-        Integer applicationID = body.getApplicationID();
-        Integer userID = body.getUserID();
-        String userName = body.getUserName();
-        Integer useTimes = body.getUseTimes();
-        log.info("审计按钮触发——获取到的参数：applicationID:{{}},userID:{{}},userName：{{}}，useTimes:{{}}", applicationID, userID, userName, useTimes);
-        //判断是否开启第二数据源
-        String openMysql = AppConstant.OPEN_MYSQL;
-        if (openMysql.equalsIgnoreCase("true")) {
-            String uuid = webSocket.getUuid();
-            Signet byUUID = mysqlSignetService.getByUUID(uuid);
-            if (byUUID != null) {
-                //获取到印章，检查高拍仪绑定关系:【设备与高拍仪一对多，所以通过一个设备id只能获取一个高拍仪】
-                SignetMeter bySignetId = signetMeterService.getBySignetId(byUUID.getId());
-                if (bySignetId == null) {
-                    //当前设备没有绑定高拍仪
-                    log.info("当前设备没有绑定高拍仪");
-                    return;
-                } else {
-                    Integer meterId = bySignetId.getMeterId();
-                    Meter byId = meterService.getById(meterId);
-                    if (byId == null) {
-                        log.error("当前高拍仪不存在{{}}", meterId);
-                        return;
-                    }
-                    //通知高拍仪拍照，使用记录id
-                    SealRecordInfo sealRecordInfo = mysqlSealRecordInfoService.getRecordAndAuditIs0(uuid, applicationID, useTimes);
-                    //将盖章记录的id通知给高拍仪
-                    int sealRecordId=0;
-                    if(sealRecordInfo==null){
-                        //TODO 印章盖章后才会收到审计指令，当前没有记录，说明印章记录没有及时上传
-                        log.warn("当前记录没有及时上传，关联的记录id主动设置为{{}},当前印章设备{{}}，当前高拍仪{{}}，当前申请单{{}}，当前次数{{}}",-1,byUUID.getId(),meterId,applicationID,useTimes);
-                    }else{
-                        sealRecordId=sealRecordInfo.getId();
-                    }
-
-                    //通过meterId获取传输地址
-                    Meter meter = meterService.getById(bySignetId.getMeterId());
-                    //通过设备id,记录id，高拍仪地址，请求图片传输
-                    talkMeterAsynvService.postMeterUploadImage(sealRecordId, meter.getClientAddr());
-
-                }
-            }
-            return;
-        }
-        log.info("数据源未开启，不通知高拍仪拍照");
-
     }
 
     /**
@@ -667,7 +600,9 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
      */
     private void signetLoginReq(DeviceLoginReq body, @NotNull DeviceWebSocket webSocket) {
         DeviceLoginInfo info = body.getDeviceLoginInfo();
-
+        System.out.println("=================================印章登陆start=============================");
+        System.out.println(info.toString());
+        System.out.println("===============================印章登陆end=================================");
         //构建返回值对象
         DeviceLoginRes res = new DeviceLoginRes();
         res.setJwtTokenNew("");
@@ -720,12 +655,17 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
 
                 //todo 存入mysql
                 String openMysql = AppConstant.OPEN_MYSQL;
-                if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
-                    mysqlSignetService = null;
-                }
-                if (mysqlSignetService != null) {
+                if ("true".equalsIgnoreCase(openMysql)) {
                     mysqlSignetService.add(signet);
                 }
+
+//                String openMysql = AppConstant.OPEN_MYSQL;
+//                if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+//                    mysqlSignetService = null;
+//                }
+//                if (mysqlSignetService != null) {
+//                    mysqlSignetService.add(signet);
+//                }
                 //异步推送离线消息
                 deviceAsyncService.pushUnline(signet, webSocket);
 
@@ -785,6 +725,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
      * 印章注册
      */
     private void signetRegReq(DeviceLoginInfo info, @NotNull DeviceWebSocket webSocket) {
+
         String uuid = info.getStm32UUID();
         Signet signet = null;
         if (StringUtils.isBlank(uuid)) {
@@ -813,12 +754,16 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
         }
         //todo 存入mysql
         String openMysql = AppConstant.OPEN_MYSQL;
-        if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
-            mysqlSignetService = null;
-        }
-        if (mysqlSignetService != null) {
+        if ("true".equalsIgnoreCase(openMysql)) {
             mysqlSignetService.add(signet);
         }
+//        String openMysql = AppConstant.OPEN_MYSQL;
+//        if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+//            mysqlSignetService = null;
+//        }
+//        if (mysqlSignetService != null) {
+//            mysqlSignetService.add(signet);
+//        }
         //确定身份
         webSocket.setCaller(false);//设置非访客
         webSocket.setName(signet.getName());
@@ -947,7 +892,10 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     return message;
                 }
             }
-
+            //TODO: 2020年1月14日14:14:58 若是通信异常,标记0的数据包始终无法重新注册,则设置通道为访客通道
+            if (cmd == 0) {
+                webSocket.setCaller(true);
+            }
             //最后将密文返回进行逻辑处理
             if (encrypt != null && StringUtils.isNotBlank(encrypt.toString())) {
                 message = encrypt.toString();

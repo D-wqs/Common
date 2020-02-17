@@ -29,9 +29,9 @@
     </sql>
 
   <insert id="insert" parameterType="com.stamper.yx.common.entity.Signet">
-      <selectKey keyProperty="id" resultType="int" order="BEFORE">
-          select SIGNET_SEQ.nextval from dual
-      </selectKey>
+      <!--<selectKey keyProperty="id" resultType="int" order="BEFORE">-->
+          <!--select SIGNET_SEQ.nextval from dual-->
+      <!--</selectKey>-->
       insert into signet (<include refid="Base_Column_List"/>)
         values (#{id,jdbcType=INTEGER},sysdate,sysdate,null,#{corpId,jdbcType=VARCHAR},#{name,jdbcType=VARCHAR},#{netType,jdbcType=VARCHAR},#{addr,jdbcType=VARCHAR},#{count,jdbcType=INTEGER},#{uuid,jdbcType=VARCHAR},#{simNum,jdbcType=VARCHAR},#{iccid,jdbcType=VARCHAR}
         ,#{imsi,jdbcType=VARCHAR},#{imei,jdbcType=VARCHAR},#{type,jdbcType=INTEGER},#{status,jdbcType=INTEGER},#{sleepTime,jdbcType=INTEGER},#{fingerPattern,jdbcType=BIT})
