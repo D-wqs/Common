@@ -95,7 +95,7 @@ public class SignetMVCController {
     @GetMapping("/yunxi/MysqlsignetList")
     public String Mysqllist(Model model) {
         String openMysql = AppConstant.OPEN_MYSQL;
-        if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+        if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
             return "redirect:/error.html";
         }
         List<Signet> all = mysqlSignetService.getAll();

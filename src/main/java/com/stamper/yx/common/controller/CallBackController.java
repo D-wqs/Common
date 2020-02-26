@@ -311,7 +311,7 @@ public class CallBackController {
     public boolean checkDatasource() {
         //mysql 数据源同步数据
         String openMysql = AppConstant.OPEN_MYSQL;
-        if (openMysql.equalsIgnoreCase("false")) {
+        if ("false".equalsIgnoreCase(openMysql)) {
             mysqlFingerService = null;
             return false;
         }

@@ -39,7 +39,7 @@ public class YXFilter extends OncePerRequestFilter {
             //TODO 校验admin session 处理界面跳转
             HttpSession session = httpServletRequest.getSession();
             Object loginUser = session.getAttribute("loginUser");
-            if (loginUser == null || !loginUser.equals("admin")) {
+            if (loginUser == null || !"admin".equals(loginUser)) {
                 httpServletRequest.setAttribute("msg","没有权限请先登陆");
                 httpServletRequest.getRequestDispatcher("/index.html").forward(httpServletRequest,httpServletResponse);
                 return;

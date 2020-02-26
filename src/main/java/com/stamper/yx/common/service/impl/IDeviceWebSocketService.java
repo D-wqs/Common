@@ -149,7 +149,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     signetService.update(signet);
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+                    if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
                         mysqlSignetService = null;
                     }
                     if (mysqlSignetService != null) {
@@ -179,7 +179,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     signetService.update(signet);
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+                    if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
                         mysqlSignetService = null;
                     }
                     if (mysqlSignetService != null) {
@@ -209,7 +209,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     signetService.update(signet);
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+                    if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
                         mysqlSignetService = null;
                     }
                     if (mysqlSignetService != null) {
@@ -423,7 +423,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
 
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+                    if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
                         mysqlSignetService = null;
                     }
                     if (mysqlSignetService != null) {

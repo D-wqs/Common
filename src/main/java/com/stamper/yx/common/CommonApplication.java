@@ -119,7 +119,7 @@ public class CommonApplication implements CommandLineRunner {
 
         //mysql 数据源同步数据
         String openMysql = AppConstant.OPEN_MYSQL;
-        if (openMysql.equalsIgnoreCase("true")) {
+        if ("true".equalsIgnoreCase(openMysql)) {
             mysqlSignetService.save(signet);
         }else{
             log.info("*****停止第二数据源的使用*****");

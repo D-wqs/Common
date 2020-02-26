@@ -496,7 +496,7 @@ public class SignetController {
             return ResultVO.FAIL("该设备正在使用中,请关锁后推送");
         }
         //TODO 根据第二数据源处理已使用的次数
-        if(AppConstant.OPEN_MYSQL.equalsIgnoreCase("true")){
+        if("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)){
             //获取已使用的次数
             Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
             if(byApplicationId!=null){
@@ -536,7 +536,7 @@ public class SignetController {
             //Future future = pool.send(application.getSignetId() + "", res);
 
             //todo 异步记录申请单,在第二数据源开启的前提下，备份到第二数据源
-            if(AppConstant.OPEN_MYSQL.equalsIgnoreCase("true")){
+            if("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)){
                 Applications applications=new Applications();
                 applications.setApplicationId(applicationId);
                 applications.setTitle(title);

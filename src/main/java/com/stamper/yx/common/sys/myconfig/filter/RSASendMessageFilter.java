@@ -45,7 +45,7 @@ public class RSASendMessageFilter implements SendMessageFilter {
 			}
 			if (decryptStr != null && decryptStr.length > 0) {
 				String s = new String(decryptStr);
-				if (!s.equalsIgnoreCase("pong")) {
+				if (!"pong".equalsIgnoreCase(s)) {
 					//使用私钥加密后,将密文赋值给消息
 					log.info("【对称加密】发送数据前（明文）：" + om.getData());
 					om.setData(AesUtil.encrypt(s, socket.getSymmetricKey()));
