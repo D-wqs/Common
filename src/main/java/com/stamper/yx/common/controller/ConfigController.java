@@ -5,17 +5,21 @@ import com.stamper.yx.common.entity.Signet;
 import com.stamper.yx.common.entity.deviceModel.UpdateAPK;
 import com.stamper.yx.common.service.ConfigService;
 import com.stamper.yx.common.service.SignetService;
+import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.context.SpringContextUtils;
+import com.stamper.yx.common.sys.dir.DirFileUtils;
 import com.stamper.yx.common.sys.response.Code;
 import com.stamper.yx.common.sys.response.ResultVO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -94,36 +98,43 @@ public class ConfigController {
      * 设备日志上传
      */
     @RequestMapping("/addConfigError")
-    public ResultVO addConfigError(MultipartFile fileupload) {
-        HttpServletRequest request = SpringContextUtils.getRequest();
-        Map<String, String[]> params = request.getParameterMap();
-        String uuid = null;
-        try {
-            uuid = params.get("uuid")[0];
-        } catch (Exception e) {
-            e.printStackTrace();
+    public ResultVO addConfigError(MultipartFile fileupload,String uuid) {
+        if (fileupload.isEmpty()){
+            log.error("【日志文件】上传失败");
+            return ResultVO.FAIL("上传失败");
         }
-        log.info("【开机后】设备日志上传{{}}",uuid);
-
-//        ConfigError configError = new ConfigError();
-//        //保存日志
-//        if (fileupload != null) {
-//            FileEntity entity = FileUtil.update(fileupload, "configLogs");
-//            if (entity != null) {
-//                configError.setFileName(entity.getFileName());
-//                configError.setAbsolutePath(entity.getAbsolutePath());
-//                configError.setRelativePath(entity.getRelativePath());
-//                configError.setError("日志上传成功");
-//            } else {
-//                configError.setError("保存日志文件失败");
-//            }
-//        } else {
-//            configError.setError("无日志文件");
-//        }
-//
-//        configError.setUuid(uuid);
-//        configErrorService.add(configError);
-
+        if(StringUtils.isBlank(uuid)){
+            log.error("【日志上传】uuid位空");
+            return ResultVO.FAIL("uuid为空");
+        }
+        Signet byUUID = signetService.getByUUID(uuid);
+        if(byUUID==null){
+            log.error("【日志上传】通过uuid没有找到设备");
+            return ResultVO.FAIL("当前uuid对应的设备不存在");
+        }
+        String filePath = AppConstant.FILE_PATH;
+        String filePathV2 = DirFileUtils.getFilePathV2(uuid);//路径地址：uuid/年/月/日
+        String realpath =  "upload" + filePathV2;//拼接文件最终所在磁盘地址
+        //此处处理盖章记录文件
+        String absoultPath = filePath + File.separator +realpath;
+        File path = new File(absoultPath);
+        //创建父目录文件夹
+        if (!path.exists()) {
+            //文件不存在？创建文件目录
+            path.mkdirs();
+        }
+        //文件名：
+        String originalFilename = fileupload.getOriginalFilename();
+        String name = StringUtils.isNotBlank(originalFilename) ? originalFilename : System.currentTimeMillis() + "";
+        log.info("【开机后】设备日志上传:,deviceId:{{}},filename{{}},size:{}",byUUID.getId(),name,fileupload.getSize());
+        File dest = new File(absoultPath + name);
+        try {
+            fileupload.transferTo(dest);
+            log.info("【开机后】设备日志上传:,deviceId:{{}},filename{{}},size:{}",byUUID.getId(),name,fileupload.getSize());
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("【日志上传】失败",e);
+        }
         return ResultVO.OK();
     }
 

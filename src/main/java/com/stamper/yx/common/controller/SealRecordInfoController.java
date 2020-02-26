@@ -84,7 +84,7 @@ public class SealRecordInfoController {
             byte[] bytes = new BASE64Decoder().decodeBuffer(decrypt);
             //todo 生成本地文件
             //将使用记录存入数据库
-            if (AppConstant.OPEN_MYSQL.equalsIgnoreCase("false")) {
+            if ("false".equalsIgnoreCase(AppConstant.OPEN_MYSQL)) {
                 log.info("数据源已关闭，不能插入使用记录。请开启mysql数据源");
                 return "1";
             }
@@ -141,7 +141,7 @@ public class SealRecordInfoController {
             byte[] bytes = new BASE64Decoder().decodeBuffer(decrypt);
             //todo 生成本地文件
             //将使用记录存入数据库
-            if (AppConstant.OPEN_MYSQL.equalsIgnoreCase("false")) {
+            if ("false".equalsIgnoreCase(AppConstant.OPEN_MYSQL)) {
                 log.info("数据源已关闭，不能插入使用记录。请开启mysql数据源");
                 return "1";
             }
@@ -196,7 +196,7 @@ public class SealRecordInfoController {
             byte[] bytes = new BASE64Decoder().decodeBuffer(decrypt);
             //todo 生成本地文件
             //将使用记录存入数据库
-            if (AppConstant.OPEN_MYSQL.equalsIgnoreCase("false")) {
+            if ("false".equalsIgnoreCase(AppConstant.OPEN_MYSQL)) {
                 log.info("数据源已关闭，不能插入使用记录。请开启mysql数据源");
                 return "1";
             }
@@ -214,7 +214,7 @@ public class SealRecordInfoController {
 
             //todo 通知高拍仪拍照
             String openMeter = AppConstant.OPEN_METER;
-            if (openMeter.equalsIgnoreCase("true")) {
+            if ("true".equalsIgnoreCase(openMeter)) {
                 log.info("当前高拍仪不允许使用，此处隔离请求高拍仪代码，触发接口由按钮控制");
 //                //新开线程通知高拍仪拍照
 //                SignetMeter bySignetId = signetMeterService.getBySignetId(deviceID);
@@ -281,7 +281,7 @@ public class SealRecordInfoController {
         String corpId = "";
         //todo 存入mysql
         String openMysql = AppConstant.OPEN_MYSQL;
-        if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
+        if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
             mysqlSignetService = null;
         }
         if (mysqlSignetService != null) {
