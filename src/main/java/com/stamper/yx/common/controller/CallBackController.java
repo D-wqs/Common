@@ -7,6 +7,7 @@ import com.stamper.yx.common.entity.deviceModel.*;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.mysql.MyApplicationService;
 import com.stamper.yx.common.service.mysql.MysqlFingerService;
+import com.stamper.yx.common.service.mysql.MysqlSignetService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheGlobal;
 import com.stamper.yx.common.sys.cache.EHCacheUtil;
@@ -41,6 +42,8 @@ public class CallBackController {
     private MysqlFingerService mysqlFingerService;
     @Autowired
     private MyApplicationService myApplicationService;
+    @Autowired
+    private MysqlSignetService mysqlSignetService;
 
     /**
      * 设备响应第三方回调接口(设备专用)
@@ -230,7 +233,9 @@ public class CallBackController {
     }
 
 
-    //模块回调地址
+    /**
+     * 模块回调地址
+     */
     @RequestMapping("moduleCallback")
     public ResultVO moduleCallbackInfo(String deviceId,String event,String message){
         //获取aesKey
@@ -282,10 +287,23 @@ public class CallBackController {
                     Integer applicationID = res.getApplicationID();
                     Integer useTimes = res.getUseTimes();
                     Integer deviceId1 = res.getDeviceId();
+//                    log.info("【拍照通知】申请单id{{}},当前设备使用次数{{}},设备id{{}}",applicationID,useTimes,deviceId1);
+//                    Signet byId1 = signetService.getById(deviceId1);
+//                    if(byId1!=null){
+//                        byId1.setCount(useTimes);
+//                        signetService.update(byId1);
+//                        if ("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)) {
+//                            mysqlSignetService.update(byId1);
+//                        }
+//                    }
                     Applications apps=new Applications();
                     apps.setApplicationId(applicationID);
                     apps.setNeedCount(useTimes);
                     apps.setDeviceId(deviceId1);
+                    if(applicationID.intValue()==0){
+                        log.info("applicationID==0,指纹模式不需要同步申请单次数,指纹模式不会触发此接口?待考证");
+                        break;
+                    }
                     //TODO 通知对应的申请单 已用次数needCount加1
                     Applications needCount_bak = myApplicationService.getByApplicationId(applicationID);
                     Integer needCount = needCount_bak.getNeedCount();
@@ -293,6 +311,26 @@ public class CallBackController {
                     int update = myApplicationService.update(needCount_bak);
                     if(update!=1){
                         log.error("盖章通知的返回：通过申请单id（第三方业务id）：{{}}获取剩余次数，递减时保存失败,之前的已用次数needCouture{{}},应为{{}}",applicationID,needCount,needCount+1);
+                    }
+                    //同步当前设备的使用次数,因为P20设备使用次数一直为0,设备登陆时没有上传
+                    break;
+                case AppConstant.LOCATION_INFO:
+                    /**
+                     * 设备每次盖章用印(非审计)时,同步通知服务器
+                     * {"addr":"安徽省合肥市蜀山区复兴路666号靠近合肥市梦园小学(西区)","deviceId":1002,"latitude":"31.816948","longitude":"117.138136"}
+                     */
+                    JSONObject jsonObject = JSONObject.parseObject(decrypt);
+                    String addr = jsonObject.getString("addr");
+                    int deviceId2 = jsonObject.getIntValue("deviceId");
+                    Signet byId = signetService.getById(deviceId2);
+                    if(byId!=null){
+                        byId.setAddr(addr);
+                        signetService.update(byId);
+                        if ("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)) {
+                            mysqlSignetService.update(byId);
+                        }
+                    }else {
+                        log.error("【地址更新】设备不存在:{{}}",deviceId2);
                     }
                     break;
                 default:

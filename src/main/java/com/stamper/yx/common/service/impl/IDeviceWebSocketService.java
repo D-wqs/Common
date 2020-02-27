@@ -235,9 +235,9 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
         }
         Signet byUUID = signetService.getByUUID(uuid);
         if (byUUID == null) {
-            log.info("当前设备不存在{{}}", uuid);
+            log.error("当前设备不存在{{}}", uuid);
         }
-        log.info("模块回调设备地址信息");
+        log.info("【坐标地址更新通知】模块回调设备地址信息");
         okHttpCli.sendCallback(byUUID, AppConstant.LOCATION_INFO, res);//同步地址信息
 //		//坐标与具体地址不为空的情况,才存储并更新设备信息
 //		if (res != null && StringUtils.isNoneBlank(res.getLongitude(), res.getLatitude(), res.getAddr())) {
@@ -287,6 +287,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
 
     /**
      * 印章通知高拍仪进行拍照
+     * 拍照通知:没盖一次就同步一次次数
      */
     private void highDeviceOnUsing(@NotEmpty String message, @NotNull DeviceWebSocket webSocket) {
         webSocket.setStatus(1);
