@@ -35,6 +35,14 @@ public class IMysqlSealRecordInfoService implements MysqlSealRecordInfoService {
             if(sealRecordInfo.getApplicationID()==null){
                 sealRecordInfo.setApplicationID(0);
             }
+            //2020年1月14日10:17:54 发现日期值为毫秒值,进行格式转换
+            String time = sealRecordInfo.getTime();
+            Date date=new Date();
+            date.setTime(Long.parseLong(time));
+            String strDateFormat = "yyyy-MM-dd HH:mm:ss";
+            SimpleDateFormat sdf = new SimpleDateFormat(strDateFormat);
+            String format = sdf.format(date);
+            sealRecordInfo.setTime(format);
             //区分盖章和审计的需求：盖章时、审计时，记录insert，有is_audit判断，
             //假如记录上传慢，审计先上传，那就先insert，不影响，假如insert多个同时出现，需要加锁，或者索引，
             //审计多个相同insert，那就直接inset，对于天津来说不影响
