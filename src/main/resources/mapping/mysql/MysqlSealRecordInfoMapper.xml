@@ -133,5 +133,13 @@
         </if>
         limit 1
     </select>
+    <select id="getMaxCountByDeviceId" parameterType="int" resultType="java.lang.Integer">
+        SELECT
+            MAX( COUNT )
+        FROM
+            SEAL_RECORD_INFO
+        WHERE
+            DEVICE_ID = #{deviceId}
+    </select>
 
 </mapper>

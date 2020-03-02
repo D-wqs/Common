@@ -8,6 +8,8 @@ import com.stamper.yx.common.service.DeviceMessageService;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.UserService;
 import com.stamper.yx.common.service.mysql.MyApplicationService;
+import com.stamper.yx.common.service.mysql.MysqlSealRecordInfoService;
+import com.stamper.yx.common.service.mysql.MysqlSignetService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.cache.EHCacheGlobal;
 import com.stamper.yx.common.sys.cache.EHCacheUtil;
@@ -45,6 +47,10 @@ public class SignetController {
     private DeviceAsyncService deviceAsyncService;
     @Autowired
     private MyApplicationService myApplicationService;
+    @Autowired
+    private MysqlSealRecordInfoService mysqlSealRecordInfoService;
+    @Autowired
+    private MysqlSignetService mysqlSignetService;
 //    @Autowired
 //    private MqSender mqSender;
 
@@ -501,8 +507,8 @@ public class SignetController {
             Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
             if (byApplicationId != null) {
                 needCount = byApplicationId.getNeedCount();
-                if(needCount==null){
-                    needCount=0;
+                if (needCount == null) {
+                    needCount = 0;
                 }
                 int tag = totalCount - needCount;
                 if (tag <= 0) {
@@ -642,6 +648,25 @@ public class SignetController {
             default:
                 log.info("【检测设备状态：】设备：{{}} 检测异常 ", integer);
         }
+        //迁章前,total=0,查找系统的次数并赋值
+        if (total.intValue() == 0) {
+            //获取设备的使用记录的最大count值
+            Integer maxCountByDeviceId = mysqlSealRecordInfoService.getMaxCountByDeviceId(deviceId);
+            if (maxCountByDeviceId != null) {
+                total = maxCountByDeviceId;
+                try {
+                    //同步到设备的使用总次数,前一步已判断设备存在
+                    Signet byId = signetService.getById(deviceId);
+                    byId.setCount(total);
+                    signetService.update(byId);
+                    //同步第二数据源
+                    mysqlSignetService.update(byId);
+                } catch (Exception e) {
+                    log.error("【设备清次】同步设备使用总次数异常{{}}", deviceId);
+                }
+            }
+        }
+
         //组包
         DeviceInit di = new DeviceInit();
         di.setInitCount(total);
