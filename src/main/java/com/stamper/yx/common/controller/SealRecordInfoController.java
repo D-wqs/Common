@@ -6,6 +6,7 @@ import com.stamper.yx.common.mapper.mysql.MySealRecordInfoMapper;
 import com.stamper.yx.common.mapper.mysql.MysqlFileInfoMapper;
 import com.stamper.yx.common.service.MeterService;
 import com.stamper.yx.common.service.SignetMeterService;
+import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.async.TalkMeterAsynvService;
 import com.stamper.yx.common.service.mysql.MysqlFileInfoService;
 import com.stamper.yx.common.service.mysql.MysqlSealRecordInfoService;
@@ -48,6 +49,8 @@ public class SealRecordInfoController {
     @Autowired
     private MysqlSignetService mysqlSignetService;
     @Autowired
+    private SignetService signetService;
+    @Autowired
     private MysqlSealRecordInfoService mysqlSealRecordInfoService;
     @Autowired
     private MysqlFileInfoService mysqlFileInfoService;
@@ -62,6 +65,7 @@ public class SealRecordInfoController {
      * 指纹模式上传
      * 0:成功  1:失败  2:图片重复 3:出错
      * 0:申请单模式 1:申请单模式(量子) 2:指纹模式 3:指纹模式(量子)
+     *
      * @param sealRecordInfo
      * @return
      */
@@ -74,6 +78,21 @@ public class SealRecordInfoController {
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
         Integer deviceID = sealRecordInfo.getDeviceID();
+        //更新设备的总次数
+        try {
+            Signet byId = signetService.getById(deviceID);
+            if (byId == null) {
+                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
+                return "1";
+            }
+            Integer count = sealRecordInfo.getCount();
+            byId.setCount(count);
+            signetService.update(byId);
+            //更新第二数据源的设备数据
+            mysqlSignetService.update(byId);
+        } catch (Exception e) {
+            log.error("【指纹模式记录】更新设备总次数异常:{{}}",e.getMessage());
+        }
         //todo 通过设备id获取AesKey对文件密文解密
         //这里调用获取aesKey的接口
         String aesKey = getAesKey(deviceID);
@@ -99,8 +118,6 @@ public class SealRecordInfoController {
                 log.info("fileInfo信息写入数据库失败，通知设备重新上传");
                 return "1";
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -120,6 +137,7 @@ public class SealRecordInfoController {
      * 申请单模式上传
      * 0:成功  1:失败  2:图片重复 3:出错
      * 0:申请单模式 1:申请单模式(量子) 2:指纹模式 3:指纹模式(量子)
+     *
      * @param sealRecordInfo
      * @return
      */
@@ -131,6 +149,21 @@ public class SealRecordInfoController {
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
         Integer deviceID = sealRecordInfo.getDeviceID();
+        //更新设备的总次数
+        try {
+            Signet byId = signetService.getById(deviceID);
+            if (byId == null) {
+                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
+                return "1";
+            }
+            Integer count = sealRecordInfo.getCount();
+            byId.setCount(count);
+            signetService.update(byId);
+            //更新第二数据源的设备数据
+            mysqlSignetService.update(byId);
+        } catch (Exception e) {
+            log.error("【指纹模式记录】更新设备总次数异常:{{}}",e.getMessage());
+        }
         //todo 通过设备id获取AesKey对文件密文解密
         //这里调用获取aesKey的接口
         String aesKey = getAesKey(deviceID);
@@ -186,6 +219,21 @@ public class SealRecordInfoController {
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
         Integer deviceID = sealRecordInfo.getDeviceID();
+        //更新设备的总次数
+        try {
+            Signet byId = signetService.getById(deviceID);
+            if (byId == null) {
+                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
+                return "1";
+            }
+            Integer count = sealRecordInfo.getCount();
+            byId.setCount(count);
+            signetService.update(byId);
+            //更新第二数据源的设备数据
+            mysqlSignetService.update(byId);
+        } catch (Exception e) {
+            log.error("【指纹模式记录】更新设备总次数异常:{{}}",e.getMessage());
+        }
         //todo 通过设备id获取AesKey对文件密文解密
         //这里调用获取aesKey的接口
         String aesKey = getAesKey(deviceID);
@@ -290,9 +338,9 @@ public class SealRecordInfoController {
         }
         String filePath = AppConstant.FILE_PATH;
         String filePathV2 = DirFileUtils.getFilePathV2(corpId);//路径地址：CorpId/年/月/日
-        String realpath =  "upload" + filePathV2;//拼接文件最终所在磁盘地址
+        String realpath = "upload" + filePathV2;//拼接文件最终所在磁盘地址
         //此处处理盖章记录文件
-        String absoultPath = filePath + File.separator +realpath;
+        String absoultPath = filePath + File.separator + realpath;
         File path = new File(absoultPath);
         //创建父目录文件夹
         if (!path.exists()) {
