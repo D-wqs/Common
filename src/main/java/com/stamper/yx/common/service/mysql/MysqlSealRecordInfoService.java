@@ -19,8 +19,11 @@ public interface MysqlSealRecordInfoService {
     //deviceId获取所有使用记录【并没有组织概念的区分】
     List<SealRecordInfo> getBydeviceId(@Param("deviceId") Integer deviceId);
 
-    //更具记录id获取记录详情
+    //根据记录id获取记录详情
     SealRecordInfo getById(Integer id);
+
+    //获取记录中的设备最大使用次数
+    Integer getMaxCountByDeviceId(Integer deviceId);
 
     //【组织概念】使用当前唯一标识使用记录的属性组，获取唯一记录（uuid、applicationId、count）
     /**

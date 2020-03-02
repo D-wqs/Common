@@ -10,6 +10,7 @@
 //import com.stamper.yx.common.entity.deviceModel.HighDeviceOnUsingPkg;
 //import com.stamper.yx.common.entity.deviceModel.LoginApplication;
 //import com.stamper.yx.common.service.mysql.MysqlFingerService;
+//import com.stamper.yx.common.service.mysql.MysqlSealRecordInfoService;
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
 //import org.springframework.beans.factory.annotation.Autowired;
@@ -71,5 +72,12 @@
 //        AuditButtonInfo body = JSONObject.parseObject(str, AuditButtonPkg.class).getBody();
 //        System.out.println(body);
 //
+//    }
+//    @Autowired
+//    private MysqlSealRecordInfoService mysqlSealRecordInfoService;
+//    @Test
+//    public void test6(){
+//        Integer maxCountByDeviceId = mysqlSealRecordInfoService.getMaxCountByDeviceId(1005);
+//        System.out.println(maxCountByDeviceId);
 //    }
 //}

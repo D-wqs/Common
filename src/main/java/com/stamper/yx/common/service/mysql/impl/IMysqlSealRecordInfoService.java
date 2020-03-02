@@ -140,6 +140,14 @@ public class IMysqlSealRecordInfoService implements MysqlSealRecordInfoService {
     }
 
     @Override
+    public Integer getMaxCountByDeviceId(Integer deviceId) {
+        if(deviceId.intValue()!=0){
+            return mySealRecordInfoMapper.getMaxCountByDeviceId(deviceId);
+        }
+        return null;
+    }
+
+    @Override
     public List<SealRecordInfo> getByReal(String uuid, Integer applicationId, Integer count) {
         if (StringUtils.isNotBlank(uuid) && applicationId != null && count != null) {
             return mySealRecordInfoMapper.getByReal(uuid, applicationId, count);
