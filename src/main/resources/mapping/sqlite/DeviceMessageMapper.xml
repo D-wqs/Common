@@ -19,11 +19,11 @@
     id,create_date,update_date,delete_date,title,body,push_status,recipient_id,send_id
   </sql>
   <insert id="add" parameterType="com.stamper.yx.common.entity.DeviceMessage" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO signet (id, create_date, update_date, title, body, push_status, recipient_id, send_id )
+    INSERT INTO device_message (id, create_date, update_date, title, body, push_status, recipient_id, send_id )
     VALUES
         (null,
         datetime(CURRENT_TIMESTAMP,'localtime'),
-        datetime(CURRENT_TIMESTAMP,'localtime'), #{ title },#{ body },#{ push_status },#{ recipient_id },#{ send_id })
+        datetime(CURRENT_TIMESTAMP,'localtime'), #{ title },#{ body },#{ pushStatus },#{ recipientId },#{ sendId })
   </insert>
     <update id="update">
         UPDATE device_message
