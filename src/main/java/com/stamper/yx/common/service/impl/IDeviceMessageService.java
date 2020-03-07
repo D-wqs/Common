@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -38,10 +40,17 @@ public class IDeviceMessageService implements DeviceMessageService {
             String title = deviceMessage.getTitle();
             Integer recipientId = deviceMessage.getRecipientId();
             DeviceMessage _dm = getByNameAndSignetAndStatus(title, recipientId, 1);
+
+            Date currentTime = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dateString = formatter.format(currentTime);
             if(_dm!=null){
                 deviceMessage.setId(_dm.getId());
+                deviceMessage.setCreateDate(dateString);
+                deviceMessage.setUpdateDate(dateString);
                 update(deviceMessage);
             }else {
+                deviceMessage.setUpdateDate(dateString);
                 add(deviceMessage);
             }
         }
