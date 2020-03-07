@@ -19,17 +19,15 @@
     id,create_date,update_date,delete_date,title,body,push_status,recipient_id,send_id
   </sql>
   <insert id="add" parameterType="com.stamper.yx.common.entity.DeviceMessage" useGeneratedKeys="true" keyProperty="id">
-    INSERT INTO device_message (id, create_date, update_date, title, body, push_status, recipient_id, send_id )
+    INSERT INTO device_message (create_date, update_date, title, body, push_status, recipient_id, send_id )
     VALUES
-        (null,
-        datetime(CURRENT_TIMESTAMP,'localtime'),
-        datetime(CURRENT_TIMESTAMP,'localtime'), #{ title },#{ body },#{ pushStatus },#{ recipientId },#{ sendId })
+        (#{createDate},#{updateDate}, #{ title },#{ body },#{ pushStatus },#{ recipientId },#{ sendId })
   </insert>
     <update id="update">
         UPDATE device_message
         <set>
             <if test="updateDate != null">
-                update_date = datetime(CURRENT_TIMESTAMP,'localtime'),
+                update_date = #{updateDate,jdbcType=VARCHAR},
             </if>
             <if test="deleteDate != null">
                 delete_date = #{deleteDate,jdbcType=VARCHAR},

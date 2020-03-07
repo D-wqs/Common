@@ -31,11 +31,11 @@ public class DeviceMessage implements Serializable {
      */
     private Integer sendId;
 
-    private Date createDate;
+    private String createDate;
 
-    private Date updateDate;
+    private String updateDate;
 
-    private Date deleteDate;
+    private String deleteDate;
 
     private static final long serialVersionUID = 1L;
 
@@ -143,45 +143,27 @@ public class DeviceMessage implements Serializable {
         this.sendId = sendId;
     }
 
-    /**
-     * @return create_date
-     */
-    public Date getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    /**
-     * @param createDate
-     */
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
-    /**
-     * @return update_date
-     */
-    public Date getUpdateDate() {
+    public String getUpdateDate() {
         return updateDate;
     }
 
-    /**
-     * @param updateDate
-     */
-    public void setUpdateDate(Date updateDate) {
+    public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
 
-    /**
-     * @return delete_date
-     */
-    public Date getDeleteDate() {
+    public String getDeleteDate() {
         return deleteDate;
     }
 
-    /**
-     * @param deleteDate
-     */
-    public void setDeleteDate(Date deleteDate) {
+    public void setDeleteDate(String deleteDate) {
         this.deleteDate = deleteDate;
     }
 

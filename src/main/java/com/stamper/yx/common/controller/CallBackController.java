@@ -154,6 +154,7 @@ public class CallBackController {
                     break;
                 case AppConstant.SLEEP_TIME_RETURN_RES:
                     log.info("【回调】休眠设置的返回：{{}}", message);
+
                     break;
                 case AppConstant.CURRENT_APPLICATION_CLEAR_RES:
                     log.info("【回调】申请单结束的返回（设备确认按钮按下也会被触发）：{{}}", message);

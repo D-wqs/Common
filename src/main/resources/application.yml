@@ -24,6 +24,8 @@ server:
 mybatis:
   type-aliases-package: com.stamper.yx.common.entity
   mapper-locations: classpath:mapping/*.xml
+  configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #配置不受校验的地址
 #   /device/getAccessToken #获取token
 #    /device/ws #websocket地址
@@ -78,7 +80,7 @@ datasource:
 #      password:
     #多数据源：mysql
     mysql:
-      jdbc-url: jdbc:mysql://localhost:3306/common?useUnicode=true&characterEncoding=utf-8
+      jdbc-url: jdbc:mysql://localhost:3306/common?useUnicode=true&characterEncoding=utf-8&useSSL=false
       driver-class-name: com.mysql.jdbc.Driver
       username: root
 #      password: Yunxi123$%^
