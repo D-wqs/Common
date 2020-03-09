@@ -1,12 +1,10 @@
 package com.stamper.yx.common.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.stamper.yx.common.entity.*;
 import com.stamper.yx.common.entity.deviceModel.*;
-import com.stamper.yx.common.service.DeviceAsyncService;
-import com.stamper.yx.common.service.DeviceMessageService;
-import com.stamper.yx.common.service.SignetService;
-import com.stamper.yx.common.service.UserService;
+import com.stamper.yx.common.service.*;
 import com.stamper.yx.common.service.mysql.MyApplicationService;
 import com.stamper.yx.common.service.mysql.MysqlSealRecordInfoService;
 import com.stamper.yx.common.service.mysql.MysqlSignetService;
@@ -51,6 +49,8 @@ public class SignetController {
     private MysqlSealRecordInfoService mysqlSealRecordInfoService;
     @Autowired
     private MysqlSignetService mysqlSignetService;
+    @Autowired
+    private AddInfoService addInfoService;
 //    @Autowired
 //    private MqSender mqSender;
 
@@ -65,6 +65,21 @@ public class SignetController {
 //        }
 //        return ResultVO.FAIL(Code.ERROR500);
 //    }
+
+    @RequestMapping(value = "getAddrsBySignet")
+    public ResultVO getAddrBySignet(@RequestParam(required = false, defaultValue = "10") Integer pageSize,
+                                    @RequestParam(required = false, defaultValue = "0") Integer pageNum,
+                                    @RequestParam("deviceId") Integer deviceId) {
+        if(deviceId!=null&&deviceId.intValue()!=0){
+            PageHelper.startPage(pageNum,pageSize);
+            List<AddrInfo> allBySignet = addInfoService.getAllBySignet(deviceId);
+            if(allBySignet!=null&&allBySignet.size()>0){
+                return ResultVO.OK(allBySignet);
+            }
+
+        }
+        return ResultVO.FAIL("无数据");
+    }
 
     /**
      * 设备是否在线

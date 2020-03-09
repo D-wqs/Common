@@ -53,6 +53,7 @@ ignorePaths:
     - /device/config/updateConfigByUUID
     - /device/deviceCallBack/moduleCallback
     - /device/sealRecordInfo/meter
+    - /device/getAddrsBySignet
 
 #ok.http.connect-timeout=5
 #ok.http.read-timeout=30
