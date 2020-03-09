@@ -24,8 +24,8 @@ server:
 mybatis:
   type-aliases-package: com.stamper.yx.common.entity
   mapper-locations: classpath:mapping/*.xml
-#  configuration:
-#      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  configuration:
+      log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #配置不受校验的地址
 #   /device/getAccessToken #获取token
 #    /device/ws #websocket地址
@@ -54,6 +54,7 @@ ignorePaths:
     - /device/config/updateConfigByUUID
     - /device/deviceCallBack/moduleCallback
     - /device/sealRecordInfo/meter
+    - /device/getAddrsBySignet
 
 #ok.http.connect-timeout=5
 #ok.http.read-timeout=30
