@@ -754,6 +754,13 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
             signetService.update(signet);
         } else {
             signet.setAddr(info.getAddr());
+            //从mysql中获取设备名
+            //todo 存入mysql
+            String openMysql = AppConstant.OPEN_MYSQL;
+            if ("true".equalsIgnoreCase(openMysql)) {
+                Signet byUUID = mysqlSignetService.getByUUID(signet.getUuid());
+                signet.setName(byUUID.getName());
+            }
             signetService.update(signet);
         }
         //todo 存入mysql

@@ -85,7 +85,9 @@ datasource:
       driver-class-name: com.mysql.jdbc.Driver
       username: root
 #      password: Yunxi123$%^
-      password: root
+#      password: root
+# 隐修数据库
+      password: dogSleep123$%^
     #天津切换Oracle
 #    mysql:
 #      jdbc-url: jdbc:oracle:thin:@192.168.85.143:1521:XE
