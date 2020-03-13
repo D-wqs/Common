@@ -149,7 +149,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     signetService.update(signet);
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
+                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
                         mysqlSignetService = null;
                     }
                     if (mysqlSignetService != null) {
@@ -179,7 +179,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     signetService.update(signet);
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
+                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
                         mysqlSignetService = null;
                     }
                     if (mysqlSignetService != null) {
@@ -209,7 +209,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                     signetService.update(signet);
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
+                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
                         mysqlSignetService = null;
                     }
                     if (mysqlSignetService != null) {
@@ -235,9 +235,9 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
         }
         Signet byUUID = signetService.getByUUID(uuid);
         if (byUUID == null) {
-            log.info("当前设备不存在{{}}", uuid);
+            log.error("当前设备不存在{{}}", uuid);
         }
-        log.info("模块回调设备地址信息");
+        log.info("【坐标地址更新通知】模块回调设备地址信息");
         okHttpCli.sendCallback(byUUID, AppConstant.LOCATION_INFO, res);//同步地址信息
 //		//坐标与具体地址不为空的情况,才存储并更新设备信息
 //		if (res != null && StringUtils.isNoneBlank(res.getLongitude(), res.getLatitude(), res.getAddr())) {
@@ -287,6 +287,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
 
     /**
      * 印章通知高拍仪进行拍照
+     * 拍照通知:没盖一次就同步一次次数
      */
     private void highDeviceOnUsing(@NotEmpty String message, @NotNull DeviceWebSocket webSocket) {
         webSocket.setStatus(1);
@@ -423,7 +424,7 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
 
                     //todo 存入mysql
                     String openMysql = AppConstant.OPEN_MYSQL;
-                    if (StringUtils.isBlank(openMysql) || "false".equalsIgnoreCase(openMysql)) {
+                    if (StringUtils.isBlank(openMysql) || openMysql.equalsIgnoreCase("false")) {
                         mysqlSignetService = null;
                     }
                     if (mysqlSignetService != null) {
@@ -725,6 +726,9 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
      * 印章注册
      */
     private void signetRegReq(DeviceLoginInfo info, @NotNull DeviceWebSocket webSocket) {
+        System.out.println("=================================印章注册start=============================");
+        System.out.println(info.toString());
+        System.out.println("===============================印章注册end=================================");
 
         String uuid = info.getStm32UUID();
         Signet signet = null;
@@ -750,6 +754,13 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
             signetService.update(signet);
         } else {
             signet.setAddr(info.getAddr());
+            //从mysql中获取设备名
+            //todo 存入mysql
+            String openMysql = AppConstant.OPEN_MYSQL;
+            if ("true".equalsIgnoreCase(openMysql)) {
+                Signet byUUID = mysqlSignetService.getByUUID(signet.getUuid());
+                signet.setName(byUUID.getName());
+            }
             signetService.update(signet);
         }
         //todo 存入mysql
