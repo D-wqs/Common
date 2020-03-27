@@ -61,7 +61,7 @@ public class IAddInfoService implements AddInfoService {
             // mysql 数据源同步数据
             String openMysql = AppConstant.OPEN_MYSQL;
             if ("true".equalsIgnoreCase(openMysql)) {
-                myAddrInfoMapper.insertSelective(addrInfo);
+                myAddrInfoMapper.updateByPrimaryKeySelective(addrInfo);
             }
             if(update!=1){
                 throw new PrintException("更新设备地址异常");
