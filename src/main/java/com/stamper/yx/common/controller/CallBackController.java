@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.stamper.yx.common.entity.*;
 import com.stamper.yx.common.entity.deviceModel.*;
+import com.stamper.yx.common.service.AddInfoService;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.mysql.MyApplicationService;
 import com.stamper.yx.common.service.mysql.MysqlFingerService;
@@ -44,6 +45,8 @@ public class CallBackController {
     private MyApplicationService myApplicationService;
     @Autowired
     private MysqlSignetService mysqlSignetService;
+    @Autowired
+    private AddInfoService addInfoService;
 
     /**
      * 设备响应第三方回调接口(设备专用)
@@ -154,6 +157,7 @@ public class CallBackController {
                     break;
                 case AppConstant.SLEEP_TIME_RETURN_RES:
                     log.info("【回调】休眠设置的返回：{{}}", message);
+
                     break;
                 case AppConstant.CURRENT_APPLICATION_CLEAR_RES:
                     log.info("【回调】申请单结束的返回（设备确认按钮按下也会被触发）：{{}}", message);
@@ -331,6 +335,20 @@ public class CallBackController {
                         }
                     }else {
                         log.error("【地址更新】设备不存在:{{}}",deviceId2);
+                    }
+                    //TODO 新增地址坐标信息
+                    String latitude = jsonObject.getString("latitude");
+                    String longitude = jsonObject.getString("longitude");
+                    AddrInfo addrInfo = new AddrInfo();
+                    addrInfo.setDeviceId(deviceId2);
+                    addrInfo.setLongitude(longitude);
+                    addrInfo.setLatitude(latitude);
+                    addrInfo.setLocation(addr);
+                    try {
+                        addInfoService.insert(addrInfo);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        log.error("设备坐标更新失败");
                     }
                     break;
                 default:
