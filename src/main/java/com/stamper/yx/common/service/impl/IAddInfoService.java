@@ -1,8 +1,10 @@
 package com.stamper.yx.common.service.impl;
 
 import com.stamper.yx.common.entity.AddrInfo;
+import com.stamper.yx.common.mapper.mysql.MyAddrInfoMapper;
 import com.stamper.yx.common.mapper.sqlite.AddrMapper;
 import com.stamper.yx.common.service.AddInfoService;
+import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.error.PrintException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ public class IAddInfoService implements AddInfoService {
 
     @Autowired
     private AddrMapper mapper;
+    @Autowired
+    private MyAddrInfoMapper myAddrInfoMapper;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -32,6 +36,12 @@ public class IAddInfoService implements AddInfoService {
             addrInfo.setCreateDate(dateString);
             addrInfo.setUpdateDate(dateString);
             Integer insert = mapper.insert(addrInfo);
+            //TODO 只需要将经纬度写入数据库中即可
+            // mysql 数据源同步数据
+            String openMysql = AppConstant.OPEN_MYSQL;
+            if ("true".equalsIgnoreCase(openMysql)) {
+                myAddrInfoMapper.insertSelective(addrInfo);
+            }
             if(insert!=1){
                 throw new PrintException("添加地址信息异常");
             }
@@ -47,6 +57,12 @@ public class IAddInfoService implements AddInfoService {
             String dateString = formatter.format(currentTime);
             addrInfo.setUpdateDate(dateString);
             Integer update = mapper.update(addrInfo);
+            //TODO 只需要将经纬度写入数据库中即可
+            // mysql 数据源同步数据
+            String openMysql = AppConstant.OPEN_MYSQL;
+            if ("true".equalsIgnoreCase(openMysql)) {
+                myAddrInfoMapper.insertSelective(addrInfo);
+            }
             if(update!=1){
                 throw new PrintException("更新设备地址异常");
             }
