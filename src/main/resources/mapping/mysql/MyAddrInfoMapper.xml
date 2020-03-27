@@ -28,7 +28,7 @@
     insert into addrinfo (id, create_date, update_date, 
       delete_date, device_id, longitude, 
       latitude, location)
-    values (#{id,jdbcType=INTEGER}, #{createDate,jdbcType=TIMESTAMP}, #{updateDate,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=INTEGER}, sysdate,sysdate,
       #{deleteDate,jdbcType=TIMESTAMP}, #{deviceId,jdbcType=INTEGER}, #{longitude,jdbcType=VARCHAR}, 
       #{latitude,jdbcType=VARCHAR}, #{location,jdbcType=VARCHAR})
   </insert>
@@ -65,10 +65,10 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="createDate != null" >
-        #{createDate,jdbcType=TIMESTAMP},
+        sysdate,
       </if>
       <if test="updateDate != null" >
-        #{updateDate,jdbcType=TIMESTAMP},
+        sysdate,
       </if>
       <if test="deleteDate != null" >
         #{deleteDate,jdbcType=TIMESTAMP},
@@ -91,13 +91,13 @@
     update addrinfo
     <set >
       <if test="createDate != null" >
-        create_date = #{createDate,jdbcType=TIMESTAMP},
+        create_date = sysdate,
       </if>
       <if test="updateDate != null" >
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
+        update_date = sysdate,
       </if>
       <if test="deleteDate != null" >
-        delete_date = #{deleteDate,jdbcType=TIMESTAMP},
+        delete_date = sysdate,
       </if>
       <if test="deviceId != null" >
         device_id = #{deviceId,jdbcType=INTEGER},
