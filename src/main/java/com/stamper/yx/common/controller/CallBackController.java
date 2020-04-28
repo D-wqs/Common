@@ -146,6 +146,11 @@ public class CallBackController {
                 case AppConstant.DEVICE_USED_RES:
                     //设备使用中【开关锁】的返回：
                     log.info("【回调】设备使用中【开关锁】的返回：{{}}", message);
+                    //todo 将通道置为0，可以接收申请单,否则仍会返回501
+                    DeviceWebSocket closeButton = pool.get(signet.getId() + "");
+                    if(closeButton!=null){
+                        closeButton.setReceive(0);
+                    }
                     break;
                 case AppConstant.DEVICE_UNLOCK_RES:
                     //ID解锁的返回：
