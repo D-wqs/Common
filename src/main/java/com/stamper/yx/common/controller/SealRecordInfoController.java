@@ -72,6 +72,11 @@ public class SealRecordInfoController {
     @RequestMapping(value = "addEasyInfo")
     public String addEasyInfo(SealRecordInfo sealRecordInfo) {
         log.info("指纹模式传来的参数,该记录为指纹模式 sriType=2");
+        log.info("=====================================================");
+        log.info("ApplicationID:{} , deviceID:{}",sealRecordInfo.getApplicationID(),sealRecordInfo.getDeviceID());
+        log.info("=====================================================");
+        log.info("指纹模式传来的参数:",sealRecordInfo.toString());
+        log.info("=====================================================");
         sealRecordInfo.setSriType(2);
         log.info("来自指纹模式的记录上传----------【从请求参数中获取fileupload参数，进行对称解密，获取图片详情】");
         //获取图片密文
@@ -144,6 +149,11 @@ public class SealRecordInfoController {
     @RequestMapping(value = "addNormalInfo")
     public String addNormalInfo(SealRecordInfo sealRecordInfo) {
         log.info("来自申请单模式的记录上传,设置记录类型为sriType=1");
+        log.info("=====================================================");
+        log.info("ApplicationID:{} , deviceID:{}",sealRecordInfo.getApplicationID(),sealRecordInfo.getDeviceID());
+        log.info("=====================================================");
+        log.info("申请单模式传来的参数:",sealRecordInfo.toString());
+        log.info("=====================================================");
         sealRecordInfo.setSriType(0);
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
@@ -215,6 +225,11 @@ public class SealRecordInfoController {
     @RequestMapping(value = "addAuditInfo")
     public String addAuditInfo(SealRecordInfo sealRecordInfo) {
         log.info("来自审计的记录上传----------【从请求参数中获取fileupload参数，进行对称解密，获取图片详情】");
+        log.info("=====================================================");
+        log.info("ApplicationID:{} , deviceID:{}",sealRecordInfo.getApplicationID(),sealRecordInfo.getDeviceID());
+        log.info("=====================================================");
+        log.info("审计传来的参数:",sealRecordInfo.toString());
+        log.info("=====================================================");
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
