@@ -21,18 +21,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Insert;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * TJ
@@ -162,10 +166,10 @@ public class SealRecordInfoController {
         //更新设备的总次数
         try {
             Signet byId = signetService.getById(deviceID);
-            if (byId == null) {
-                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
-                return "1";
-            }
+//            if (byId == null) {
+//                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
+//                return "1";
+//            }
             Integer count = sealRecordInfo.getCount();
             byId.setCount(count);
             signetService.update(byId);
