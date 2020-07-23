@@ -19,6 +19,10 @@ queue:
 server:
   port: 8888
   connection-timeout: 100000
+  tomcat:
+    max-http-header-size: -1
+    max-http-post-size: -1
+
 #  servlet:
 #    context-path: /yunxi
 mybatis:
@@ -85,7 +89,7 @@ datasource:
 #      password: root
     #天津切换Oracle
     mysql:
-      jdbc-url: jdbc:oracle:thin:@192.168.74.129:1521:XE
+      jdbc-url: jdbc:oracle:thin:@192.168.133.132:1521:XE
       driver-class-name: oracle.jdbc.driver.OracleDriver
       username: root
       password: root
