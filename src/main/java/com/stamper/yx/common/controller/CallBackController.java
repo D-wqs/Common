@@ -97,6 +97,7 @@ public class CallBackController {
             /**
              * 解析响应参数
              */
+            log.error("这里是解析失败的message==>{}",message);
             MHPkg pkg = JSONObject.parseObject(message, MHPkg.class);
             if (pkg == null) {
                 log.info("响应失败===>设备:{{}} 响应:{{}} 原因:响应体为空", signet.getId(), message);

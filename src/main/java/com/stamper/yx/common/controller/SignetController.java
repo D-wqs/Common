@@ -126,11 +126,14 @@ public class SignetController {
         } else {
             //如果缓存中去不到该值，从通道中获取
             DeviceWebSocket webSocket = pool.get(deviceId + "");
-            String symmetricKey = webSocket.getSymmetricKey();
-            if (StringUtils.isNotBlank(symmetricKey)) {
-                log.info("AesKey从缓存中获取失败，直接从通道中获取：", symmetricKey);
-                return ResultVO.OK(symmetricKey);
+            if(webSocket!=null){
+                String symmetricKey = webSocket.getSymmetricKey();
+                if (StringUtils.isNotBlank(symmetricKey)) {
+                    log.info("AesKey从缓存中获取失败，直接从通道中获取：", symmetricKey);
+                    return ResultVO.OK(symmetricKey);
+                }
             }
+
         }
         return ResultVO.FAIL("印章不在线");
     }

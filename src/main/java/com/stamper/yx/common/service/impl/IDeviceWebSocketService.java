@@ -683,6 +683,10 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
 //                }
                 //异步推送离线消息
                 deviceAsyncService.pushUnline(signet, webSocket);
+//
+//                // TODO 新版本休眠屏幕显示... 导致时间一长通道无法正常通讯,更新aesKey到缓存
+//                EHCacheUtil.put(EHCacheGlobal.SIGNET_AESKEY + signet.getId(), webSocket.getSymmetricKey());
+//                log.info("登陆成功:设备{{}},aesKey{{}}", signet.getId(), webSocket.getSymmetricKey());
 
                 //组装登录响应返回
                 MHPkg pkg_result = MHPkg.res(AppConstant.DEVICE_LOGIN_RES, res);
@@ -833,10 +837,13 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
         MHPkg resPkg = MHPkg.res(AppConstant.DEVICE_REG_RES, res);
         String resMsg = JSONObject.toJSONString(resPkg);
         log.info("注册成功返回值：{{}}", resMsg);
+        if(StringUtils.isNotBlank(webSocket.getSymmetricKey())){
+            //TODO aesKey存入缓存
+            EHCacheUtil.put(EHCacheGlobal.SIGNET_AESKEY + signet.getId(), webSocket.getSymmetricKey());
+            log.info("注册成功:设备{{}},aesKey{{}}", signet.getId(), webSocket.getSymmetricKey());
+        }
         webSocket.send(resMsg);
-        //TODO aesKey存入缓存
-        EHCacheUtil.put(EHCacheGlobal.SIGNET_AESKEY + signet.getId(), webSocket.getSymmetricKey());
-        log.info("注册成功:设备{{}},aesKey{{}}", signet.getId(), webSocket.getSymmetricKey());
+
 //		okHttpCli.sendCallback(signet,AppConstant.DEVICE_REGIST,info);//设备注册
     }
 
@@ -905,13 +912,15 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
                 if (signet != null) {
                     //确定身份
                     identifyOwner(webSocket, uuid.toString(), signet);
-
+                    log.info("==============signet:{{}}===uuid:{{}}",signet,uuid);
                     //设置对称秘钥
                     String symmetricKey = webSocket.getSymmetricKey();
                     if (StringUtils.isBlank(symmetricKey)) {
                         //如果对称秘钥是空的，从缓存中取
                         String key = EHCacheGlobal.SIGNET_AESKEY + signet.getId();
+
                         Object o = EHCacheUtil.get(key);
+                        log.info("==============key:{{}}-----o:{{}}",key,o.toString());
                         if (StringUtils.isNotBlank(o.toString())) {
                             webSocket.setSymmetricKey(o.toString());
                         }

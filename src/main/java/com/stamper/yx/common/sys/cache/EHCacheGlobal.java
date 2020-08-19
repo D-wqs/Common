@@ -3,7 +3,7 @@ package com.stamper.yx.common.sys.cache;
 public class EHCacheGlobal {
     //cacheName容器名
     public static final String USER_TOKEN_KEY="USER:TOEKN:";//示例：USER:TOKEN:${userId}
-    public static final long USER_TOKEN_TIMEOUT=1000*60*30;
+    public static final long USER_TOKEN_TIMEOUT=1000*60*60*12;
 
     public static final String DEVICE_WIFI_LIST="DEVICE:WIFI:LIST:";//示例：DEVICE:WIFI:LIST:${signetId}
     public static final long DEVICE_WIFI_LIST_TIMEOUT=1000*60*30;
@@ -26,10 +26,11 @@ public class EHCacheGlobal {
 
     /**
      *
-     * 是否会死亡
+     * 是否会死亡:
+     * TODO 不死亡
      */
 
-    public static boolean ETERNAL = false;
+    public static boolean ETERNAL = true;
 
     /**
      *
