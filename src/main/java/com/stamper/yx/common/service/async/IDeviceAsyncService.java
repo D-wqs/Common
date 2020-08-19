@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -514,6 +515,7 @@ public class IDeviceAsyncService implements DeviceAsyncService {
 						} else {
 							log.info("设备离线/消息体不存在===>离线消息{}:设备{} 消息标题:{} 消息内容:{}", i + 1, dm.getRecipientId(), dm.getTitle(), dm.getBody());
 						}
+						deviceMessageService.update(dm);
 					} else {
 
 					}

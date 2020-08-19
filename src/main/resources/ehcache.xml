@@ -3,7 +3,7 @@
          xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd"
          updateCheck="false">
     <defaultCache
-            eternal="false"
+            eternal="true"
             maxElementsInMemory="1000"
             overflowToDisk="false"
             diskPersistent="false"
@@ -14,7 +14,7 @@
     <!-- 这里的 users 缓存空间是为了下面的 demo 做准备 -->
     <cache
             name="demo"
-            eternal="false"
+            eternal="true"
             maxElementsInMemory="100"
             overflowToDisk="false"
             diskPersistent="false"

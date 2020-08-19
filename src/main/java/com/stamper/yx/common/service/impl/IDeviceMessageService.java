@@ -84,6 +84,11 @@ public class IDeviceMessageService implements DeviceMessageService {
     @Override
     public void update(DeviceMessage deviceMessage) {
         if (deviceMessage != null && deviceMessage.getId() != null) {
+            Date currentTime = new Date();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String dateString = formatter.format(currentTime);
+            // TODO 不论成功与否,都直接删除,2020年8月19日17:10:58
+            deviceMessage.setDeleteDate(dateString);
             Integer update = mapper.update(deviceMessage);
             if(update!=1){
                 throw new PrintException(String.format("离线消息更新失败{}",deviceMessage.toString()));

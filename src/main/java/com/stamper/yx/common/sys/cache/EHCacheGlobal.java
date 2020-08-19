@@ -29,7 +29,7 @@ public class EHCacheGlobal {
      * 是否会死亡
      */
 
-    public static boolean ETERNAL = false;
+    public static boolean ETERNAL = true;
 
     /**
      *

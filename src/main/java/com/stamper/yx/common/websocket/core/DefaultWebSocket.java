@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.stamper.yx.common.entity.Signet;
 import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.sys.AppConstant;
+import com.stamper.yx.common.sys.cache.EHCacheGlobal;
+import com.stamper.yx.common.sys.cache.EHCacheUtil;
 import com.stamper.yx.common.sys.okhttpUtil.OkHttpCli;
 import com.stamper.yx.common.sys.security.AES.AesUtil;
 import com.stamper.yx.common.websocket.container.DefaultWebSocketPool;
 import com.stamper.yx.common.websocket.handle.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -111,6 +114,11 @@ public abstract class DefaultWebSocket implements BaseWebSocket {
         String key = this.key.toString();
         String aesKey = this.symmetricKey;//这个值是绑定在通道中的，新通道里没有，所以我需要在异常之后，通知对方该值已变更
         log.info("-=-=-=-=-=>设备通道触发onClose :{{}}", key);
+        //TODO aesKey存入缓存
+        if(StringUtils.isNotBlank(aesKey)){
+            EHCacheUtil.put(EHCacheGlobal.SIGNET_AESKEY + key, aesKey);
+            log.info("触发onClose,保存aesKey:设备{{}},aesKey{{}}",key, aesKey);
+        }
 //        this.deleteDate = new Date();
 //        try {
 //            this.session.close();

@@ -833,10 +833,11 @@ public class IDeviceWebSocketService implements DeviceWebSocketService {
         MHPkg resPkg = MHPkg.res(AppConstant.DEVICE_REG_RES, res);
         String resMsg = JSONObject.toJSONString(resPkg);
         log.info("注册成功返回值：{{}}", resMsg);
-        webSocket.send(resMsg);
         //TODO aesKey存入缓存
         EHCacheUtil.put(EHCacheGlobal.SIGNET_AESKEY + signet.getId(), webSocket.getSymmetricKey());
         log.info("注册成功:设备{{}},aesKey{{}}", signet.getId(), webSocket.getSymmetricKey());
+        webSocket.send(resMsg);
+
 //		okHttpCli.sendCallback(signet,AppConstant.DEVICE_REGIST,info);//设备注册
     }
 
