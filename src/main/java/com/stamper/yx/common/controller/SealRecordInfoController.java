@@ -85,15 +85,18 @@ public class SealRecordInfoController {
         log.info("来自指纹模式的记录上传----------【从请求参数中获取fileupload参数，进行对称解密，获取图片详情】");
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
-        //通过sealRecordInfo获取设备id
-        Integer deviceID = sealRecordInfo.getDeviceID();
+        //通过sealRecordInfo获取设备id , 2020年9月7日10:32:02: 天津 使用uuid
+//        Integer deviceID = sealRecordInfo.getDeviceID();
+        String uuid = sealRecordInfo.getUuid();
+        Signet byId = signetService.getByUUID(uuid);
+        if (byId == null) {
+            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",uuid);
+            return "1";
+        }
+        Integer deviceID = byId.getId();
         //更新设备的总次数
         try {
-            Signet byId = signetService.getById(deviceID);
-            if (byId == null) {
-                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
-                return "1";
-            }
+
             Integer count = sealRecordInfo.getCount();
             byId.setCount(count);
             signetService.update(byId);
@@ -162,14 +165,16 @@ public class SealRecordInfoController {
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
-        Integer deviceID = sealRecordInfo.getDeviceID();
+//        Integer deviceID = sealRecordInfo.getDeviceID();
+        String uuid = sealRecordInfo.getUuid();
+        Signet byId = signetService.getByUUID(uuid);
+        if (byId == null) {
+            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",uuid);
+            return "1";
+        }
+        Integer deviceID = byId.getId();
         //更新设备的总次数
         try {
-            Signet byId = signetService.getById(deviceID);
-//            if (byId == null) {
-//                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
-//                return "1";
-//            }
             Integer count = sealRecordInfo.getCount();
             byId.setCount(count);
             signetService.update(byId);
@@ -236,15 +241,17 @@ public class SealRecordInfoController {
         log.info("=====================================================");
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
-        //通过sealRecordInfo获取设备id
-        Integer deviceID = sealRecordInfo.getDeviceID();
+        //通过sealRecordInfo获取设备id---2020年9月7日10:28:11 天津: 这里的deviceID可能为null,使用uuid判断
+//        Integer deviceID = sealRecordInfo.getDeviceID();
+        String uuid = sealRecordInfo.getUuid();
         //更新设备的总次数
+        Signet byId = signetService.getByUUID(uuid);
+        if (byId == null) {
+            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",uuid);
+            return "1";
+        }
+        Integer deviceID = byId.getId();
         try {
-            Signet byId = signetService.getById(deviceID);
-            if (byId == null) {
-                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
-                return "1";
-            }
             Integer count = sealRecordInfo.getCount();
             byId.setCount(count);
             signetService.update(byId);
