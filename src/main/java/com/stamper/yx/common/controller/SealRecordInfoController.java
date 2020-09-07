@@ -77,14 +77,17 @@ public class SealRecordInfoController {
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
-        Integer deviceID = sealRecordInfo.getDeviceID();
+//        Integer deviceID = sealRecordInfo.getDeviceID();
+        String uuid = sealRecordInfo.getUuid();
+        Signet byId = signetService.getByUUID(uuid);
+        if (byId == null) {
+            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",uuid);
+            return "1";
+        }
+        Integer deviceID = byId.getId();
         //更新设备的总次数
         try {
-            Signet byId = signetService.getById(deviceID);
-            if (byId == null) {
-                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
-                return "1";
-            }
+
             Integer count = sealRecordInfo.getCount();
             byId.setCount(count);
             signetService.update(byId);
@@ -148,14 +151,17 @@ public class SealRecordInfoController {
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
-        Integer deviceID = sealRecordInfo.getDeviceID();
+//        Integer deviceID = sealRecordInfo.getDeviceID();
+        String uuid = sealRecordInfo.getUuid();
+        Signet byId = signetService.getByUUID(uuid);
+        if (byId == null) {
+            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",uuid);
+            return "1";
+        }
+        Integer deviceID = byId.getId();
         //更新设备的总次数
         try {
-            Signet byId = signetService.getById(deviceID);
-            if (byId == null) {
-                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
-                return "1";
-            }
+
             Integer count = sealRecordInfo.getCount();
             byId.setCount(count);
             signetService.update(byId);
@@ -218,14 +224,17 @@ public class SealRecordInfoController {
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
-        Integer deviceID = sealRecordInfo.getDeviceID();
+//        Integer deviceID = sealRecordInfo.getDeviceID();
+        String uuid = sealRecordInfo.getUuid();
+        Signet byId = signetService.getByUUID(uuid);
+        if (byId == null) {
+            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",uuid);
+            return "1";
+        }
+        Integer deviceID = byId.getId();
         //更新设备的总次数
         try {
-            Signet byId = signetService.getById(deviceID);
-            if (byId == null) {
-                log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",deviceID);
-                return "1";
-            }
+
             Integer count = sealRecordInfo.getCount();
             byId.setCount(count);
             signetService.update(byId);
