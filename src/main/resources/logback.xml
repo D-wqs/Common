@@ -114,7 +114,7 @@
     <logger name="com.stamper.yx.common.service" level="ERROR" />
     <!--<logger name="MyBatis" level="DEBUG" addtivity="false"></logger>-->
     <!-- 日志输出级别 INFO-->
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="console" />
         <appender-ref ref="infoFile" />
         <appender-ref ref="warnFile" />

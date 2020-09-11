@@ -72,6 +72,10 @@ public class SealRecordInfoController {
     @RequestMapping(value = "addEasyInfo")
     public String addEasyInfo(SealRecordInfo sealRecordInfo) {
         log.info("指纹模式传来的参数,该记录为指纹模式 sriType=2");
+        if (StringUtils.isBlank(sealRecordInfo.getUuid()) && sealRecordInfo.getDeviceID() == null) {
+            log.info("设备没有必要条件,无法解密,记录丢失,deviceID:{{}},uuid:{{}}", sealRecordInfo.getDeviceID(), sealRecordInfo.getUuid());
+            return "0";
+        }
         sealRecordInfo.setSriType(2);
         log.info("来自指纹模式的记录上传----------【从请求参数中获取fileupload参数，进行对称解密，获取图片详情】");
         //获取图片密文
@@ -81,7 +85,7 @@ public class SealRecordInfoController {
         String uuid = sealRecordInfo.getUuid();
         Signet byId = signetService.getByUUID(uuid);
         if (byId == null) {
-            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",uuid);
+            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收", uuid);
             return "1";
         }
         Integer deviceID = byId.getId();
@@ -94,7 +98,7 @@ public class SealRecordInfoController {
             //更新第二数据源的设备数据
             mysqlSignetService.update(byId);
         } catch (Exception e) {
-            log.error("【指纹模式记录】更新设备总次数异常:{{}}",e.getMessage());
+            log.error("【指纹模式记录】更新设备总次数异常:{{}}", e.getMessage());
         }
         //todo 通过设备id获取AesKey对文件密文解密
         //这里调用获取aesKey的接口
@@ -146,7 +150,11 @@ public class SealRecordInfoController {
      */
     @RequestMapping(value = "addNormalInfo")
     public String addNormalInfo(SealRecordInfo sealRecordInfo) {
-        log.info("来自申请单模式的记录上传,设置记录类型为sriType=1");
+        log.info("来自申请单模式的记录上传,设置记录类型为sriType=1,deviceID:{{}},uuid:{{}}", sealRecordInfo.getDeviceID(), sealRecordInfo.getUuid());
+        if (StringUtils.isBlank(sealRecordInfo.getUuid()) && sealRecordInfo.getDeviceID() == null) {
+            log.info("设备没有必要条件,无法解密,记录丢失,deviceID:{{}},uuid:{{}}", sealRecordInfo.getDeviceID(), sealRecordInfo.getUuid());
+            return "0";
+        }
         sealRecordInfo.setSriType(0);
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
@@ -155,7 +163,7 @@ public class SealRecordInfoController {
         String uuid = sealRecordInfo.getUuid();
         Signet byId = signetService.getByUUID(uuid);
         if (byId == null) {
-            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",uuid);
+            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收", uuid);
             return "1";
         }
         Integer deviceID = byId.getId();
@@ -168,7 +176,7 @@ public class SealRecordInfoController {
             //更新第二数据源的设备数据
             mysqlSignetService.update(byId);
         } catch (Exception e) {
-            log.error("【指纹模式记录】更新设备总次数异常:{{}}",e.getMessage());
+            log.error("【指纹模式记录】更新设备总次数异常:{{}}", e.getMessage());
         }
         //todo 通过设备id获取AesKey对文件密文解密
         //这里调用获取aesKey的接口
@@ -221,6 +229,10 @@ public class SealRecordInfoController {
     @RequestMapping(value = "addAuditInfo")
     public String addAuditInfo(SealRecordInfo sealRecordInfo) {
         log.info("来自审计的记录上传----------【从请求参数中获取fileupload参数，进行对称解密，获取图片详情】");
+        if (StringUtils.isBlank(sealRecordInfo.getUuid()) && sealRecordInfo.getDeviceID() == null) {
+            log.info("设备没有必要条件,无法解密,记录丢失,deviceID:{{}},uuid:{{}}", sealRecordInfo.getDeviceID(), sealRecordInfo.getUuid());
+            return "0";
+        }
         //获取图片密文
         String fileupload = sealRecordInfo.getFileupload();
         //通过sealRecordInfo获取设备id
@@ -228,7 +240,7 @@ public class SealRecordInfoController {
         String uuid = sealRecordInfo.getUuid();
         Signet byId = signetService.getByUUID(uuid);
         if (byId == null) {
-            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收",uuid);
+            log.error("设备{{}}不存在,为了避免迁章过程可能造成记录丢失,该记录不接收", uuid);
             return "1";
         }
         Integer deviceID = byId.getId();
@@ -241,7 +253,7 @@ public class SealRecordInfoController {
             //更新第二数据源的设备数据
             mysqlSignetService.update(byId);
         } catch (Exception e) {
-            log.error("【指纹模式记录】更新设备总次数异常:{{}}",e.getMessage());
+            log.error("【指纹模式记录】更新设备总次数异常:{{}}", e.getMessage());
         }
         //todo 通过设备id获取AesKey对文件密文解密
         //这里调用获取aesKey的接口

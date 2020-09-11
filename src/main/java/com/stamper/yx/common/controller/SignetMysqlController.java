@@ -1,6 +1,7 @@
 package com.stamper.yx.common.controller;
 
 import com.stamper.yx.common.entity.Signet;
+import com.stamper.yx.common.service.SignetService;
 import com.stamper.yx.common.service.mysql.MysqlSignetService;
 import com.stamper.yx.common.sys.AppConstant;
 import com.stamper.yx.common.sys.response.Code;
@@ -23,6 +24,8 @@ import java.util.List;
 public class SignetMysqlController {
     @Autowired
     private MysqlSignetService mysqlSignetService;
+    @Autowired
+    private SignetService signetService;
 
     @RequestMapping(value = "getAll")
     public ResultVO getAlls() {
@@ -71,6 +74,8 @@ public class SignetMysqlController {
             return ResultVO.FAIL(Code.ERROR_PARAMETER);
         }
         int update = mysqlSignetService.update(signet);
+        // 同步更新sqlite数据
+        signetService.update(signet);
         if(update!=1){
             return ResultVO.FAIL("更新失败");
         }
