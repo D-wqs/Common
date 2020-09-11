@@ -30,7 +30,7 @@ public class WebsocketMonitorScheduledTasks {
 	private DefaultWebSocketPool pool;
 
 	//每10秒钟,处理一下垃圾池里面的链接信息,存数据库
-	@Scheduled(fixedRate = 1000 * 10)
+	@Scheduled(fixedRate = 1000 * 30)
 	public void reportCurrentTime() {
 //		List<DefaultWebSocket> destroy = pool.getDestroy();
 ////		log.info("垃圾池统计：" + destroy.size());
@@ -72,7 +72,7 @@ public class WebsocketMonitorScheduledTasks {
 					continue;
 				}
 				Date date = new Date();
-				if (date.getTime() - updateDate.getTime() > 10000) {
+				if (date.getTime() - updateDate.getTime() > 30000) {
 					try {
 						socket.close();
 						socket.setSession(null);
