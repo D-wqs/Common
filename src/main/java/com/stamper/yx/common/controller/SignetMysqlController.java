@@ -74,6 +74,7 @@ public class SignetMysqlController {
             return ResultVO.FAIL(Code.ERROR_PARAMETER);
         }
         int update = mysqlSignetService.update(signet);
+        signet.setUuid(byLike.getUuid());
         // 同步更新sqlite数据
         signetService.update(signet);
         if(update!=1){
