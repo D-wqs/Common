@@ -39,7 +39,7 @@ public class ISignetService implements SignetService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(Signet signet) {
         if (signet != null && StringUtils.isNotBlank(signet.getUuid())) {
             Integer update = signetMapper.update(signet);

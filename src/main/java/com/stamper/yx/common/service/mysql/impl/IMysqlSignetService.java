@@ -48,7 +48,7 @@ public class IMysqlSignetService implements MysqlSignetService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public int update(Signet signet) {
         int updateCount=0;
         if(signet!=null){
