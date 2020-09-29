@@ -1,5 +1,6 @@
 package com.stamper.yx.common.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.stamper.yx.common.entity.*;
@@ -152,6 +153,19 @@ public class CallBackController {
                     if(closeButton!=null){
                         closeButton.setReceive(0);
                     }
+                    // 处理申请单次数同步的问题
+                    JSONObject jsonObject = JSON.parseObject(pkg.getBody().toString());
+                    JSONArray loginApplicationInfo = jsonObject.getJSONArray("loginApplicationInfo");
+                    LoginApplication loginApplication = (LoginApplication) JSONObject.parseObject(loginApplicationInfo.get(0).toString(), LoginApplication.class);
+                    log.info(loginApplication.getApplicationId()+"<-applicationId:UseCount->"+loginApplication.getUseCount());
+                    // 获取申请单的次数并更新
+                    Applications byApplicationId = myApplicationService.getByApplicationId(loginApplication.getApplicationId());
+                    if(byApplicationId!=null){
+                        byApplicationId.setNeedCount(loginApplication.getUseCount());
+                        // 更新申请单使用次数
+                        myApplicationService.update(byApplicationId);
+                    }
+
                     break;
                 case AppConstant.DEVICE_UNLOCK_RES:
                     //ID解锁的返回：
