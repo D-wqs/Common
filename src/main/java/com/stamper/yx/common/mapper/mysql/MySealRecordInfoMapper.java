@@ -35,4 +35,13 @@ public interface MySealRecordInfoMapper {
      */
     List<SealRecordInfo> getByReal(@Param("uuid") String uuid,@Param("applicationID") Integer applicationId,@Param("count") Integer count);
 
+    /**
+     * 是否存在相同记录
+     * @param coun
+     * @param applicationId
+     * @param time
+     * @return
+     */
+    SealRecordInfo getByCountAndApplicationIdAndTime(@Param("coun") Integer coun, @Param("applicationId") Integer applicationId, @Param("time") String time);
+
 }

@@ -488,6 +488,7 @@ public class SignetController {
                                     @RequestParam("userName") String userName,
                                     @RequestParam("userId") Integer userId,
                                     @RequestParam(value = "needCount", required = false) Integer needCount) {
+        log.info("【推送申请单:传来的参数】: title:{},applicationId:{},userName:{},userId:{},totalCount:{},needCount:{}",title,applicationId,userName,userId,totalCount,needCount);
         if (applicationId == null || deviceId == null || userId == null) {
             return ResultVO.FAIL(Code.ERROR_PARAMETER);
         }
@@ -556,6 +557,7 @@ public class SignetController {
             req.setTotalCount(totalCount);//申请单总次数，原来的useCount
             req.setNeedCount(needCount);
             MHPkg res = MHPkg.res(AppConstant.APPLICATION_STATUS_REQ, req);
+            log.info("【推送申请单:传来的参数】: title:{},applicationId:{},userName:{},userId:{},totalCoun:{},needCount:{}",title,applicationId,userName,userId,totalCount,needCount);
             pool.send(deviceId + "", res);
             //Future future = pool.send(application.getSignetId() + "", res);
 

@@ -141,5 +141,17 @@
         WHERE
             DEVICE_ID = #{deviceId}
     </select>
+    <select id="getByCountAndApplicationIdAndTime" resultType="com.stamper.yx.common.entity.SealRecordInfo">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM
+        seal_record_info
+        WHERE
+        delete_date IS NULL
+        AND count=#{count}
+        AND application_id=#{applicationId}
+        AND time=#{time}
+        LIMIT 1
+    </select>
 
 </mapper>
