@@ -27,7 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @author zhf_10@163.com
+ * @author wqs
  * @Description 设备响应回调控制层
  * @date 2019/8/13 0013 9:52
  */
@@ -98,6 +98,7 @@ public class CallBackController {
             /**
              * 解析响应参数
              */
+            log.error("这里是解析失败的message==>{}",message);
             MHPkg pkg = JSONObject.parseObject(message, MHPkg.class);
             if (pkg == null) {
                 log.info("响应失败===>设备:{{}} 响应:{{}} 原因:响应体为空", signet.getId(), message);
@@ -137,7 +138,7 @@ public class CallBackController {
                     if(dw!=null){
                         dw.setReceive(1);//设备已接收申请单，其他下发指令不能执行
                     }
-//					deviceUnlockRes(signet, message);
+//             deviceUnlockRes(signet, message);
                     break;
                 case AppConstant.RECORD_NOTICE_RES:
                     //关闭wifi的返回 【网络状态的返回】：
@@ -164,6 +165,7 @@ public class CallBackController {
                         // 更新申请单使用次数
                         myApplicationService.update(byApplicationId);
                     }
+
                     break;
                 case AppConstant.DEVICE_UNLOCK_RES:
                     //ID解锁的返回：
@@ -273,6 +275,7 @@ public class CallBackController {
             String decrypt = AesUtil.decrypt(message, aesKey);
             log.info("【模块回调】设备：{}，事件类型：{},解密消息：{}",deviceId,event,decrypt);
             switch (event){
+                // 同步历史申请单信息
                 case AppConstant.DEVICE_HISTORY_APPLICATION:
 //                {"Body":[{"applicationId":19,"useCount":3}],"Head":{"Cmd":13,"Magic":-46510,"SerialNum":0,"Version":1}}
                     log.info("模块回调事件{{}}",event);
@@ -294,6 +297,7 @@ public class CallBackController {
                     applications.setApplicationId(applicationId);
                     applications.setNeedCount(useCount);
                     applications.setDeviceId(Integer.parseInt(deviceId));
+                    log.info("【needCount】同步历史申请单信息:applicaionId:{},useCount：{}",historyApplicationInfo.getApplicationId(),historyApplicationInfo.getUseCount());
                     try {
                         myApplicationService.save(applications);
                     } catch (Exception e) {
@@ -330,6 +334,7 @@ public class CallBackController {
                     Applications needCount_bak = myApplicationService.getByApplicationId(applicationID);
                     Integer needCount = needCount_bak.getNeedCount();
                     needCount_bak.setNeedCount(needCount+1);
+                    log.info("【needCount】盖章通知的返回(通知申请单,已用次数+1):applicationId:{},申请单当前的needCount:{},+1后的值:{}",applicationID,needCount,needCount_bak.getNeedCount());
                     int update = myApplicationService.update(needCount_bak);
                     if(update!=1){
                         log.error("盖章通知的返回：通过申请单id（第三方业务id）：{{}}获取剩余次数，递减时保存失败,之前的已用次数needCouture{{}},应为{{}}",applicationID,needCount,needCount+1);

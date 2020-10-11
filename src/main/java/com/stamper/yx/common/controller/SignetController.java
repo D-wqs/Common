@@ -123,14 +123,17 @@ public class SignetController {
         Object o = EHCacheUtil.get(key);
         if (o != null && StringUtils.isNotBlank(o.toString())) {
             return ResultVO.OK(o.toString());
-        }else{
+        } else {
             //如果缓存中去不到该值，从通道中获取
             DeviceWebSocket webSocket = pool.get(deviceId + "");
-            String symmetricKey = webSocket.getSymmetricKey();
-            if(StringUtils.isNotBlank(symmetricKey)){
-                log.info("AesKey从缓存中获取失败，直接从通道中获取：",symmetricKey);
-                return ResultVO.OK(symmetricKey);
+            if(webSocket!=null){
+                String symmetricKey = webSocket.getSymmetricKey();
+                if (StringUtils.isNotBlank(symmetricKey)) {
+                    log.info("AesKey从缓存中获取失败，直接从通道中获取：", symmetricKey);
+                    return ResultVO.OK(symmetricKey);
+                }
             }
+
         }
         return ResultVO.FAIL("印章不在线");
     }
@@ -485,6 +488,7 @@ public class SignetController {
                                     @RequestParam("userName") String userName,
                                     @RequestParam("userId") Integer userId,
                                     @RequestParam(value = "needCount", required = false) Integer needCount) {
+        log.info("【推送申请单:传来的参数】: title:{},applicationId:{},userName:{},userId:{},totalCount:{},needCount:{}",title,applicationId,userName,userId,totalCount,needCount);
         if (applicationId == null || deviceId == null || userId == null) {
             return ResultVO.FAIL(Code.ERROR_PARAMETER);
         }
@@ -506,9 +510,9 @@ public class SignetController {
             return ResultVO.FAIL("设备不在线");
         }
         int receive = webSocket.getReceive();
-        if(receive==1){
+        if (receive == 1) {
             //todo 当前通道已收到申请单，不再接收申请单，只要盖章返回后，设置为0
-            return  ResultVO.FAIL(Code.ERROR501);
+            return ResultVO.FAIL(Code.ERROR501);
         }
         //设备是否在使用中
         int status = webSocket.getStatus();
@@ -517,16 +521,16 @@ public class SignetController {
             return ResultVO.FAIL("该设备正在使用中,请关锁后推送");
         }
         //TODO 根据第二数据源处理已使用的次数
-        if("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)){
+        if ("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)) {
             //获取已使用的次数
             Applications byApplicationId = myApplicationService.getByApplicationId(applicationId);
-            if(byApplicationId!=null){
-                needCount=byApplicationId.getNeedCount();
-                if(needCount==null){
-                    needCount=0;
+            if (byApplicationId != null) {
+                needCount = byApplicationId.getNeedCount();
+                if (needCount == null) {
+                    needCount = 0;
                 }
-                int tag=totalCount - needCount;
-                if(tag<=0){
+                int tag = totalCount - needCount;
+                if (tag <= 0) {
                     //todo 当前申请单次数已使用完
                     return ResultVO.FAIL("当前申请单次数已用完");
                 }
@@ -553,12 +557,13 @@ public class SignetController {
             req.setTotalCount(totalCount);//申请单总次数，原来的useCount
             req.setNeedCount(needCount);
             MHPkg res = MHPkg.res(AppConstant.APPLICATION_STATUS_REQ, req);
+            log.info("【推送申请单:传来的参数】: title:{},applicationId:{},userName:{},userId:{},totalCoun:{},needCount:{}",title,applicationId,userName,userId,totalCount,needCount);
             pool.send(deviceId + "", res);
             //Future future = pool.send(application.getSignetId() + "", res);
 
             //todo 异步记录申请单,在第二数据源开启的前提下，备份到第二数据源
-            if("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)){
-                Applications applications=new Applications();
+            if ("true".equalsIgnoreCase(AppConstant.OPEN_MYSQL)) {
+                Applications applications = new Applications();
                 applications.setApplicationId(applicationId);
                 applications.setTitle(title);
                 applications.setTotalCount(totalCount);
@@ -606,7 +611,11 @@ public class SignetController {
         //组包
         MHPkg res = MHPkg.end(applicationId);
         pool.send(deviceId + "", res);
-        return ResultVO.OK("结束申请单指令已下发");
+        //结束申请单的时候,允许设备接收申请单
+        DeviceWebSocket webSocket = pool.get(deviceId + "");
+        webSocket.setReceive(0);
+
+        return ResultVO.OK("结束申请单指令已下发,通道允许接收申请单");
     }
 
     /**
@@ -660,11 +669,11 @@ public class SignetController {
                 log.info("【检测设备状态：】设备：{{}} 检测异常 ", integer);
         }
         //迁章前,total=0,查找系统的次数并赋值
-        if(total.intValue()==0){
+        if (total.intValue() == 0) {
             //获取设备的使用记录的最大count值
             Integer maxCountByDeviceId = mysqlSealRecordInfoService.getMaxCountByDeviceId(deviceId);
-            if(maxCountByDeviceId!=null){
-                total=maxCountByDeviceId;
+            if (maxCountByDeviceId != null) {
+                total = maxCountByDeviceId;
                 try {
                     //同步到设备的使用总次数,前一步已判断设备存在
                     Signet byId = signetService.getById(deviceId);
@@ -673,7 +682,7 @@ public class SignetController {
                     //同步第二数据源
                     mysqlSignetService.update(byId);
                 } catch (Exception e) {
-                    log.error("【设备清次】同步设备使用总次数异常{{}}",deviceId);
+                    log.error("【设备清次】同步设备使用总次数异常{{}}", deviceId);
                 }
             }
         }
