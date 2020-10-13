@@ -37,11 +37,11 @@ public interface MySealRecordInfoMapper {
 
     /**
      * 是否存在相同记录
-     * @param coun
+     * @param count
      * @param applicationId
      * @param time
      * @return
      */
-    SealRecordInfo getByCountAndApplicationIdAndTime(@Param("coun") Integer coun, @Param("applicationId") Integer applicationId, @Param("time") String time);
+    SealRecordInfo getByCountAndApplicationIdAndTime(@Param("count") Integer count, @Param("applicationId") Integer applicationId, @Param("time") String time);
 
 }
