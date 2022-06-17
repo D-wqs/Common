@@ -20,7 +20,7 @@
         <druid.version>1.1.9</druid.version>
         <lombok>1.18.2</lombok>
         <sqlite.version>3.21.0.1</sqlite.version>
-        <alibaba.fastjson>1.2.47</alibaba.fastjson>
+        <alibaba.fastjson>1.2.83</alibaba.fastjson>
     </properties>
 
     <dependencies>
